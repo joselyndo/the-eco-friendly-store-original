@@ -132,6 +132,12 @@ article {
   width: 500px;
  }
 
+ #product-overview {
+  display: flex;
+  flex-direction: column;
+}
+
+
 #create-user form > section, #log-in form > section {
   display: flex;
   justify-content: flex-end;
@@ -140,11 +146,6 @@ article {
 
 .account {
   margin-left: 5px;
-}
-
-#product-overview {
-  display: flex;
-  flex-direction: column;
 }
 
 #feedback {
