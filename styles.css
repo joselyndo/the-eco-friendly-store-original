@@ -2,18 +2,12 @@
   Header comment for styles.css
  */
 
-header, footer {
-  background-color: #0D750D;
-}
-
 a {
   color: #D5B0AC;
-  font-family: "Raleway", sans-serif;
-  font-size: 14pt;
 }
 
 a:visited {
-  color: #A6866A; /* Will change color */
+  color: #a76e4d; /* Will change color */
 }
 
 h1 {
@@ -28,12 +22,38 @@ h3 {
   font-size: 24pt;
 }
 
+main {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
 h1, h2, h3 {
   font-family: "Freeman", sans-serif;
 }
 
 h2, h3 {
   text-decoration: underline;
+}
+
+header, footer {
+  background-color: #0D750D;
+}
+
+a, footer {
+  font-family: "Raleway", sans-serif;
+  font-size: 14pt;
+}
+
+a, footer, p {
+  font-family: "Raleway", sans-serif;
 }
 
 nav, footer {
