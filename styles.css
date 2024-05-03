@@ -30,6 +30,7 @@ main {
   align-items: center;
 }
 
+
 footer {
   padding-top: 20px;
   padding-bottom: 20px;
@@ -81,3 +82,26 @@ header div {
   border: #D5B0AC 2px solid;
   margin: 5px;
  }
+
+ #create-user > section, #log-in form > section {
+  display: flex;
+  justify-content: flex-end;
+ }
+
+ #create-user > input, #log-in form > input {
+  margin-top: 5px;
+  margin-bottom: 5px;
+ }
+
+ #search-button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#search-button:hover {
+  background-color: #0056b3;
+}
