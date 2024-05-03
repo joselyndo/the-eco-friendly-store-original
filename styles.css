@@ -2,9 +2,9 @@
   Header comment for styles.css
  */
 
-a {
-  color: #D5B0AC;
-}
+ hr {
+  margin-bottom: 40px;
+ }
 
 a:visited {
   color: #a76e4d; /* Will change color */
@@ -22,12 +22,21 @@ h3 {
   font-size: 24pt;
 }
 
+header {
+  padding-bottom: 10px;
+}
+
 main {
   text-align: center;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 30px;
+}
+
+input[type="text"] {
+  margin-bottom: 5px;
 }
 
 footer {
@@ -35,11 +44,19 @@ footer {
   padding-bottom: 20px;
 }
 
-h1, h2, h3 {
+a, form input[type="submit"] {
+  color: #D5B0AC;
+  background-color: #DFF8EB;
+  padding: 12pt;
+  border-radius: 25pt;
+  margin: 5px;
+}
+
+h1, h2, h3, h4 {
   font-family: "Freeman", sans-serif;
 }
 
-h2, h3 {
+h2, h3, h4 {
   text-decoration: underline;
 }
 
@@ -48,11 +65,10 @@ header, footer {
 }
 
 a, footer {
-  font-family: "Raleway", sans-serif;
   font-size: 14pt;
 }
 
-a, footer, p {
+a, footer, p, form label, form input[type="submit"]  {
   font-family: "Raleway", sans-serif;
 }
 
@@ -61,12 +77,6 @@ nav, footer {
   font-size: 12pt;
   text-align: center;
 }
-
- /* nav ul {
-  display: flex;
-  align-items: center;
-  justify-content: center;
- } */
 
 header div {
   display: flex;
@@ -80,4 +90,35 @@ header div {
   width: 20%;
   border: #D5B0AC 2px solid;
   margin: 5px;
+ }
+
+ section a {
+  margin-bottom: 5px;
+ }
+
+ #best-sellers {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  overflow-x: scroll;
+  width: 500px;
+  margin-top: 10px;
+ }
+
+ #best-sellers div {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  background-color: #0D750D;
+  width: 100px;
+  margin: 25px;
+  padding: 10px;
+ }
+
+ #account-info {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-between;
  }
