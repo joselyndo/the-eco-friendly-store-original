@@ -137,7 +137,6 @@ article {
   flex-direction: column;
 }
 
-
 #create-user form > section, #log-in form > section {
   display: flex;
   justify-content: flex-end;
@@ -162,9 +161,50 @@ article {
 }
 
 #entry {
-  max-height: 75px;
+  min-height: 50px;
+  min-width: 300px;
+  max-height: 100px;
   max-width: 350px;
   margin: 20px;
+}
+
+#review-feed {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.review {
+  text-align: center;
+  min-width: 350px;
+  min-height: 75px;
+  background-color: white;
+  border-bottom: 1px solid gray;
+}
+
+.review div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.review p {
+  text-align: left;
+  padding: 10px;
+}
+
+.review div p {
+  font-size: 18px;
+  padding-bottom: 0px;
+}
+
+.review > p:first-of-type {
+  margin-top: -28px;
+  font-size: 12px;
+}
+
+.review > p:last-of-type {
+  font-size: 12px;
 }
 
 button {
