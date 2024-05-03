@@ -87,26 +87,26 @@ header div {
   align-items: center;
 }
 
- header img {
+header img {
   width: 20%;
   border: #D5B0AC 2px solid;
   margin: 5px;
- }
+}
 
- section a {
+section a {
   margin-bottom: 5px;
- }
+}
 
- #best-sellers {
+#best-sellers {
   display: flex;
   flex-direction: row;
   overflow: hidden;
   overflow-x: scroll;
   width: 500px;
   margin-top: 10px;
- }
+}
 
- #best-sellers div {
+#best-sellers div {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -115,26 +115,26 @@ header div {
   width: 100px;
   margin: 25px;
   padding: 10px;
- }
+}
 
- #account-info {
+#account-info {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: space-between;
- }
+}
 
- #create-user > section, #log-in form > section {
+#create-user > section, #log-in form > section {
   display: flex;
   justify-content: flex-end;
- }
+}
 
- #create-user > input, #log-in form > input {
+#create-user > input, #log-in form > input {
   margin-top: 5px;
   margin-bottom: 5px;
- }
+}
 
- #search-button {
+#search-button {
   padding: 5px 10px;
   background-color: #007bff;
   color: #fff;
