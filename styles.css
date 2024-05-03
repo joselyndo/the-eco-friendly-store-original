@@ -124,17 +124,32 @@ section a {
   justify-content: space-between;
 }
 
-#create-user > section, #log-in form > section {
+article {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 20px;
+ }
+
+#product-detail {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+ }
+
+#create-user form > section, #log-in form > section {
   display: flex;
   justify-content: flex-end;
 }
 
-#create-user > input, #log-in form > input {
+#create-user form > input, #log-in form > input {
   margin-top: 5px;
   margin-bottom: 5px;
 }
 
-#search-button {
+#feedback {
+  margin-top: 20px;
+}
+
+button {
   padding: 5px 10px;
   background-color: #007bff;
   color: #fff;
@@ -143,6 +158,6 @@ section a {
   transition: background-color 0.3s ease;
 }
 
-#search-button:hover {
+button:hover {
   background-color: #0056b3;
 }
