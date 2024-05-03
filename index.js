@@ -12,6 +12,40 @@
    * Initializes the ________
    */
   function init() {
+    displayProductsOnHome();
+  }
+
+  /**
+   * Displays products onto the home page
+   */
+  async function displayProductsOnHome() {
+    try {
+      let res = await fetch();
+      await statusCheck(res);
+      res = await res.json();
+      addProductsToHome(res);
+    } catch (error) {
+      handleQueryError();
+    }
+  }
+
+  /**
+   * Adds product cards to the home page
+   * @param {JSON} res - JSON file containing information about the products
+   */
+  function addProductsToHome(res) {
+  }
+
+  /**
+   * Adds a message onto the web page about an error fetching data
+   */
+  function handleQueryError() {
+  }
+
+  /**
+   *  Adds a message onto the web page about an error logging in or creating an account
+   */
+  function handleAccountError() {
 
   }
 
