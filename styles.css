@@ -2,13 +2,62 @@
   Header comment for styles.css
  */
 
- nav {
-  background-color: green;
-  height: 50px;
- }
+header, footer {
+  background-color: #0D750D;
+}
 
- nav ul {
+a {
+  color: #D5B0AC;
+  font-family: "Raleway", sans-serif;
+  font-size: 14pt;
+}
+
+a:visited {
+  color: #A6866A; /* Will change color */
+}
+
+h1 {
+  font-size: 36pt;
+}
+
+h2 {
+  font-size: 30pt;
+}
+
+h3 {
+  font-size: 24pt;
+}
+
+h1, h2, h3 {
+  font-family: "Freeman", sans-serif;
+}
+
+h2, h3 {
+  text-decoration: underline;
+}
+
+nav, footer {
+  height: 50px;
+  font-size: 12pt;
+  text-align: center;
+}
+
+ /* nav ul {
   display: flex;
   align-items: center;
   justify-content: center;
+ } */
+
+header div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+ header img {
+  width: 20%;
+  border: #D5B0AC 2px solid;
+  margin: 5px;
  }
