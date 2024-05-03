@@ -36,10 +36,6 @@ main {
   padding: 0px;
 }
 
-input[type="text"] {
-  margin-bottom: 5px;
-}
-
 footer {
   padding-top: 20px;
   padding-bottom: 20px;
@@ -111,7 +107,7 @@ section a {
   flex-direction: column;
   flex-wrap: nowrap;
   align-items: center;
-  background-color: #0D750D;
+  background-color: #11a311;
   width: 100px;
   margin: 25px;
   padding: 10px;
@@ -139,11 +135,11 @@ article {
 #create-user form > section, #log-in form > section {
   display: flex;
   justify-content: flex-end;
+  padding: 3px;
 }
 
-#create-user form > input, #log-in form > input {
-  margin-top: 5px;
-  margin-bottom: 5px;
+.account {
+  margin-left: 5px;
 }
 
 #product-overview {
