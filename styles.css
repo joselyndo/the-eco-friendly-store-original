@@ -135,12 +135,12 @@ article {
   border: 1px solid #ccc;
  }
 
-#create-user > section, #log-in form > section {
+#create-user form > section, #log-in form > section {
   display: flex;
   justify-content: flex-end;
  }
 
-#create-user > input, #log-in form > input {
+#create-user form > input, #log-in form > input {
   margin-top: 5px;
   margin-bottom: 5px;
  }
