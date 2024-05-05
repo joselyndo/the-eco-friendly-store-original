@@ -37,7 +37,7 @@
       });
       await statusCheck(res);
       location.assign("my-account.html");
-    } catch {
+    } catch (e) {
       addLogInError();
     }
   }
