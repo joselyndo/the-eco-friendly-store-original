@@ -30,7 +30,7 @@
     let pText = gen("p");
     container.classList.add("review");
     pUsername.textContent = "Placeholder Username:" // To change
-    imgRating.src = "rating/5star.png"; // To change
+    imgRating.src = "img/rating/5star.png"; // To change
     pDate.textContent = "Month Day, Year"; // To change
     pText.textContent = id("entry").value;
     divUser.appendChild(pUsername);

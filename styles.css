@@ -2,9 +2,9 @@
   Header comment for styles.css
  */
 
- hr {
+hr {
   margin-bottom: 40px;
- }
+}
 
 a:visited {
   color: #a76e4d; /* Will change color */
@@ -65,7 +65,7 @@ a, footer {
   font-size: 14pt;
 }
 
-a, footer, p, form label, form input[type="submit"]  {
+a, footer, p, form label, form input[type="submit"] {
   font-family: "Raleway", sans-serif;
 }
 
@@ -124,15 +124,15 @@ article {
   margin-top: 10px;
   margin-bottom: 10px;
   padding: 20px;
- }
+}
 
 #product-details {
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   width: 500px;
- }
+}
 
- #product-overview {
+#product-overview {
   display: flex;
   flex-direction: column;
 }
