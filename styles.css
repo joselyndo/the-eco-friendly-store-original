@@ -94,6 +94,11 @@ header img {
   margin: 5px;
 }
 
+main img {
+  width: 23%;
+  margin: 10px;
+}
+
 section a {
   margin-bottom: 5px;
 }
