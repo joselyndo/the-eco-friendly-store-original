@@ -35,7 +35,7 @@
     let pDate = gen("p");
     let pText = gen("p");
     container.classList.add("review");
-    pUsername.textContent = "Placeholder Username:" // To change
+    pUsername.textContent = "Placeholder Username:"; // To change
     imgRating.src = "img/rating/5star.png"; // To change
     pDate.textContent = "Month Day, Year"; // To change
     pText.textContent = id("entry").value;
@@ -50,20 +50,20 @@
     reviews.insertBefore(container, reviews.firstElementChild);
   }
 
-/**
- * Returns a generated DOM object of type tag.
- * @param {string} tag element tag
- * @returns {object} DOM object created with tag
- */
+  /**
+   * Returns a generated DOM object of type tag.
+   * @param {string} tag element tag
+   * @returns {object} DOM object created with tag
+   */
   function gen(tag) {
     return document.createElement(tag);
   }
 
-/**
- * Returns the element that has the ID attribute with the specified value.
- * @param {string} id - element ID
- * @return {object} DOM object associated with id.
- */
+  /**
+   * Returns the element that has the ID attribute with the specified value.
+   * @param {string} id - element ID
+   * @return {object} DOM object associated with id.
+   */
   function id(id) {
     return document.getElementById(id);
   }
