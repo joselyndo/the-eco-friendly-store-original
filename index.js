@@ -100,6 +100,7 @@
     let productsContainer = id("best-sellers");
     let errorMessage = gen("p");
     errorMessage.textContent = "Error. Please try again later.";
+    errorMessage.classList.add("error");
     productsContainer.appendChild(errorMessage);
   }
 
