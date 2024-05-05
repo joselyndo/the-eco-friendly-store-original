@@ -108,7 +108,7 @@ section a {
   flex-direction: row;
   overflow: hidden;
   overflow-x: scroll;
-  width: 500px;
+  width: 600px;
   margin-top: 10px;
 }
 
@@ -187,6 +187,18 @@ article {
   display: flex;
   flex-direction: column;
   margin-top: 20px;
+}
+
+#home {
+ display: flex;
+ flex-wrap: nowrap;
+ flex-direction: column;
+ justify-content: flex-start;
+ align-items: center;
+}
+
+#home p {
+  width: 600px;
 }
 
 .nav-link {
