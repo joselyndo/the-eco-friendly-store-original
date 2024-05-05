@@ -48,7 +48,7 @@
   function getAds() {
     let adImages = qsa("main img");
     for (let img = 0; img < adImages.length; img++) {
-      randNum = Math.floor(Math.random() * NUM_ADS);
+      let randNum = Math.floor(Math.random() * NUM_ADS);
       adImages[img].src = IMG_ADS_DIR + randNum + ADS_ENDING;
       adImages[img].alt = "ad " + randNum;
     }
