@@ -190,11 +190,11 @@ article {
 }
 
 #home {
- display: flex;
- flex-wrap: nowrap;
- flex-direction: column;
- justify-content: flex-start;
- align-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 #home p {
