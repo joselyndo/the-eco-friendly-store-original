@@ -1,6 +1,12 @@
 /**
+ * Joselyn Do (AB) & Keith Nguyen (AA)
+ * May 5th, 2024
+ * Section AA: Kevin Wu
+ * Section AB: Elias & Quinton
  *
+ * [File description]
  */
+
 "use strict";
 
 (function() {
