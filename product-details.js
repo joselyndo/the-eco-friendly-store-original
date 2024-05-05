@@ -17,7 +17,7 @@
    */
   function init() {
     let submitButton = id("submit-button");
-    submitButton.addEventListener("click", function() {
+    submitButton.addEventListener("click", function(event) {
       event.preventDefault();
       addPost();
     });

@@ -11,8 +11,8 @@ hr {
   margin-bottom: 40px;
 }
 
-a:visited {
-  color: #a76e4d; /* Will change color */
+.nav-link:visited {
+  color: #a76e4d;
 }
 
 h1 {
@@ -44,9 +44,14 @@ main {
 footer {
   padding-top: 20px;
   padding-bottom: 20px;
+  margin-bottom: 20px;
 }
 
-a, form input[type="submit"] {
+nav {
+  height: 50px;
+}
+
+form input[type="submit"], .nav-link {
   color: #D5B0AC;
   background-color: #DFF8EB;
   padding: 12pt;
@@ -66,16 +71,11 @@ header, footer {
   background-color: #0D750D;
 }
 
-a, footer {
-  font-size: 14pt;
-}
-
-a, footer, p, form label, form input[type="submit"] {
+footer, p, form label, form input[type="submit"], .nav-link {
   font-family: "Raleway", sans-serif;
 }
 
 nav, footer {
-  height: 50px;
   font-size: 12pt;
   text-align: center;
 }
@@ -118,8 +118,8 @@ section a {
   flex-wrap: nowrap;
   align-items: center;
   background-color: #11a311;
-  width: 100px;
-  margin: 25px;
+  width: 175px;
+  margin: 12px;
   padding: 10px;
 }
 
@@ -153,6 +153,11 @@ article {
   padding: 3px;
 }
 
+#best-sellers img {
+  height: 150px;
+  width: 150px;
+}
+
 .account {
   margin-left: 5px;
 }
@@ -182,6 +187,10 @@ article {
   display: flex;
   flex-direction: column;
   margin-top: 20px;
+}
+
+.nav-link {
+  font-size: 14pt;
 }
 
 .review {
