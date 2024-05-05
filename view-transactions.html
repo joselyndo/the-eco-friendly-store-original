@@ -6,18 +6,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="img/leaf.png">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Freeman&family=Raleway&display=swap">
   <script src=""></script>
   <title>View Transactions</title>
 </head>
 <body>
   <header>
-    <img src="img/placeholder-logo.png" alt="placeholder logo">
-    <h1>Store name</h1>
-    <section>
-      <a href="my-account.html">My account information</a>
-      <a href="login.html">Log out</a>
-    </section>
+    <div>
+      <img src="img/placeholder-logo-2.png" alt="placeholder logo">
+      <h1>The Eco-Friendly Store</h1>
+      <form class="search-bar">
+        <input type="text" name="search" class="search-entry" required>
+        <button class="search-button">Search</button>
+      </form>
+    </div>
+    <hr>
+    <nav id="header-nav">
+      <a href="home.html" class="nav-link">Store Home</a>
+      <a href="my-account.html" class="nav-link">Account Information</a>
+      <a href="login.html" class="nav-link">Log Out</a>
+    </nav>
   </header>
   <main>
     <h2>My transactions</h2>
@@ -92,6 +102,11 @@
   </main>
   <footer>
     <p>&copy; 2024 Store Name. All rights reserved.</p>
+    <p>
+      Certain images or techniques have been used from outside sources.
+      <a href="credits.html">Image and resource credits</a>
+      .
+    </p>
   </footer>
 </body>
 </html>
