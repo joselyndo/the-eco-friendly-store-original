@@ -4,20 +4,54 @@
  * Section AA: Kevin Wu
  * Section AB: Elias & Quinton
  *
- * [File description]
+ * This index.js adds functionality to the website's homepage, adding images
+ * to deals, ads, and products.
  */
 
 "use strict";
 
 (function() {
+  const DAYS_OF_WEEK = [
+    "sunday", "monday", "tuesday", "wednesday",
+    "thursday", "friday", "saturday"
+  ];
+  const IMG_DEALS_DIR = "img/deals/";
+  const DEAL_IMG_ENDING = "-deal-image.png";
+  const IMG_ADS_DIR = "img/ads/";
+  const ADS_ENDING = "-ad.png";
+  const NUM_ADS = 1;
 
   window.addEventListener("load", init);
 
   /**
-   * Initializes the ________
+   * Initializes the home page
    */
   function init() {
+    getDeal();
+    getAds();
     displayProductsOnHome();
+  }
+
+  /**
+   * Displays a deal onto the home page
+   */
+  function getDeal() {
+    let today = new Date();
+    let dealImg = qs("#promo img");
+    dealImg.src = IMG_DEALS_DIR + DAYS_OF_WEEK[today.getDay()] + DEAL_IMG_ENDING;
+    dealImg.alt = DAYS_OF_WEEK[today.getDay()] + " deal";
+  }
+
+  /**
+   * Displays ads onto the home page
+   */
+  function getAds() {
+    let adImages = qsa("main img");
+    for (let img = 0; img < adImages.length; img++) {
+      randNum = Math.floor(Math.random() * NUM_ADS);
+      adImages[img].src = IMG_ADS_DIR + randNum + ADS_ENDING;
+      adImages[img].alt = "ad " + randNum;
+    }
   }
 
   /**
@@ -39,19 +73,34 @@
    * @param {JSON} res - JSON file containing information about the products
    */
   function addProductsToHome(res) {
+    let productsContainer = id("best-sellers");
+    for (let item = 0; item < res.length; item++) {
+      let productImg = gen("img");
+      productImg.src = res["image"]; // specific names may change
+      productImg.alt = res["name"];
+
+      let productName = gen("h4");
+      productName.textContent = res["name"];
+
+      let productCard = gen("div");
+      productCard.appendChild(productImg);
+      productCard.appendChild(productName);
+      productCard.addEventListener("click", function() {
+        location.assign("product-details.html");
+      });
+
+      productsContainer.appendChild();
+    }
   }
 
   /**
    * Adds a message onto the web page about an error fetching data
    */
   function handleQueryError() {
-  }
-
-  /**
-   *  Adds a message onto the web page about an error logging in or creating an account
-   */
-  function handleAccountError() {
-
+    let productsContainer = id("best-sellers");
+    let errorMessage = gen("p");
+    errorMessage.textContent = "Error. Please try again later.";
+    productsContainer.appendChild(errorMessage);
   }
 
   /**

@@ -203,6 +203,10 @@ article {
   width: 600px;
 }
 
+#promo img {
+  width: 82%;
+}
+
 .nav-link {
   font-size: 14pt;
 }
