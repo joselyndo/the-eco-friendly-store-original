@@ -37,11 +37,14 @@
       });
       await statusCheck(res);
       location.assign("my-account.html");
-    } catch (e) {
+    } catch (error) {
       addLogInError();
     }
   }
 
+  /**
+   * Adds a log in error
+   */
   function addLogInError() {
     let errorMessage = gen("p");
     errorMessage.text = "Error in submitting credentials. Please try again.";
