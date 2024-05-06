@@ -102,9 +102,9 @@
       let res = await fetch(PRODUCTS_ENDPOINT);
       await statusCheck(res);
       res = await res.json();
-      addProductsToPage(res, qs("product-page section"));
+      addProductsToPage(res, qs("#product-page section"));
     } catch (error) {
-      handleQueryError(qs("product-page section"));
+      handleQueryError(qs("#product-page section"));
     }
   }
 
@@ -130,7 +130,7 @@
         location.assign("product-details.html");
       });
 
-      productsContainer.appendChild();
+      productsContainer.appendChild(productCard);
     }
   }
 
