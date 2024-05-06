@@ -26,7 +26,7 @@
   }
 
   /**
-   * Submits the user input to log in and responds differently based on the result
+   * Submits user input to log in and responds differently based on the result
    */
   async function submitCredentials() {
     try {
@@ -43,7 +43,7 @@
   }
 
   /**
-   * Adds a log in error
+   * Adds a log in error to the webpage
    */
   function addLogInError() {
     let errorMessage = gen("p");

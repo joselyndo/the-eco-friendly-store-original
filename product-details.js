@@ -4,7 +4,8 @@
  * Section AA: Kevin Wu
  * Section AB: Elias & Quinton
  *
- * [File description]
+ * This product-details.js page adds the functionality to submit a review about a product on that
+ * product's specific page.
  */
 
 "use strict";
