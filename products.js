@@ -4,8 +4,8 @@
  * Section AA: Kevin Wu
  * Section AB: Elias & Quinton
  *
- * This index.js adds functionality to the website's homepage, adding images
- * to deals, ads, and products.
+ * This products.js adds functionality to the website's search and navigation side bar and
+ * adds queried products.
  */
 
 "use strict";
