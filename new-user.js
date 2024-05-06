@@ -16,7 +16,7 @@
   window.addEventListener("load", init);
 
   /**
-   * Initializes the home page
+   * Initializes the account creation page
    */
   function init() {
     qs("#create-user form").addEventListener("submit", function(event) {

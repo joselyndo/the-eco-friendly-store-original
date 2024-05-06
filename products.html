@@ -17,7 +17,7 @@
     <link rel="icon" href="img/leaf.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Freeman&family=Raleway&display=swap">
-    <script src=""></script>
+    <script src="products.js"></script>
     <title>Products</title>
   </head>
   <body>
@@ -49,24 +49,25 @@
             </form>
           </section>
           <section>
-            <section>
+            <form class="filter">
               <p>Tag 1</p>
-              <button class="filter-button">filter 1</button>
-              <button class="filter-button">filter 2</button>
-              <button class="filter-button">filter 3</button>
-            </section>
-            <section>
+              <input type="checkbox" name="tag1-option1" class="filter-button">filter 1</input>
+              <input type="checkbox" name="tag1-option2" class="filter-button">filter 2</input>
+              <input type="checkbox" name="tag1-option3" class="filter-button">filter 3</input>
+            </form>
+            <form class="filter">
               <p>Tag 2</p>
-              <button class="filter-button">filter 1</button>
-              <button class="filter-button">filter 2</button>
-              <button class="filter-button">filter 3</button>
-            </section>
-            <section>
+              <input type="checkbox" name="tag2-option1" class="filter-button">filter 1</input>
+              <input type="checkbox" name="tag2-option2" class="filter-button">filter 2</input>
+              <input type="checkbox" name="tag2-option3" class="filter-button">filter 3</input>
+            </form>
+            <form class="filter">
               <p>Tag 3</p>
-              <button class="filter-button">filter 1</button>
-              <button class="filter-button">filter 2</button>
-              <button class="filter-button">filter 3</button>
-            </section>
+              <input type="checkbox" name="tag3-option1" class="filter-button">filter 1</input>
+              <input type="checkbox" name="tag3-option2" class="filter-button">filter 2</input>
+              <input type="checkbox" name="tag3-option3" class="filter-button">filter 3</input>
+            </form>
+            <button id="filter-button">Search</button>
           </section>
         </section>
         <section id="product-page">

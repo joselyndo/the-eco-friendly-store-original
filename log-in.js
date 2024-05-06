@@ -16,7 +16,7 @@
   window.addEventListener("load", init);
 
   /**
-   * Initializes the home page
+   * Initializes the log in page
    */
   function init() {
     qs("#log-in form").addEventListener("submit", function(event) {
