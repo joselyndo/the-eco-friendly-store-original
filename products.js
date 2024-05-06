@@ -49,7 +49,7 @@
    */
   async function searchForProductName() {
     try {
-      let productName = new FormData(id(search-bar));
+      let productName = new FormData(id("search-bar"));
       prevSearched = productName;
       let res = await fetch(PRODUCTS_ENDPOINT, {
         method: "GET",
