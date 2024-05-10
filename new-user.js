@@ -12,6 +12,9 @@
 
 (function() {
   const NEW_ACC_ENDPOINT = "[new account endpoint]";
+  const IMG_ADS_DIR = "img/ads/";
+  const ADS_ENDING = "-ad.png";
+  const NUM_ADS = 5;
 
   window.addEventListener("load", init);
 
@@ -19,6 +22,7 @@
    * Initializes the account creation page
    */
   function init() {
+    getAds();
     qs("#create-user form").addEventListener("submit", function(event) {
       event.preventDefault();
       submitCredentials();
@@ -52,6 +56,18 @@
 
     let parent = id("create-user");
     parent.insertBefore(errorMessage, qs("#create-user h2"));
+  }
+
+/**
+ * Displays ads onto the home page
+ */
+  function getAds() {
+    let adImages = qsa("main > img");
+    for (let img = 0; img < adImages.length; img++) {
+      let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
+      adImages[img].src = IMG_ADS_DIR + randNum + ADS_ENDING;
+      adImages[img].alt = "ad " + randNum;
+    }
   }
 
   /**
@@ -93,5 +109,14 @@
    */
   function qs(query) {
     return document.querySelector(query);
+  }
+
+/**
+ * Returns the array of elements that match the given CSS selector.
+ * @param {string} query - CSS query selector
+ * @returns {object[]} array of DOM objects matching the query.
+ */
+  function qsa(query) {
+    return document.querySelectorAll(query);
   }
 })();

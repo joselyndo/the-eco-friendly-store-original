@@ -14,7 +14,7 @@
   const PRODUCTS_ENDPOINT = "[URL]/products?";
   const IMG_ADS_DIR = "img/ads/";
   const ADS_ENDING = "-ad.png";
-  const NUM_ADS = 1;
+  const NUM_ADS = 5;
   let prevSearched = null;
 
   window.addEventListener("load", init);
@@ -36,9 +36,9 @@
    * Displays ads onto the page
    */
   function getAds() {
-    let adImages = qsa("main img");
+    let adImages = qsa("main > img");
     for (let img = 0; img < adImages.length; img++) {
-      let randNum = Math.floor(Math.random() * NUM_ADS);
+      let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
       adImages[img].src = IMG_ADS_DIR + randNum + ADS_ENDING;
       adImages[img].alt = "ad " + randNum;
     }

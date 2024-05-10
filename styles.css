@@ -73,6 +73,10 @@ header, footer {
   background-color: #0D750D;
 }
 
+header {
+  background-image: url("img/leaves.png");
+}
+
 footer, p, form label, form input[type="submit"], .nav-link {
   font-family: "Raleway", sans-serif;
 }
@@ -192,6 +196,10 @@ article {
 }
 
 #home {
+  background-image: url("img/tree.png");
+  background-size: contain;
+  background-color: rgba(255,255,255,0.2);
+  background-blend-mode: lighten;
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
