@@ -13,5 +13,11 @@ app.use(multer().none()); // requires the "multer" module
 app.use(express.static('public'));
 
 
+// tells the code to serve static files in a directory called 'public'
+app.use(express.static('public'));
+
+// specify the port to listen on
 const PORT = process.env.PORT || 8000;
+
+// tells the application to run on the specified port
 app.listen(PORT);
