@@ -21,16 +21,20 @@
   <body>
     <header>
       <div>
-        <img src="img/placeholder-logo-2.png" alt="placeholder logo">
+        <a href="index.html">
+          <img src="img/placeholder-logo-2.png" alt="placeholder logo">
+        </a>
         <h1>The Eco-Friendly Store</h1>
         <form id="search-bar">
           <input type="text" name="search" id="search-entry" required>
           <button id="search-button">Search</button>
         </form>
+        <a class="cart" href="cart.html">
+          <img src="img/cart.png" alt="Shopping Cart">
+        </a>
       </div>
       <hr>
       <nav id="header-nav">
-        <a href="index.html" class="nav-link">Store Home</a>
         <a href="products.html" class="nav-link">All products</a>
         <a href="new-user.html" class="nav-link">Create a new user</a>
         <a href="log-in.html" class="nav-link">Log in</a>
@@ -56,7 +60,10 @@
             Materials: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
             tempor incididunt ut labore et dolore magna aliqua.
           </p>
+          <label for="bulk"></label>
+          <input id="bulk" type="number" step="1" value="1" required>
           <button id="buy-button">Buy</button>
+          <button id="add-to-cart">Add To Cart</button>
         </section>
         <section id="feedback">
           <form>

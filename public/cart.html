@@ -5,6 +5,7 @@
   Section AA: Kevin Wu
   Section AB: Elias & Quinton
 
+  This cart.html file represents the user's shopping cart
   This log-in.html file provides structure to the website's log in page, structuring the page for ad
   images, text boxes, and the log in button.
 -->
@@ -15,8 +16,8 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Freeman&family=Raleway&display=swap">
   <link rel="icon" href="img/leaf.png">
-  <script src="log-in.js"></script>
-  <title>Log in</title>
+  <script src="cart.js"></script>
+  <title>Shopping cart</title>
 </head>
 <body>
   <header>
@@ -31,27 +32,52 @@
     </div>
     <hr>
     <nav>
-      <a href="products.html" class="nav-link">All products</a>
+      <a href="index.html" class="nav-link">Store Home</a>
+      <a href="products.html" class="nav-link">All Products</a>
       <a href="new-user.html" class="nav-link">Create a new user</a>
       <a href="log-in.html" class="nav-link">Log in</a>
-      <a href="my-account.html" class="nav-link">[TEMP] Account Information</a>
     </nav>
   </header>
   <main>
     <img src="img/placeholder-ad.png" alt="ad-placeholder">
-    <article id="log-in">
-      <h2>Log into account</h2>
-      <form>
+    <article id="cart">
+      <h2>Your Shopping Cart</h2>
+      <section>
         <section>
-          <label for="username">Username:</label>
-          <input type="text" name="username" id="username" class="account" required>
+          <div>
+            <p>Product-Name</p>
+            <a href="product-details.html">
+              <img src="img/placeholder-product.png" alt="product-placeholder">
+            </a>
+          </div>
+          <div>
+            <p>Product-Details</p>
+          </div>
         </section>
         <section>
-          <label for="password">Password:</label>
-          <input type="text" name="password" id="password" class="account" required>
+          <div>
+            <p>Product-Name</p>
+            <a href="product-details.html">
+              <img src="img/placeholder-product.png" alt="product-placeholder">
+            </a>
+          </div>
+          <div>
+            <p>Product-Details</p>
+          </div>
         </section>
-        <input type="submit" value="Log in">
-      </form>
+        <section>
+          <div>
+            <p>Product-Name</p>
+            <a href="product-details.html">
+              <img src="img/placeholder-product.png" alt="product-placeholder">
+            </a>
+          </div>
+          <div>
+            <p>Product-Details</p>
+          </div>
+        </section>
+      </section>
+      <button id="checkout">Check out</button>
     </article>
     <img src="img/placeholder-ad.png" alt="ad-placeholder">
   </main>

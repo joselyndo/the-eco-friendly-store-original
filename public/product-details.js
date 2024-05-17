@@ -5,7 +5,7 @@
  * Section AB: Elias & Quinton
  *
  * This product-details.js page adds the functionality to submit a review about a product on that
- * product's specific page.
+ * product's specific page and buy products.
  */
 
 "use strict";
@@ -22,11 +22,20 @@
    */
   function init() {
     getAds();
+    let currentItem = qs("#product-description h2").textContent;
     let submitButton = id("submit-button");
     submitButton.addEventListener("click", function(event) {
       event.preventDefault();
       addPost();
     });
+    let buyButton = id("buy-button");
+    buyButton.addEventListener("click", function() {
+      buyItem(currentItem);
+    });
+    let addToCartButton = id("add-to-cart");
+    addToCartButton.addEventListener("click", function() {
+      addToCart(currentItem);
+    })
   }
 
   /**
@@ -56,6 +65,65 @@
     reviews.insertBefore(container, reviews.firstElementChild);
   }
 
+  /**
+   * Makes a fetch request to back-end to process item sale.
+   * @param {string} itemName Name of the current product.
+   */
+  async function buyItem(itemName) {
+    // CHECK IF USER IS LOGGED IN
+    const url = "/buy/";
+    const numToBuy = id("bulk").value;
+    const param = itemName + "/" + numToBuy;
+
+    try {
+      let response = await fetch(url + param);
+      statusCheck(response);
+      let result = await response.json();
+      boughtItem(result);
+
+    } catch (error) {
+      // Handle
+      console.error(error);
+    }
+  }
+
+  /**
+   * Visual response to the user buying an item.
+   * @param {JSON} itemData item information
+   */
+  function boughtItem(itemData) {
+    // Implement DOM elements
+    console.log("Your purchase was successful");
+  }
+
+  /**
+   * Makes a call to back-end to update the user's shopping cart.
+   */
+  async function addToCart(itemName) {
+    // CHECK IF USER IS LOGGED IN
+    const url = "/addToCart/";
+    const numToBuy = id("bulk").value;
+    const param = itemName + "/" + numToBuy;
+
+    try {
+      let response = await fetch(url + param);
+      statusCheck(response);
+      let result = await response.text();
+      addedToCart(result);
+    } catch (error) {
+      // Handle
+      console.error(error);
+    }
+  }
+
+  /**
+   * Visual response to the user adding an item to the cart.
+   * @param {string} success Success/failure message.
+   */
+  function addedToCart(success) {
+    // Implement DOM elements
+    console.log(success);
+  }
 
   /**
    * Displays ads onto the home page
@@ -67,6 +135,20 @@
       adImages[img].src = IMG_ADS_DIR + randNum + ADS_ENDING;
       adImages[img].alt = "ad " + randNum;
     }
+  }
+
+  /**
+   * Helper function to return the response's result text if successful, otherwise
+   * returns the rejected Promise result with an error status and corresponding text
+   * @param {object} res - response to check for success/error
+   * @return {object} - valid response if response was successful, otherwise rejected
+   *                    Promise result
+   */
+  async function statusCheck(res) {
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+    return res;
   }
 
   /**
@@ -94,5 +176,14 @@
    */
   function qsa(query) {
     return document.querySelectorAll(query);
+  }
+
+  /**
+   * Returns the element that matches the given CSS selector.
+   * @param {string} query - CSS query selector
+   * @returns {object} DOM object matching the query.
+   */
+  function qs(query) {
+    return document.querySelector(query);
   }
 })();
