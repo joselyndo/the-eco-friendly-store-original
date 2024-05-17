@@ -10,8 +10,6 @@ app.use(express.urlencoded({ extended: true })); // built-in middleware
 app.use(express.json()); // built-in middleware
 // for multipart/form-data (required with FormData)
 app.use(multer().none()); // requires the "multer" module
-app.use(express.static('public'));
-
 
 // tells the code to serve static files in a directory called 'public'
 app.use(express.static('public'));
