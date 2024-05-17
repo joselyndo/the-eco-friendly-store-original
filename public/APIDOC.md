@@ -20,6 +20,7 @@ Account successfully created.
 
 **Error Handling:**
 - 400 errors (all plain text):
+    - If any of the three parameters (username, email, password) are not given, returns error with response: "Missing parameters. Please try again."
     - If there is already a user with the given username, returns error with response: "There is already a user with the username [inputted username]. Please create a different username."
 - 500 errors (all plain text):
     - If an error occured on the server, returns error with the response: “An error occurred during account creation. Please try again later.”
@@ -44,6 +45,7 @@ Account successfully created.
 
 **Error Handling:**
 - 400 errors (all plain text):
+    - If any of the two parameters (username, password) are not given, returns error with response: "Missing parameters. Please try again."
     - If the password does not match the actual password for the given username, returns error with response: “Incorrect username or password. Please try again.”
 - 500 errors (all plain text):
     - If an error occured on the server, returns error with the response: “An error occurred during account login. Please try again later.”
@@ -111,8 +113,6 @@ There are no results for the given criteria
 **Example Request:** /product/paper-straws
 
 **Example Response:**
-*Fill in example response in the {}*
-
 ```
 {
     “name”: “Paper Straws”,
@@ -132,7 +132,7 @@ There are no results for the given criteria
 
 **Error Handling:**
 - 400 errors (all plain text):
-    - If the produce name is not in the database, returns error with response: “This product is not in the database.”
+    - If the produce name is not in the database, returns error with response: “Product not found.”
 - 500 errors (all plain text):
     - If an error occured on the server, returns error with the response: "An error occurred during information retrieval. Please try again later."
 
@@ -144,41 +144,51 @@ There are no results for the given criteria
 
 **Returned Data Format**: Plain Text
 
-**Description:** *Fill in description*
+**Description:** Returns a list of recommended products for the logged in user
 
-**Example Request:** *Fill in example request*
+**Example Request:** /recommendations with POST parameter “username=user1”
 
 **Example Response:**
-*Fill in example response in the ticks*
-
 ```
+bag2
+bag3
+bag4
+bag5
+bag6
 
 ```
 
 **Error Handling:**
-*Fill in an example of the error handling*
+- 400 errors (all plain text):
+    - If the user with username is not logged in, returns error with response: "User not logged in. Please log in to see recommendations."
+- 500 errors (all plain text):
+    - If an error occured on the server, returns error with the response: “An error occurred. Please try again later.”
 
 
 ## Get ads
-**Request Format:** *Fill in example request format, i.e. the path*
+**Request Format:** /ad/:quantity
 
-**Request Type:** *Fill in request type*
+**Request Type:** GET
 
 **Returned Data Format**: Plain Text
 
-**Description:** *Fill in description*
+**Description:** Retrieves a certain number of ads
 
-**Example Request:** *Fill in example request*
+**Example Request:** /ad/4
 
 **Example Response:**
-*Fill in example response in the ticks*
-
 ```
-
+img/ad1.png
+img/ad2.png
+img/ad7.png
+img/ad4.png
 ```
 
 **Error Handling:**
-*Fill in an example of the error handling*
+- 400 errors (all plain text):
+    - If the user passes in quantity = 0, returns error with response: "Invalid quantity."
+- 500 errors (all plain text):
+    - If an error occured on the server, returns error with the response: “An error occurred during retrieval. Please try again later.”
 
 
 ## *Fill in Endpoint 7 Title*
