@@ -94,10 +94,14 @@ header div {
   align-items: center;
 }
 
-header img {
-  width: 400px;
-  border: #D5B0AC 2px solid;
+header a {
+  width: 35%;
   margin: 5px;
+}
+
+header a img {
+  width: 100%;
+  border: #D5B0AC 2px solid;
 }
 
 main img {
@@ -120,7 +124,7 @@ section a {
 }
 
 .cart {
-
+  width: 7%;
 }
 
 #checkout {
