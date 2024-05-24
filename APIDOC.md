@@ -70,7 +70,7 @@ POST request: /log-in
     - If an error occurred on the server, returns an error with the response: "An error occurred during account login. Please try again later."
 
 ## *Buy item*
-**Request Format:** /buy/:item/:quantity
+**Request Format:** /buy
 
 **Request Type:** POST
 **Parameters:** "item" (String), "quantity" (int)

@@ -78,8 +78,8 @@ app.post("/log-in", async function(req, res) {
 });
 
 app.post("/buy/", async function (req, res) {
-  let item = req.query["item"]; // To implement: List of items for checkout
-  let quantity = req.query["quantity"];
+  let item = req.body["item"]; // To implement: List of items for checkout
+  let quantity = req.body["quantity"];
 
   if (typeof item === 'undefined' || typeof quantity === 'undefined' || quantity <= 0) {
     res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
@@ -90,13 +90,33 @@ app.post("/buy/", async function (req, res) {
     let priceQuery = "SELECT price FROM products WHERE item = ?";
     let price = await db.get(priceQuery, [item]);
     let query = "UPDATE users SET wallet = wallet - ? WHERE user = ?";
-    await db.run(query, [price, USER_PLACEHOLDER]); // Send error if user does not have enough money
-
+    await db.run(query, [price * quantity, USER_PLACEHOLDER]); // Send error if user does not have enough money
+    await db.close();
     res.send(quantity + " "  + item + "s were successfully purchased.");
   } catch {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
-})
+});
+
+app.post("/addToCart", async function (req, res) {
+  let item = req.body["item"];
+  let quantity = req.body["quantity"];
+
+  if (typeof item === 'undefined' || typeof quantity === 'undefined' || quantity <= 0) {
+    res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+  }
+
+  try {
+    let db = await getDBConnection();
+    let query = "UPDATE users SET cart = ? WHERE user = ?";
+    let toAdd = {item: quantity};
+    await db.run(query, [toAdd, USER_PLACEHOLDER]); // Send error if user does not have enough money
+    await db.close();
+    res.send(quantity + " "  + item + "s were successfully added to your cart.");
+  } catch (error) {
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+});
 
 app.get("/products", async function(req, res) {
   let productName = req.query["product-name"];
