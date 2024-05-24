@@ -77,6 +77,13 @@ app.post("/log-in", async function(req, res) {
   }
 });
 
+app.get("/products", async function(req, res) {
+  let productName = req.query["product-name"];
+  let productPrice = req.query.price;
+  let productType = req.query["product-type"];
+  let productRating = req.query["rating"];
+});
+
 /**
  * Establishes a database connection to the database and returns the database object.
  * Any errors that occur should be caught in the function that calls this one.
