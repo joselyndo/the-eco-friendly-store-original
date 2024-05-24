@@ -229,6 +229,36 @@ Reusable tote bag
 - 500 Internal Server Error:
     - If an error occurred on the server, returns an error with the response: "An error occurred during account login. Please try again later."
 
+## Get best sellers
+**Request Format:** /best-sellers/
+
+**Request Type:** GET
+**Query:** "column" (Column to order by) (String), "amount" (int)
+
+**Returned Data Format**: JSON
+
+**Description:** Retrieves products that are most popular
+
+**Example Request:** /best-sellers/ Query: "rating", 5
+
+**Example Response:**
+
+```
+{
+    "Compostable trash bags": 5.0
+    "Reusable metal straws": 4.9
+    "Paper straws": 4.8
+    "Recycled notebook": 4.6
+    "Reusable shopping bag": 4.6
+}
+```
+
+**Error Handling:**
+- 400 Bad Request Error:
+    - If the given column to sort by does not exist within the database, returns an error with the response: "Invalid or missing parameters. Try again."
+- 500 Internal Server Error:
+    - If an error occurred on the server, returns an error with the response: "An error occurred during account login. Please try again later."
+
 ## Get product information
 **Request Format:** /detail/:item
 
@@ -259,6 +289,13 @@ Reusable tote bag
     ]
 }
 ```
+
+**Error Handling:**
+- 404 Not Found (plain text):
+    - If the product name is not in the database, returns an error with response: “Product not found.”
+
+- 500 Internal Server Error (plain text):
+    - If an error occured on the server, returns an error with the response: "An error occurred during information retrieval. Please try again later."
 
 **Error Handling:**
 - 404 Not Found (plain text):
