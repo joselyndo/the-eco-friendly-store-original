@@ -87,10 +87,15 @@ app.post("/buy/", async function (req, res) {
 
   try {
     let db = await getDBConnection();
+
+    let exist = await db.get("SELECT id FROM products WHERE item = ?", [item]);
+    if (!exist) {
+      return res.status(INVALID_PARAM_ERROR).send("Product does not exist. Please try again");
+    }
     let priceQuery = "SELECT price FROM products WHERE item = ?";
     let price = await db.get(priceQuery, [item]);
-    let query = "UPDATE users SET balance = balance - ? WHERE user = ?";
-    await db.run(query, [price * quantity, USER_PLACEHOLDER]); // Send error if user does not have enough money
+    let query = "UPDATE users SET balance = balance - ? WHERE user_id = ?";
+    await db.run(query, [price * quantity, USER_ID_PLACEHOLDER]); // Send error if user does not have enough money
     await db.close();
     res.send(quantity + " "  + item + "s were successfully purchased.");
   } catch {
@@ -108,9 +113,14 @@ app.post("/addToCart", async function (req, res) {
 
   try {
     let db = await getDBConnection();
-    let query = "UPDATE users SET cart = ? WHERE user = ?";
+
+    let exist = await db.get("SELECT id FROM products WHERE item = ?", [item]);
+    if (!exist) {
+      return res.status(INVALID_PARAM_ERROR).send("Product does not exist. Please try again");
+    }
+    let query = "UPDATE users SET cart = ? WHERE user_id = ?";
     let toAdd = {item: quantity};
-    await db.run(query, [toAdd, USER_PLACEHOLDER]); // Send error if user does not have enough money
+    await db.run(query, [toAdd, USER_ID_PLACEHOLDER]); // Send error if user does not have enough money
     await db.close();
     res.send(quantity + " "  + item + "s were successfully added to your cart.");
   } catch (error) {
@@ -131,6 +141,74 @@ app.get("/products", async function(req, res) {
     } else {
       // Handle the case where only one to all query parameters are set
     }
+  } catch (error) {
+    res.type("type");
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+});
+
+app.get("/detail/:item", async function (req, res) {
+  let item = req.param["item"];
+
+  try {
+    let db = await getDBConnection();
+    let rating = await db.get("SELECT rating FROM products WHERE item = ?", [item]);
+    let description = await db.get("SELECT description FROM products WHERE item = ?", [item]);
+    let reviews = await db.get("SELECT reviews FROM products WHERE item = ?", [item]);
+    res.send({
+      "item": item,
+      "rating": rating,
+      "description": description,
+      "reviews": reviews
+    })
+  } catch {
+    res.type("type");
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+});
+
+app.get("/cart", async function (req, res) {
+  try {
+    let db = await getDBConnection();
+    let query = "SELECT cart FROM users WHERE user_id = ?";
+    let result = await db.get(query, [USER_ID_PLACEHOLDER]);
+    res.send(result);
+  } catch (error) {
+    res.type("type");
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+});
+
+app.post("/best-sellers", async function (req, res) {
+  let orderBy = "rating"; // Default filter is rating for now
+  let limit = 5; // Default 5 products
+
+  try {
+    let db = await getDBConnection();
+    let query = "SELECT items FROM products ORDER BY ? LIMIT ?";
+    let result = await db.all(query, [orderBy, limit]);
+    res.send(result);
+  } catch (error) {
+    res.type("type");
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+});
+
+app.post("/feedback", async function (req, res) {
+  let username = req.body.username;
+  let rating = req.body.rating;
+  let review = req.body.review;
+  let date = req.body.date;
+
+  if (!(username && rating && review && date)) {
+    res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+  }
+
+  try {
+    let db = await getDBConnection();
+    let query = "UPDATE users SET reviews = ? WHERE user_id = ?";
+    await db.run(query, [REVIEW_PLACEHOLDER, USER_ID_PLACEHOLDER]);
+    res.send("Review successfully submitted");
   } catch (error) {
     res.type("type");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);

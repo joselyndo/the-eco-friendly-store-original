@@ -232,14 +232,13 @@ Reusable tote bag
 ## Get best sellers
 **Request Format:** /best-sellers/
 
-**Request Type:** GET
-**Query:** "column" (Column to order by) (String), "amount" (int)
+**Request Type:** POST
 
 **Returned Data Format**: JSON
 
-**Description:** Retrieves products that are most popular
+**Description:** Retrieves products with the highest rating / popularity
 
-**Example Request:** /best-sellers/ Query: "rating", 5
+**Example Request:** /best-sellers/
 
 **Example Response:**
 
@@ -277,10 +276,10 @@ Reusable tote bag
 {
     “name”: “Paper Straws”,
     “rating”: 5,
-    “image”: “img/placeholder-product.png”,
     “description”: “Paper straws are eco-friendly.”,
+    <!-- “image”: “img/placeholder-product.png”,
     “dimensions”:  “0.4 in x 0.4 in x 6 in”,
-    “materials”: “paper”,
+    “materials”: “paper”, -->
     "reviews": [
         “review1”,
         “review2”,
