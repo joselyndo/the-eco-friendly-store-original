@@ -78,7 +78,7 @@ app.post("/log-in", async function(req, res) {
 });
 
 app.post("/buy/", async function (req, res) {
-  let item = req.query["item"];
+  let item = req.query["item"]; // To implement: List of items for checkout
   let quantity = req.query["quantity"];
 
   if (typeof item === 'undefined' || typeof quantity === 'undefined' || quantity <= 0) {
@@ -90,7 +90,7 @@ app.post("/buy/", async function (req, res) {
     let priceQuery = "SELECT price FROM products WHERE item = ?";
     let price = await db.get(priceQuery, [item]);
     let query = "UPDATE users SET wallet = wallet - ? WHERE user = ?";
-    await db.run(query, [price, USER_PLACEHOLDER]);
+    await db.run(query, [price, USER_PLACEHOLDER]); // Send error if user does not have enough money
 
     res.send(quantity + " "  + item + "s were successfully purchased.");
   } catch {
