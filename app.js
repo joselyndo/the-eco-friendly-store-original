@@ -57,7 +57,7 @@ app.post("/log-in", async function(req, res) {
     if (username && password) {
       let db = await getDBConnection();
       let getUserQuery = "SELECT username, password FROM users WHERE username = ?";
-      let result = await db.get(getUserQuery, username);
+      let result = await db.get(getUserQuery, [username]);
       await db.close();
       if (result === undefined) {
         res.status(INVALID_PARAM_ERROR).send("Incorrect username or password. Please try again.");
@@ -76,6 +76,27 @@ app.post("/log-in", async function(req, res) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
+
+app.post("/buy/", async function (req, res) {
+  let item = req.query["item"];
+  let quantity = req.query["quantity"];
+
+  if (typeof item === 'undefined' || typeof quantity === 'undefined' || quantity <= 0) {
+    res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+  }
+
+  try {
+    let db = await getDBConnection();
+    let priceQuery = "SELECT price FROM products WHERE item = ?";
+    let price = await db.get(priceQuery, [item]);
+    let query = "UPDATE users SET wallet = wallet - ? WHERE user = ?";
+    await db.run(query, [price, USER_PLACEHOLDER]);
+
+    res.send(quantity + " "  + item + "s were successfully purchased.";
+  } catch {
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+})
 
 /**
  * Establishes a database connection to the database and returns the database object.
