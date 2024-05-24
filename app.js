@@ -81,7 +81,19 @@ app.get("/products", async function(req, res) {
   let productName = req.query["product-name"];
   let productPrice = req.query.price;
   let productType = req.query["product-type"];
-  let productRating = req.query["rating"];
+  let productRating = req.query.rating;
+  try {
+    if (!(productName && productPrice && productType && productRating)) { // No query parameters are set
+      let genSearchQuery = "SELECT name, price, rating, stock FROM products;" // TODO: add image column
+      let db = await getDBConnection();
+      let results = await db.all(genSearchQuery); // send results or format it?
+    } else {
+      // Handle the case where only one to all query parameters are set
+    }
+  } catch (error) {
+    res.type("type");
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
 });
 
 /**
