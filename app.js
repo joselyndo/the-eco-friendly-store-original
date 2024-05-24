@@ -32,7 +32,8 @@ app.post("/create-account", async function(req, res) {
         await db.close();
         res.status(INVALID_PARAM_ERROR).send("Username taken. Please create a new username.");
       } else {
-        let addUserQuery = "INSERT INTO users(username, password, email) VALUES(?, ?, ?)";
+        let addUserQuery = "INSERT INTO users(username, password, email, created_date) " +
+                            "VALUES(?, ?, ?, DATE('now'))";
         db.run(addUserQuery, [username, email, password]);
         await db.close();
         res.send("Account successfully created.");
