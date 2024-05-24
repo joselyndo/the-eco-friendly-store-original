@@ -134,6 +134,7 @@ section a {
 }
 
 #best-sellers {
+  border: 1px solid black;
   display: flex;
   flex-direction: row;
   overflow: hidden;
