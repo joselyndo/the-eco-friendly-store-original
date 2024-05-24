@@ -89,7 +89,7 @@ app.post("/buy/", async function (req, res) {
     let db = await getDBConnection();
     let priceQuery = "SELECT price FROM products WHERE item = ?";
     let price = await db.get(priceQuery, [item]);
-    let query = "UPDATE users SET wallet = wallet - ? WHERE user = ?";
+    let query = "UPDATE users SET balance = balance - ? WHERE user = ?";
     await db.run(query, [price * quantity, USER_PLACEHOLDER]); // Send error if user does not have enough money
     await db.close();
     res.send(quantity + " "  + item + "s were successfully purchased.");
