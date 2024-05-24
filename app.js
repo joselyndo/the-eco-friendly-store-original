@@ -92,11 +92,18 @@ app.post("/buy/", async function (req, res) {
     let query = "UPDATE users SET wallet = wallet - ? WHERE user = ?";
     await db.run(query, [price, USER_PLACEHOLDER]);
 
-    res.send(quantity + " "  + item + "s were successfully purchased.";
+    res.send(quantity + " "  + item + "s were successfully purchased.");
   } catch {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 })
+
+app.get("/products", async function(req, res) {
+  let productName = req.query["product-name"];
+  let productPrice = req.query.price;
+  let productType = req.query["product-type"];
+  let productRating = req.query["rating"];
+});
 
 /**
  * Establishes a database connection to the database and returns the database object.
