@@ -18,6 +18,34 @@ const SERVER_ERROR = 500;
 const SERVER_ERROR_MSG = "An error occurred on the server. Try again later.";
 const PORT_NUM = 8000
 
+app.post("/create-account", async function(req, res) {
+  try {
+    let username = req.body.username;
+    let email = req.body.email;
+    let password = req.body.password;
+
+    res.type("text");
+    if (username && email && password) {
+      let db = await getDBConnection();
+      let result = db.get("SELECT username FROM store;");
+      if (result === undefined) {
+        await db.close();
+        res.status(INVALID_PARAM_ERROR).send("Username taken. Please create a new username.");
+      } else {
+        let addUserQuery = "INSERT INTO users(username, password, email) VALUES(?, ?, ?)";
+        db.run(addUserQuery, [username, email, password]);
+        await db.close();
+        res.send("Account successfully created.");
+      }
+    } else {
+      await db.close();
+      res.status(INVALID_PARAM_ERROR).send("Missing parameters. Please try again.");
+    }
+  } catch (error) {
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+});
+
 /**
  * Establishes a database connection to the database and returns the database object.
  * Any errors that occur should be caught in the function that calls this one.
@@ -25,7 +53,7 @@ const PORT_NUM = 8000
  */
 async function getDBConnection() {
   const db = await sqlite.open({
-    filename: 'yipper.db',
+    filename: 'store.db',
     driver: sqlite3.Database
   });
 
