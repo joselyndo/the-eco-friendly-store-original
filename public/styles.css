@@ -297,3 +297,8 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+
+.search-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -31,6 +31,14 @@
     getDeal();
     getAds();
     displayProductsOnHome();
+    qs(".search-entry").addEventListener("input", function() {
+      if (qs(".search-entry").value.trim() !== "") {
+        qs(".search-button").disabled = false;
+      } else {
+        qs(".search-button").disabled = true;
+      }
+    });
+    qs(".search-button").addEventListener("click", searchButton);
   }
 
   /**
@@ -92,6 +100,10 @@
 
       productsContainer.appendChild();
     }
+  }
+
+  function searchButton() {
+
   }
 
   /**

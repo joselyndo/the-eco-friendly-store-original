@@ -30,6 +30,14 @@
       searchForProductName();
     });
     id("filter-button").addEventListener("click", filterProducts);
+    qs(".search-entry").addEventListener("input", function() {
+      if (qs(".search-entry").value.trim() !== "") {
+        qs(".search-button").disabled = false;
+      } else {
+        qs(".search-button").disabled = true;
+      }
+    });
+    qs(".search-button").addEventListener("click", searchButton);
   }
 
   /**
@@ -106,6 +114,10 @@
     } catch (error) {
       handleQueryError(qs("#product-page section"));
     }
+  }
+
+  function searchButton() {
+
   }
 
   /**
