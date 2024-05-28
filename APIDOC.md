@@ -140,29 +140,45 @@ POST request: /buy
 - 500 Internal Server Error:
     - If an error occured on the server, returns an error with the response: "An error occured when attempting to retrieve the cart. Please try again later."
 
-## Get products
-**Request Format:** /products?item
+## Search products
+**Request Format:** /products/search?item
 
 **Request Type:** GET
 **Query:** "item", "type", "price-filter"
 
 **Returned Data Format**: Plain text
 
-**Description:** Retrieves all products or retrieves certain products with a specified product name and/or filters
+**Description:** Retrieves all products
 
-**Example Request 1:** /products/
+**Example Request:** /products/
 
-**Example Response 1:**
+**Example Response:**
 
 ```
-Compostable trash bags
-Reusable metal straws
-Paper straws
-Recycled notebook
-Reusable shopping bag
-Reusable tote bag
-Stainless steel water bottle
+[
+    {"item": "Compostable trash bags"}
+    {"item": "Reusable metal straws"}
+    {"item": "Paper straws"}
+    {"item": "Recycled notebook"}
+    {"item": "Reusable shopping bag"}
+    {"item": "Reusable tote bag"}
+    {"item": "Stainless steel water bottle"}
+]
 ```
+
+**Error Handling:**
+- 500 Internal Server Error:
+    - If an error occurred on the server, returns an error with the response: "An error occurred during product retrieval. Please try again later."
+
+## Search products
+**Request Format:** /products/search?item
+
+**Request Type:** GET
+**Query:** "item", "type", "price-filter"
+
+**Returned Data Format**: Plain text
+
+**Description:** Retrieves products with a specified product name and/or filters
 
 **Example Request 2:** /products?name=reusable
 
@@ -193,7 +209,7 @@ Reusable tote bag
 
 **Error Handling:**
 - 500 Internal Server Error:
-    - If an error occurred on the server, returns an error with the response: "An error occurred during account login. Please try again later."
+    - If an error occurred on the server, returns an error with the response: "An error occurred during product search. Please try again later."
 
 ## Get best sellers
 **Request Format:** /best-sellers/

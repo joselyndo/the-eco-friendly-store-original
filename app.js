@@ -103,14 +103,25 @@ app.post("/buy/", async function (req, res) {
   }
 });
 
-app.get("/products", async function(req, res) {
+app.get("/products", async function (req, res) {
+  try {
+    let db = await getDBConnection();
+    let rows = await db.all("SELECT item FROM products");
+    res.send(rows);
+
+  } catch (error) {
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+});
+
+app.get("/products/search", async function(req, res) {
   let productName = req.query["product-name"];
   let productPrice = req.query.price;
   let productType = req.query["product-type"];
   let productRating = req.query.rating;
   try {
     if (!(productName && productPrice && productType && productRating)) { // No query parameters are set
-      let genSearchQuery = "SELECT name, price, rating, stock FROM products;" // TODO: add image column
+      let genSearchQuery = "SELECT item, image, price, rating, stock FROM products;" // TODO: add image column
       let db = await getDBConnection();
       let results = await db.all(genSearchQuery); // send results or format it?
     } else {

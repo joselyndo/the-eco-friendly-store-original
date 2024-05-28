@@ -26,6 +26,7 @@
     getCart();
   }
 
+  // Endpoint test for /cart (Working)
   async function getCart() {
     let body = new FormData();
     let cart = window.localStorage.getItem("cart");
