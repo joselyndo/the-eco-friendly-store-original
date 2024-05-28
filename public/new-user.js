@@ -58,16 +58,20 @@
     parent.insertBefore(errorMessage, qs("#create-user h2"));
   }
 
-/**
- * Displays ads onto the home page
- */
+  /**
+   * Displays ads onto the home page
+   */
   function getAds() {
-    let adImages = qsa("main > img");
-    for (let img = 0; img < adImages.length; img++) {
-      let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
-      adImages[img].src = IMG_ADS_DIR + randNum + ADS_ENDING;
-      adImages[img].alt = "ad " + randNum;
-    }
+    let ad1 = gen("img");
+    let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
+    ad1.src = IMG_ADS_DIR + randNum + ADS_ENDING;
+    ad1.alt = "ad " + randNum;
+    randNum = Math.floor(Math.random() * NUM_ADS) + 1;
+    let ad2 = gen("img");
+    ad2.src = IMG_ADS_DIR + randNum + ADS_ENDING;
+    ad2.alt = "ad " + randNum;
+    qs("main").prepend(ad1);
+    qs("main").appendChild(ad2);
   }
 
   /**

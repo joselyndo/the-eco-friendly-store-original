@@ -23,20 +23,46 @@
    */
   function init() {
     getAds();
+    getCart();
+  }
+
+  async function getCart() {
+    let body = new FormData();
+    let cart = window.localStorage.getItem("cart");
+
+    if (!cart) {
+      cart = [];
+    } else {
+      cart = JSON.parse(cart);
+    }
+
+    body.append("cart", cart);
+
+    try {
+      let response = await fetch("/cart", {method: "POST", body: body});
+      statusCheck(response);
+      let result = await response.text();
+      console.log(result);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   /**
    * Displays ads onto the home page
    */
   function getAds() {
-    let adImages = qsa("main > img");
-    for (let img = 0; img < adImages.length; img++) {
-      let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
-      adImages[img].src = IMG_ADS_DIR + randNum + ADS_ENDING;
-      adImages[img].alt = "ad " + randNum;
-    }
+    let ad1 = gen("img");
+    let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
+    ad1.src = IMG_ADS_DIR + randNum + ADS_ENDING;
+    ad1.alt = "ad " + randNum;
+    randNum = Math.floor(Math.random() * NUM_ADS) + 1;
+    let ad2 = gen("img");
+    ad2.src = IMG_ADS_DIR + randNum + ADS_ENDING;
+    ad2.alt = "ad " + randNum;
+    qs("main").prepend(ad1);
+    qs("main").appendChild(ad2);
   }
-
   /**
    * Helper function to return the response's result text if successful, otherwise
    * returns the rejected Promise result with an error status and corresponding text

@@ -103,30 +103,31 @@ app.post("/buy/", async function (req, res) {
   }
 });
 
-app.post("/addToCart", async function (req, res) {
-  let item = req.body["item"];
-  let quantity = req.body["quantity"];
+// Using local storage to store cart items instead
+// app.post("/addToCart", async function (req, res) {
+//   let item = req.body["item"];
+//   let quantity = req.body["quantity"];
 
-  if (typeof item === 'undefined' || typeof quantity === 'undefined' || quantity <= 0) {
-    res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
-  }
+//   if (typeof item === 'undefined' || typeof quantity === 'undefined' || quantity <= 0) {
+//     res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+//   }
 
-  try {
-    let db = await getDBConnection();
+//   try {
+//     let db = await getDBConnection();
 
-    let exist = await db.get("SELECT id FROM products WHERE item = ?", [item]);
-    if (!exist) {
-      return res.status(INVALID_PARAM_ERROR).send("Product does not exist. Please try again");
-    }
-    let query = "UPDATE users SET cart = ? WHERE user_id = ?";
-    let toAdd = {item: quantity};
-    await db.run(query, [toAdd, USER_ID_PLACEHOLDER]); // Send error if user does not have enough money
-    await db.close();
-    res.send(quantity + " "  + item + "s were successfully added to your cart.");
-  } catch (error) {
-    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
-  }
-});
+//     let exist = await db.get("SELECT id FROM products WHERE item = ?", [item]);
+//     if (!exist) {
+//       return res.status(INVALID_PARAM_ERROR).send("Product does not exist. Please try again");
+//     }
+//     let query = "UPDATE users SET cart = ? WHERE user_id = ?";
+//     let toAdd = {item: quantity};
+//     await db.run(query, [toAdd, USER_ID_PLACEHOLDER]); // Send error if user does not have enough money
+//     await db.close();
+//     res.send(quantity + " "  + item + "s were successfully added to your cart.");
+//   } catch (error) {
+//     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+//   }
+// });
 
 app.get("/products", async function(req, res) {
   let productName = req.query["product-name"];
@@ -167,12 +168,30 @@ app.get("/detail/:item", async function (req, res) {
   }
 });
 
-app.get("/cart", async function (req, res) {
+app.post("/cart", async function (req, res) {
+  let items = req.body.cart;
   try {
     let db = await getDBConnection();
-    let query = "SELECT cart FROM users WHERE user_id = ?";
-    let result = await db.get(query, [USER_ID_PLACEHOLDER]);
+    let result = {};
+
+    for (let i = 0; i < items.length; i++) {
+      let item = await db.get("SELECT id FROM products WHERE item = ?", [items[i]]);
+      if (!item) {
+        res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+      }
+
+      let rating = await db.get("SELECT rating FROM products WHERE item = ?", [item])
+      let description = await db.get("SELECT description FROM products WHERE item = ?", [item])
+      let image = await db.get("SELECT image FROM products WHERE item = ?", [item])
+
+      result["item"] = {
+        "description": description,
+        "rating": rating,
+        "image": image
+      }
+    }
     res.send(result);
+
   } catch (error) {
     res.type("type");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
