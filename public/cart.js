@@ -44,6 +44,8 @@
       let result = await response.text();
       console.log(result);
     } catch (error) {
+      // Clears cart cache
+      window.localStorage.setItem("cart", "");
       console.error(error);
     }
   }

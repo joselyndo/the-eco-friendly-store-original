@@ -102,36 +102,6 @@ POST request: /buy
     - If an error occured on the server, returns an error with the response: "An error occured during the buy process. Please try again
     later."
 
-## Add to cart
-**Request Format:** /addToCart
-
-**Request Type:** POST
-**Parameters:** "item" (String), "quantity" (int)
-
-**Returned Data Format**: Plain Text
-
-**Description:** Adds an item to the user's cart for future checkout.
-
-**Example Request:**
-POST request: /addToCart
-{
-    "item": "paper straw",
-    "quantity": 5
-}
-
-**Example Response:**
-
-```
-"5 paper straws were successfully added to the cart."
-```
-
-**Error Handling:**
-- 400 Bad Request Error:
-    - If the product does not exist within the database, returns an error with response: "Product does not exist. Please try again."
-    - If the quantity exceeds stock, returns an error with response: "Not enough items in stock. Please try again."
-
-- 500 Internal Server Error:
-    - If an error occured on the server, returns an error with the response: "An error occured when attempting to add to cart. Please try again later."
 
 ## Retrieve cart
 **Request Format:** /cart
@@ -147,30 +117,26 @@ POST request: /addToCart
 **Example Response:**
 
 ```
-{
-    “item1”: {
-        “name”: “Paper Straws”,
-        “rating”: 5,
-        “image”: “img/placeholder-product.png”,
-        “description”: “Paper straws are eco-friendly.”,
-        “dimensions”:  “0.4 in x 0.4 in x 6 in”,
-        “materials”: “paper”,
-        “feedback”: [“Feedback1”, “feedback2”]
-    },
-    “item2”: {
-        “name”: “Paper Straws”,
-        “rating”: 5,
-        “image”: “img/placeholder-product.png”,
-        “description”: “Paper straws are eco-friendly.”,
-        “dimensions”:  “0.4 in x 0.4 in x 6 in”,
-        “materials”: “paper”,
-        “feedback”: [“Feedback1”, “feedback2”]
-    }
-}
+[
+  {
+    "item": "item1",
+    "rating": 4.5,
+    "description": "Description 1",
+    "image": "image1.png"
+  },
+  {
+    "item": "item2",
+    "rating": 4.0,
+    "description": "Description 2",
+    "image": "image2.png"
+  }
+]
 
 ```
 
 **Error Handling:**
+- 400 Bad Request Error:
+    - If the product does not exist within the database, returns an error with the response: "Invalid parameters. Please try again."
 - 500 Internal Server Error:
     - If an error occured on the server, returns an error with the response: "An error occured when attempting to retrieve the cart. Please try again later."
 
@@ -232,7 +198,7 @@ Reusable tote bag
 ## Get best sellers
 **Request Format:** /best-sellers/
 
-**Request Type:** POST
+**Request Type:** GET
 
 **Returned Data Format**: JSON
 
@@ -243,13 +209,14 @@ Reusable tote bag
 **Example Response:**
 
 ```
-{
-    "Compostable trash bags": 5.0
-    "Reusable metal straws": 4.9
-    "Paper straws": 4.8
-    "Recycled notebook": 4.6
-    "Reusable shopping bag": 4.6
-}
+[
+    {"item": "Compostable trash bags", "rating": 5.0},
+    {"item": "Reusable metal straws", "rating": 4.9},
+    {"item": "Paper straws", "rating": 4.8},
+    {"item": "Recycled notebook", "rating": 4.6},
+    {"item": "Reusable shopping bag", "rating": 4.6},
+
+]
 ```
 
 **Error Handling:**
@@ -369,7 +336,7 @@ img/ad4.png
 **Request Format:** /feedback
 
 **Request Type:** POST
-**Parameters:** "username" (String)
+**Parameters:** "username" (String), "review" (String), "rating" (double), "item" (String)
 
 **Returned Data Format**: Plain text
 

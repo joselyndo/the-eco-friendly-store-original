@@ -103,32 +103,6 @@ app.post("/buy/", async function (req, res) {
   }
 });
 
-// Using local storage to store cart items instead
-// app.post("/addToCart", async function (req, res) {
-//   let item = req.body["item"];
-//   let quantity = req.body["quantity"];
-
-//   if (typeof item === 'undefined' || typeof quantity === 'undefined' || quantity <= 0) {
-//     res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
-//   }
-
-//   try {
-//     let db = await getDBConnection();
-
-//     let exist = await db.get("SELECT id FROM products WHERE item = ?", [item]);
-//     if (!exist) {
-//       return res.status(INVALID_PARAM_ERROR).send("Product does not exist. Please try again");
-//     }
-//     let query = "UPDATE users SET cart = ? WHERE user_id = ?";
-//     let toAdd = {item: quantity};
-//     await db.run(query, [toAdd, USER_ID_PLACEHOLDER]); // Send error if user does not have enough money
-//     await db.close();
-//     res.send(quantity + " "  + item + "s were successfully added to your cart.");
-//   } catch (error) {
-//     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
-//   }
-// });
-
 app.get("/products", async function(req, res) {
   let productName = req.query["product-name"];
   let productPrice = req.query.price;
@@ -172,23 +146,17 @@ app.post("/cart", async function (req, res) {
   let items = req.body.cart;
   try {
     let db = await getDBConnection();
-    let result = {};
+    let result = [];
 
     for (let i = 0; i < items.length; i++) {
       let item = await db.get("SELECT id FROM products WHERE item = ?", [items[i]]);
+
       if (!item) {
         res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
       }
 
-      let rating = await db.get("SELECT rating FROM products WHERE item = ?", [item])
-      let description = await db.get("SELECT description FROM products WHERE item = ?", [item])
-      let image = await db.get("SELECT image FROM products WHERE item = ?", [item])
-
-      result["item"] = {
-        "description": description,
-        "rating": rating,
-        "image": image
-      }
+      let row = await db.all("SELECT item, rating, description, image FROM products WHERE item = ?", [item]);
+      result.push(row);
     }
     res.send(result);
 
@@ -198,38 +166,43 @@ app.post("/cart", async function (req, res) {
   }
 });
 
-app.post("/best-sellers", async function (req, res) {
+app.get("/best-sellers", async function (req, res) {
   let orderBy = "rating"; // Default filter is rating for now
   let limit = 5; // Default 5 products
 
   try {
     let db = await getDBConnection();
-    let query = "SELECT items FROM products ORDER BY ? LIMIT ?";
-    let result = await db.all(query, [orderBy, limit]);
+    let query = "SELECT items, ratings FROM products ORDER BY orderBy LIMIT 5";
+    let result = await db.all(query);
     res.send(result);
   } catch (error) {
-    res.type("type");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
 
 app.post("/feedback", async function (req, res) {
+  let item = req.body.item;
   let username = req.body.username;
   let rating = req.body.rating;
   let review = req.body.review;
-  let date = req.body.date;
 
-  if (!(username && rating && review && date)) {
+  if (!(username && rating && review)) {
     res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+  }
+
+  let feedback = {
+    "username": username,
+    "date": "ToDo",
+    "review": review,
+    "rating": rating
   }
 
   try {
     let db = await getDBConnection();
-    let query = "UPDATE users SET reviews = ? WHERE user_id = ?";
-    await db.run(query, [REVIEW_PLACEHOLDER, USER_ID_PLACEHOLDER]);
+    let query = "UPDATE products SET reviews = ? WHERE item = ?";
+    await db.run(query, [JSON.stringify(feedback), item]);
     res.send("Review successfully submitted");
   } catch (error) {
-    res.type("type");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
