@@ -184,6 +184,10 @@ article {
   padding: 3px;
 }
 
+#promo img {
+  border: solid 2px #A6866A;
+}
+
 #best-sellers img {
   height: 150px;
   width: 150px;

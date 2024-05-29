@@ -11,12 +11,12 @@
 "use strict";
 
 (function() {
-  const DAYS_OF_WEEK = [
-    "sunday", "monday", "tuesday", "wednesday",
-    "thursday", "friday", "saturday"
-  ];
-  const IMG_DEALS_DIR = "img/deals/";
-  const DEAL_IMG_ENDING = "-deal-image.png";
+  // const DAYS_OF_WEEK = [
+  //   "sunday", "monday", "tuesday", "wednesday",
+  //   "thursday", "friday", "saturday"
+  // ];
+  // const IMG_DEALS_DIR = "img/deals/";
+  // const DEAL_IMG_ENDING = "-deal-image.png";
   const IMG_ADS_DIR = "img/ads/";
   const ADS_ENDING = "-ad.png";
   const NUM_ADS = 5;
@@ -28,7 +28,7 @@
    * Initializes the home page
    */
   function init() {
-    getDeal();
+    // getDeal();
     getAds();
     displayProductsOnHome();
 
@@ -49,12 +49,12 @@
   /**
    * Displays a deal onto the home page
    */
-  function getDeal() {
-    let today = new Date();
-    let dealImg = qs("#promo img");
-    dealImg.src = IMG_DEALS_DIR + DAYS_OF_WEEK[today.getDay()] + DEAL_IMG_ENDING;
-    dealImg.alt = DAYS_OF_WEEK[today.getDay()] + " deal";
-  }
+  // function getDeal() {
+    // let today = new Date();
+    // let dealImg = qs("#promo img");
+    // dealImg.src = IMG_DEALS_DIR + DAYS_OF_WEEK[today.getDay()] + DEAL_IMG_ENDING;
+    // dealImg.alt = DAYS_OF_WEEK[today.getDay()] + " deal";
+  // }
 
   /**
    * Displays ads onto the home page
