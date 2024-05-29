@@ -54,7 +54,7 @@ nav {
 }
 
 form input[type="submit"], .nav-link {
-  color: #D5B0AC;
+  color: #A6866A;
   background-color: #DFF8EB;
   padding: 12pt;
   border-radius: 25pt;
@@ -101,7 +101,7 @@ header a {
 
 header a img {
   width: 100%;
-  border: #D5B0AC 2px solid;
+  border: #A6866A 2px solid;
 }
 
 main img {
