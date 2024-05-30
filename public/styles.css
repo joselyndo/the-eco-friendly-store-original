@@ -30,6 +30,7 @@ h3 {
 }
 
 header {
+  background-image: url("img/leaves.png");
   padding-bottom: 10px;
 }
 
@@ -79,10 +80,6 @@ h2, h3, h4 {
 
 header, footer {
   background-color: #0D750D;
-}
-
-header {
-  background-image: url("img/leaves.png");
 }
 
 footer, p, form label, form input[type="submit"], .nav-link, details {
@@ -203,6 +200,7 @@ article {
 }
 
 #promo img {
+  width: 82%;
   border: solid 2px #A6866A;
 }
 
@@ -256,10 +254,6 @@ article {
 
 #home p {
   width: 600px;
-}
-
-#promo img {
-  width: 82%;
 }
 
 #bulk {
