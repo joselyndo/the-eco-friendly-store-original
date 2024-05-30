@@ -64,17 +64,20 @@
 
     if (timeRemaining === 0) {
       location.assign("log-in.html");
-      msg += SECOND_STR + "s";
-    } else if (timeRemaining === 1) {
-      msg += SECOND_STR;
+      msg += SECOND_STR + "s.";
     } else {
-      msg += SECOND_STR + "s";
+      if (timeRemaining === 1) {
+        msg += SECOND_STR + ".";
+      } else {
+        msg += SECOND_STR + "s.";
+      }
+
+      setTimeout(function () {
+        countdown(timeRemaining - 1);
+      }, ONE_SECOND);
     }
 
     qs("#create-user p").textContent = msg;
-    setTimeout(function () {
-      countdown(timeRemaining - 1);
-    }, ONE_SECOND);
   }
 
   /**

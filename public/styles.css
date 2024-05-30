@@ -178,6 +178,16 @@ article {
   flex-direction: column;
 }
 
+#create-user, #log-in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#create-user form, #log-in form {
+  width: 325px;
+}
+
 #create-user form > section, #log-in form > section {
   display: flex;
   justify-content: flex-end;
