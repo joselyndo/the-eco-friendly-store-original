@@ -185,7 +185,7 @@ article {
 }
 
 #create-user form, #log-in form {
-  width: 325px;
+  width: 315px;
 }
 
 #create-user form > section, #log-in form > section {
@@ -315,4 +315,8 @@ button:hover {
 .search-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.hidden {
+  display: none;
 }
