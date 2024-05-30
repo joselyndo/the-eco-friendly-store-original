@@ -52,12 +52,15 @@
    * Adds a log in error to the webpage
    */
   function addLogInError() {
-    let errorMessage = gen("p");
-    errorMessage.textContent = "Error in submitting credentials. Please try again.";
-    errorMessage.classList.add("error");
-
     let parent = id("log-in");
-    parent.prepend(errorMessage);
+    let hasMessage = qs("#log-in p");
+
+    if (hasMessage === null) {
+      let errorMessage = gen("p");
+      errorMessage.textContent = "Error in submitting credentials. Please try again.";
+      errorMessage.classList.add("error");
+      parent.prepend(errorMessage);
+    }
   }
 
   /**
