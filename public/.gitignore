@@ -1,4 +1,4 @@
-node_modules
 .*
 !/.gitignore
 !/.gitlab-ci.yml
+node_modules
