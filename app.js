@@ -30,14 +30,15 @@ app.post("/create-account", async function(req, res) {
 
     if (username && email && password) {
       let db = await getDBConnection();
-      let result = db.get("SELECT username FROM store;");
-      if (result === undefined) {
+      let query = "SELECT username FROM users WHERE username = ?;";
+      let result = await db.get(query, username);
+      if (result !== undefined) {
         await db.close();
-        res.status(INVALID_PARAM_ERROR).send("Username taken. Please create a new username.");
+        res.status(INVALID_PARAM_ERROR).send("Username taken. Please create a different username.");
       } else {
-        let addUserQuery = "INSERT INTO users(username, password, email, created_date) " +
-                            "VALUES(?, ?, ?, DATE('now'));";
-        db.run(addUserQuery, [username, email, password]);
+        let addUserQuery = "INSERT INTO users(username, password, email, balance) " +
+                            "VALUES(?, ?, ?, 25);";
+        await db.run(addUserQuery, [username, email, password]);
         await db.close();
         res.send("Account successfully created.");
       }

@@ -11,10 +11,13 @@
 "use strict";
 
 (function() {
-  const NEW_ACC_ENDPOINT = "[new account endpoint]";
+  const NEW_ACC_ENDPOINT = "/create-account";
   const IMG_ADS_DIR = "img/ads/";
   const ADS_ENDING = "-ad.png";
   const NUM_ADS = 5;
+  const ONE_SECOND = 1000;
+  const WAIT_TIME = 10;
+  const SECOND_STR = " second";
 
   window.addEventListener("load", init);
 
@@ -40,27 +43,70 @@
         body: credentials
       });
       await statusCheck(res);
-      location.assign("my-account.html");
+      handleSuccess();
     } catch (error) {
       addAccountCreationError();
     }
   }
 
-  /**
-   * Adds an account creation error
-   */
-  function addAccountCreationError() {
-    let errorMessage = gen("p");
-    errorMessage.text = "Error in creating a new account. Please try again.";
-    errorMessage.classList.add("error");
+  /** Adds a sucessful account creation method which later redirects the user to the login screen*/
+  function handleSuccess() {
+    let successMsg = "Successful account creation! Redirecting to the login page in "
+                      + WAIT_TIME + SECOND_STR + "s";
+    addMessageToScreen(successMsg, false);
+    setTimeout(function () {
+      countdown(WAIT_TIME - 1);
+    }, ONE_SECOND);
+  }
 
-    let parent = id("create-user");
-    parent.insertBefore(errorMessage, qs("#create-user h2"));
+  function countdown(timeRemaining) {
+    let msg = "Successful account creation! Redirecting to the login page in " + timeRemaining;
+
+    if (timeRemaining === 0) {
+      location.assign("log-in.html");
+      msg += SECOND_STR + "s";
+    } else if (timeRemaining === 1) {
+      msg += SECOND_STR;
+    } else {
+      msg += SECOND_STR + "s";
+    }
+
+    qs("#create-user p").textContent = msg;
+    setTimeout(function () {
+      countdown(timeRemaining - 1);
+    }, ONE_SECOND);
   }
 
   /**
-   * Displays ads onto the home page
+   * Adds the given message at the top center of the create account section
+   * @param {String} message - the message to display onto the string
+   * @param {Boolean} isError - a Boolean symbolizing if the message represents an error
    */
+  function addMessageToScreen(message, isError) {
+    let messageElement = gen("p");
+    messageElement.textContent = message;
+
+    if (isError) {
+      messageElement.classList.add("error");
+    }
+
+    let hasMessage = qs("#create-user p");
+    let parent = id("create-user");
+
+    if (hasMessage) {
+      parent.replaceChild(hasMessage, messageElement);
+    } else {
+      parent.prepend(messageElement);
+    }
+  }
+
+  /** Adds an account creation error */
+  function addAccountCreationError() {
+    addMessageToScreen("Error in creating a new account. Please try again.", true);
+  }
+
+
+  /** Displays ads onto the home page */
   function getAds() {
     let ad1 = gen("img");
     let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
