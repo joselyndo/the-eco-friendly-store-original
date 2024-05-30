@@ -15,6 +15,7 @@ app.use(multer().none()); // requires the "multer" module
 
 const INVALID_PARAM_ERROR = 400;
 const MISSING_PARAM_MSG = "Missing parameters. Please try again.";
+const INCORRECT_LOG_IN = "Incorrect username or password. Please try again.";
 const SERVER_ERROR = 500;
 const SERVER_ERROR_MSG = "An error occurred on the server. Try again later.";
 const PORT_NUM = 8000
@@ -57,17 +58,12 @@ app.post("/log-in", async function(req, res) {
     if (username && password) {
       let db = await getDBConnection();
       let getUserQuery = "SELECT username, password FROM users WHERE username = ?";
-      let result = await db.get(getUserQuery, [username]);
+      let result = await db.get(getUserQuery, username);
       await db.close();
-      if (result === undefined) {
-        res.status(INVALID_PARAM_ERROR).send("Incorrect username or password. Please try again.");
+      if (result === undefined || result.password !== password) {
+        res.status(INVALID_PARAM_ERROR).send(INCORRECT_LOG_IN);
       } else {
-        if (result.password === password) {
-          // TODO: set cookie for login_status
-          res.send("Login successful");
-        } else {
-          res.status(INVALID_PARAM_ERROR).send("Incorrect username or password. Please try again.");
-        }
+        res.send("Login successful");
       }
     } else {
       res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);

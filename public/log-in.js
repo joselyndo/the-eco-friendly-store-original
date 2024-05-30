@@ -11,7 +11,7 @@
 "use strict";
 
 (function() {
-  const LOG_IN_ENDPOINT = "[log in endpoint]";
+  const LOG_IN_ENDPOINT = "/log-in";
   const IMG_ADS_DIR = "img/ads/";
   const ADS_ENDING = "-ad.png";
   const NUM_ADS = 5;
@@ -40,6 +40,8 @@
         body: credentials
       });
       await statusCheck(res);
+      localStorage.setItem("user", id("username").value);
+      localStorage.setItem("loggedIn", "true");
       location.assign("my-account.html");
     } catch (error) {
       addLogInError();
@@ -51,11 +53,11 @@
    */
   function addLogInError() {
     let errorMessage = gen("p");
-    errorMessage.text = "Error in submitting credentials. Please try again.";
+    errorMessage.textContent = "Error in submitting credentials. Please try again.";
     errorMessage.classList.add("error");
 
     let parent = id("log-in");
-    parent.insertBefore(errorMessage, qs("#log-in h2"));
+    parent.prepend(errorMessage);
   }
 
   /**
