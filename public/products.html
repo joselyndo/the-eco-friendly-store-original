@@ -48,32 +48,52 @@
             <button class="search-button">Search</button>
           </form>
           <section>
-            <form class="filter">
-              <p>Tag 1</p>
-              <input type="checkbox" id="tag1-option1" class="filter-button">
-              <label for="tag1-option1">filter 1</label>
-              <input type="checkbox" id="tag1-option2" class="filter-button">
-              <label for="tag1-option2">filter 2</label>
-              <input type="checkbox" id="tag1-option3" class="filter-button">
-              <label for="tag1-option3">filter 3</label>
+            <form id="category-filter" class="filter">
+              <p>Product Category</p>
+              <input type="radio" id="category-personal-care" name="category">
+              <label for="category-personal-care">Personal Care</label>
+
+              <input type="radio" id="category-accessories" name="category">
+              <label for="category-accessories">Accessories</label>
+
+              <input type="radio" id="category-kitchen" name="category">
+              <label for="category-kitchen">Kitchen</label>
+
+              <input type="radio" id="category-apparel" name="category">
+              <label for="category-apparel">Apparel</label>
+
+              <input type="radio" id="category-electronics" name="category">
+              <label for="category-electronics">Electronics</label>
+
+              <input type="radio" id="category-office-supplies" name="category">
+              <label for="category-office-supplies">Office Supplies</label>
+
+              <input type="radio" id="category-home" name="category">
+              <label for="category-home">Home</label>
             </form>
-            <form class="filter">
-              <p>Tag 2</p>
-              <input type="checkbox" id="tag2-option1" class="filter-button">
-              <label for="tag2-option1">filter 1</label>
-              <input type="checkbox" id="tag2-option2" class="filter-button">
-              <label for="tag2-option2">filter 2</label>
-              <input type="checkbox" id="tag2-option3" class="filter-button">
-              <label for="tag2-option3">filter 3</label>
+            <form id="price-filter" class="filter">
+              <p>Price</p>
+              <input type="radio" id="price-5" name="price">
+              <label for="price-5">$5 or less</label>
+
+              <input type="radio" id="price-10" name="price">
+              <label for="price-10">$10 or less</label>
+
+              <input type="radio" id="price-15" name="price">
+              <label for="price-15">$15 or less</label>
+
+              <input type="radio" id="price-25" name="price">
+              <label for="price-25">$25 or less</label>
+
+              <input type="radio" id="price-50" name="price">
+              <label for="price-50">$50 or less</label>
             </form>
-            <form class="filter">
-              <p>Tag 3</p>
-              <input type="checkbox" id="tag3-option1" class="filter-button">
-              <label for="tag3-option1">filter 1</label>
-              <input type="checkbox" id="tag3-option2" class="filter-button">
-              <label for="tag3-option2">filter 2</label>
-              <input type="checkbox" id="tag3-option3" class="filter-button">
-              <label for="tag3-option3">filter 3</label>
+            <form id="ratings-filter" class="filter">
+              <p>Ratings</p>
+              <label for="ratings-min">Search for ratings ranging from</label>
+              <input type="number" id="ratings-min" min="0" max="5" placeholder="0">
+              <label for="ratings-max">to</label>
+              <input type="number" id="ratings-max" min="0" max="5" placeholder="5">
             </form>
             <button id="filter-button">Search</button>
           </section>

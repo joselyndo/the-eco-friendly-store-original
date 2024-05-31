@@ -44,12 +44,12 @@ main {
   padding: 0px;
 }
 
-details {
+details, details[open] {
   background-color: #11a311;
 }
 
-details[open] {
-  background-color: #DFF8EB;
+.filter {
+  background-color: #A6866A;
 }
 
 footer {
