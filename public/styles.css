@@ -44,12 +44,40 @@ main {
   padding: 0px;
 }
 
-details, details[open] {
+summary {
+  padding: 10px;
+  text-align: left;
+}
+
+details button {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 10px;
+}
+
+details, details[open], summary {
   background-color: #11a311;
 }
 
 .filter {
   background-color: #A6866A;
+  padding-top: 10px;
+  padding-left: 60px;
+  padding-right: 60px;
+  padding-bottom: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+
+.filter label {
+  margin-top: 10px;
+}
+
+.filter h2 {
+  margin-top: 0px;
+  margin-bottom: 8px;
+  font-size: 16pt;
 }
 
 footer {
@@ -82,7 +110,7 @@ header, footer {
   background-color: #0D750D;
 }
 
-footer, p, form label, form input[type="submit"], .nav-link, details {
+footer, p, form label, form input[type="submit"], .nav-link, details, .filter h2 {
   font-family: "Raleway", sans-serif;
 }
 

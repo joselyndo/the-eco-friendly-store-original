@@ -42,15 +42,16 @@
     <main>
       <article>
         <details id="search-and-filter" open="true">
-          <summary>Search and filter</summary>
+          <summary>Search and filter products</summary>
           <form id="search-bar" class="filter">
-            <label for="search">Enter product name:</label>
+            <h2>Search</h2>
+            <label for="search-entry">Enter product name:</label>
             <input type="text" name="search" id="search-entry" required>
             <button class="search-button">Search</button>
           </form>
           <section>
             <form id="category-filter" class="filter">
-              <p>Product Category</p>
+              <h2>Product Category</h2>
               <input type="radio" id="category-personal-care" name="category">
               <label for="category-personal-care">Personal Care</label>
 
@@ -73,7 +74,7 @@
               <label for="category-home">Home</label>
             </form>
             <form id="price-filter" class="filter">
-              <p>Price</p>
+              <h2>Price</h2>
               <input type="radio" id="price-5" name="price" value="5">
               <label for="price-5">$5 or less</label>
 
@@ -90,7 +91,7 @@
               <label for="price-50">$50 or less</label>
             </form>
             <form id="ratings-filter" class="filter">
-              <p>Ratings</p>
+              <h2>Ratings</h2>
               <label for="ratings-min">Search for ratings ranging from</label>
               <input type="number" id="ratings-min" min="0" max="5" value="0">
               <label for="ratings-max">to</label>
