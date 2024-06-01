@@ -119,25 +119,17 @@ app.get("/products/search", async function(req, res) {
   try {
     if (searchTerm && productCategory && maxPrice && minRating && maxRating) {
       if (minRating <= maxRating) {
-        let queryTerm = "%" + searchTerm + "%";
         let query = createSearchFilterQuery(true);
-        let db = await getDBConnection();
-        let results = await db.all(
-          query,
-          [queryTerm, queryTerm, queryTerm, productCategory, maxPrice, minRating, maxRating]
-        );
-        await db.close();
+        let filters = [searchTerm, productCategory, maxPrice, minRating, maxRating];
+        let results = await searchFilterProducts(query, filters);
         res.send(results); // TODO: update APIDOC
       } else {
         res.type("text");
         res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
       }
     } else if (searchTerm) {
-      let queryTerm = "%" + searchTerm + "%";
       let query = createSearchFilterQuery(false);
-      let db = await getDBConnection();
-      let results = await db.all(query, [queryTerm, queryTerm, queryTerm]);
-      await db.close();
+      let results = await searchFilterProducts(query, [searchTerm]);
       res.send(results);
     } else {
       res.type("text");
@@ -231,9 +223,9 @@ app.post("/feedback", async function(req, res) {
 });
 
 /**
- * Returns a string representing a SQL query based on the given information
+ * Returns a string representing a query based on the given information
  * @param {Boolean} useFilter - a Boolean representing whether the optional filters are being used
- * @returns {String} - a string representing a SQL query
+ * @returns {String} - a string representing a search query
  */
 function createSearchFilterQuery(useFilter) {
   let query = "SELECT item, image, price, rating FROM products WHERE";
@@ -247,6 +239,32 @@ function createSearchFilterQuery(useFilter) {
   }
 
   return query;
+}
+
+/**
+ * Queries for the products matching the given filters
+ * @param {String} query - the query to use
+ * @param {String[]} filters - an array of the filters that a product must meet
+ * @returns {JSON[]} - the results of the filtered search
+ */
+async function searchFilterProducts(query, filters) {
+  let searchTerm = filters[0];
+  let queryTerm = "%" + searchTerm + "%";
+  let placeholderParams = [queryTerm, queryTerm, queryTerm];
+  let results = undefined;
+  let db = await getDBConnection();
+  if (filters.length === 1) {
+    results = await db.all(query, placeholderParams);
+  } else {
+    for (let param = 1; param < filters.length; param++) {
+      placeholderParams.push(filters[param]);
+    }
+
+    results = await db.all(query, placeholderParams);
+  }
+
+  await db.close();
+  return results;
 }
 
 /**
