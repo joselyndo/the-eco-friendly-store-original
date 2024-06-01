@@ -122,8 +122,10 @@ app.get("/products/search", async function(req, res) {
         let queryTerm = "%" + searchTerm + "%";
         let query = createSearchFilterQuery(true);
         let db = await getDBConnection();
-        let results = await db.all(query,
-          [queryTerm, queryTerm, queryTerm, productCategory, maxPrice, minRating, maxRating]);
+        let results = await db.all(
+          query,
+          [queryTerm, queryTerm, queryTerm, productCategory, maxPrice, minRating, maxRating]
+        );
         await db.close();
         res.send(results); // TODO: update APIDOC
       } else {
@@ -147,7 +149,7 @@ app.get("/products/search", async function(req, res) {
   }
 });
 
-app.get("/details/:item", async function (req, res) {
+app.get("/details/:item", async function(req, res) {
   let item = req.params["item"];
 
   try {
@@ -163,7 +165,7 @@ app.get("/details/:item", async function (req, res) {
   }
 });
 
-app.post("/cart", async function (req, res) {
+app.post("/cart", async function(req, res) {
   let items = req.body.cart;
   try {
     let db = await getDBConnection();
@@ -187,7 +189,7 @@ app.post("/cart", async function (req, res) {
   }
 });
 
-app.get("/best-sellers", async function (req, res) {
+app.get("/best-sellers", async function(req, res) {
   let orderBy = "rating"; // Default filter is rating for now
   let limit = 5; // Default 5 products
 
@@ -201,7 +203,7 @@ app.get("/best-sellers", async function (req, res) {
   }
 });
 
-app.post("/feedback", async function (req, res) {
+app.post("/feedback", async function(req, res) {
   let item = req.body.item;
   let username = req.body.username;
   let rating = req.body.rating;
@@ -216,7 +218,7 @@ app.post("/feedback", async function (req, res) {
     "date": "ToDo",
     "review": review,
     "rating": rating
-  }
+  };
 
   try {
     let db = await getDBConnection();
