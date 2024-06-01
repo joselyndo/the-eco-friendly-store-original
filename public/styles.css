@@ -269,6 +269,15 @@ article {
   flex-direction: column;
 }
 
+#feedback h2 {
+  margin: 5px;
+}
+
+#feedback h3 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 #review-entry {
   min-height: 50px;
   min-width: 300px;
