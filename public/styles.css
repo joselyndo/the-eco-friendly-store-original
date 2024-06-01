@@ -166,6 +166,24 @@ section a {
   padding: 10px;
 }
 
+#best-sellers > div h4 {
+  margin: 0px;
+  padding-top: 10px;
+  padding-bottom: 0px;
+  height: 50px;
+}
+
+#best-sellers > div img:first-child {
+  min-height: 150px;
+  height: 150px;
+  width: 150px;
+}
+
+#best-sellers > div img:nth-of-type(2) {
+  width: 150px;
+  height: 50px;
+}
+
 #account-info {
   display: flex;
   flex-direction: column;
@@ -250,11 +268,6 @@ article {
 #promo img {
   width: 82%;
   border: solid 2px #A6866A;
-}
-
-#best-sellers img {
-  height: 150px;
-  width: 150px;
 }
 
 .account {

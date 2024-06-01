@@ -19,8 +19,9 @@
   // const DEAL_IMG_ENDING = "-deal-image.png";
   const IMG_ADS_DIR = "img/ads/";
   const ADS_ENDING = "-ad.png";
+  const IMG_FILE_EXT = ".jpg";
   const NUM_ADS = 5;
-  const PRODUCTS_QUERY_URL = "";
+  const PRODUCTS_QUERY_URL = "/best-sellers";
 
   window.addEventListener("load", init);
 
@@ -93,21 +94,26 @@
   function addProductsToHome(res) {
     let productsContainer = id("best-sellers");
     for (let item = 0; item < res.length; item++) {
+
       let productImg = gen("img");
-      productImg.src = res["image"]; // specific names may change
-      productImg.alt = res["name"];
+      productImg.src = "img/products/" + res[item]["image"] + IMG_FILE_EXT // specific names may change
+      productImg.alt = res[item]["item"];
 
       let productName = gen("h4");
-      productName.textContent = res["name"];
+      productName.textContent = res[item]["item"];
+
+      let rating = gen("img");
+      rating.src = "img/rating/5star.png";
 
       let productCard = gen("div");
       productCard.appendChild(productImg);
       productCard.appendChild(productName);
+      productCard.appendChild(rating);
       productCard.addEventListener("click", function() {
         location.assign("product-details.html");
       });
 
-      productsContainer.appendChild();
+      productsContainer.appendChild(productCard);
     }
   }
 
