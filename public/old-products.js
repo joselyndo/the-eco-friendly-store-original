@@ -11,11 +11,11 @@
 "use strict";
 
 (function() {
-  const ALL_PRODUCTS_ENDPOINT = "/products/all";
-  const IMG_FILE_EXT = ".jpg";
+  const PRODUCTS_ENDPOINT = "[URL]/products?";
   const IMG_ADS_DIR = "img/ads/";
   const ADS_ENDING = "-ad.png";
   const NUM_ADS = 5;
+  let prevSearched = null;
 
   window.addEventListener("load", init);
 
@@ -26,24 +26,24 @@
     getAds();
     displayAllProducts();
 
-    // if (window.sessionStorage.getItem("search") !== null) {
-    //   id("search-entry").value = window.sessionStorage.getItem("search");
-    //   searchForProductName();
-    // }
+    if (window.sessionStorage.getItem("search") !== null) {
+      id("search-entry").value = window.sessionStorage.getItem("search");
+      searchForProductName();
+    }
 
-    // id("search-bar").addEventListener("submit", function(event) {
-    //   event.preventDefault();
-    //   searchForProductName();
-    // });
-    // id("filter-button").addEventListener("click", filterProducts);
-    // qs(".search-entry").addEventListener("input", function() {
-    //   if (qs(".search-entry").value.trim() !== "") {
-    //     qs(".search-button").disabled = false;
-    //   } else {
-    //     qs(".search-button").disabled = true;
-    //   }
-    // });
-    // qs(".search-button").addEventListener("click", searchButton);
+    id("search-bar").addEventListener("submit", function(event) {
+      event.preventDefault();
+      searchForProductName();
+    });
+    id("filter-button").addEventListener("click", filterProducts);
+    qs(".search-entry").addEventListener("input", function() {
+      if (qs(".search-entry").value.trim() !== "") {
+        qs(".search-button").disabled = false;
+      } else {
+        qs(".search-button").disabled = true;
+      }
+    });
+    qs(".search-button").addEventListener("click", searchButton);
   }
 
   /**
@@ -117,7 +117,7 @@
    */
   async function displayAllProducts() {
     try {
-      let res = await fetch(ALL_PRODUCTS_ENDPOINT);
+      let res = await fetch(PRODUCTS_ENDPOINT);
       await statusCheck(res);
       res = await res.json();
       addProductsToPage(res, qs("#product-page section"));
@@ -139,31 +139,21 @@
     productsContainer.innerHTML = "";
     for (let item = 0; item < res.length; item++) {
       let productImg = gen("img");
-      productImg.src = "img/products/" + res[item]["image"] + IMG_FILE_EXT; // specific names may change
-      productImg.alt = res[item]["item"];
+      productImg.src = res["image"]; // specific names may change
+      productImg.alt = res["name"];
 
       let productName = gen("p");
-      productName.textContent = res[item]["item"];
-
-      let productPrice = gen("p");
-      productPrice.textContent = "$" + res[item]["price"];
-
-      let productRating = gen("p");
-      productRating.textContent = "Rating: " + res[item]["rating"];
+      productName.textContent = res["name"];
 
       let productCard = gen("div");
       productCard.appendChild(productImg);
       productCard.appendChild(productName);
-      productCard.appendChild(productPrice);
-      productCard.appendChild(productRating);
-      productCard.addEventListener("click", displaySpecificProduct);
+      productCard.addEventListener("click", function() {
+        location.assign("product-details.html");
+      });
 
       productsContainer.appendChild(productCard);
     }
-  }
-
-  async function displaySpecificProduct() {
-    console.log("got clicked");
   }
 
   /**
