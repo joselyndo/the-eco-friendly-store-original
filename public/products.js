@@ -224,7 +224,7 @@
 
   function addPurchaseButtons(productSection) {
     let bulkPurchaseLabel = gen("label");
-    bulkPurchaseLabel.for = "bulk";
+    // bulkPurchaseLabel.for = "bulk";
     bulkPurchaseLabel.textContent = "Quantity: ";
 
     let bulkInput = gen("input");
@@ -234,6 +234,7 @@
     bulkInput.step = "1";
     bulkInput.value = "1";
     bulkInput.required = true;
+    bulkPurchaseLabel.appendChild(bulkInput);
 
     let buyBtn = gen("button");
     buyBtn.textContent = "Buy item";
@@ -244,7 +245,7 @@
     addToCartBtn.addEventListener("click", addItemToCart);
 
     productSection.appendChild(bulkPurchaseLabel);
-    productSection.appendChild(bulkInput);
+    // productSection.appendChild(bulkInput);
     productSection.appendChild(buyBtn);
     productSection.appendChild(addToCartBtn);
   }
