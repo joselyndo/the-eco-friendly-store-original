@@ -170,7 +170,8 @@ app.post("/cart", async function(req, res) {
         res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
       }
 
-      let row = await db.all("SELECT item, rating, description, image FROM products WHERE item = ?", [item]);
+      let query = "SELECT item, rating, description, image FROM products WHERE item = ?;";
+      let row = await db.all(query, [item]);
       result.push(row);
     }
     res.send(result);
