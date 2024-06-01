@@ -288,10 +288,27 @@ article {
   margin: 20px;
 }
 
-#review-feed {
+#reviews-section {
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
+  align-items: center;
+}
+
+#reviews-section > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 450px;
+  background-color: white;
+  margin: 5px;
+  padding: 10px;
+}
+
+#reviews-section > div > div {
+  text-align: left;
+  margin-right: 20px;
+  padding-right: 20px;
+  border-right: 1px solid gray;
 }
 
 #home {
@@ -320,39 +337,6 @@ article {
 
 .nav-link {
   font-size: 14pt;
-}
-
-.review {
-  text-align: center;
-  min-width: 350px;
-  min-height: 75px;
-  background-color: white;
-  border-bottom: 1px solid gray;
-}
-
-.review div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.review p {
-  text-align: left;
-  padding: 10px;
-}
-
-.review div p {
-  font-size: 18px;
-  padding-bottom: 0px;
-}
-
-.review > p:first-of-type {
-  margin-top: -28px;
-  font-size: 12px;
-}
-
-.review > p:last-of-type {
-  font-size: 12px;
 }
 
 .error {
