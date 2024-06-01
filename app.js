@@ -196,28 +196,23 @@ app.get("/best-sellers", async function(req, res) {
   }
 });
 
-app.post("/feedback", async function(req, res) {
+app.post("/feedback", async function(req, res) { // TODO: check apidoc entry
   let item = req.body.item;
   let username = req.body.username;
   let rating = req.body.rating;
   let review = req.body.review;
+  res.type("text");
 
-  if (!(username && rating && review)) {
+  if (!(item && username && rating && review)) {
     res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
   }
 
-  let feedback = {
-    "username": username,
-    "date": "ToDo",
-    "review": review,
-    "rating": rating
-  };
-
   try {
     let db = await getDBConnection();
-    let query = "UPDATE products SET reviews = ? WHERE item = ?";
-    await db.run(query, [JSON.stringify(feedback), item]);
-    res.send("Review successfully submitted");
+    let query = "INSERT INTO reviews(item, username, review, rating) " +
+      "VALUES(?, ?, ?, ?);";
+    await db.run(query, [item, username, review, rating]);
+    res.send("Review successfully submitted.");
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
@@ -237,7 +232,7 @@ app.get("/reviews/:item", async function(req, res) { // TODO: add to apidoc
       let query = "SELECT r.username, r.review, r.rating, r.date " +
         "FROM reviews AS r, products AS p " +
         "WHERE p.item = ? " +
-        "AND p.id = r.product_id " +
+        "AND p.item = r.item " +
         "ORDER BY datetime(r.date) DESC;";
       let results = await db.all(query, itemName);
       res.json(results);

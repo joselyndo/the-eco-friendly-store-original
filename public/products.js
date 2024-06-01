@@ -14,10 +14,12 @@
   const ALL_PRODUCTS_ENDPOINT = "/products/all";
   const SPECIFIC_PRODUCT_ENDPOINT = "/details/";
   const REVIEWS_ENDPOINT = "/reviews/";
+  const FEEDBACK_ENDPOINT = "/feedback";
   const IMG_FILE_EXT = ".jpg";
   const IMG_ADS_DIR = "img/ads/";
   const ADS_ENDING = "-ad.png";
   const NUM_ADS = 5;
+  const TEN_SECONDS = 10000;
 
   window.addEventListener("load", init);
 
@@ -30,6 +32,11 @@
     id("back-to-all-products-button").addEventListener("click", switchProductViews);
 
     // TODO: init feedback section
+    id("feedback").addEventListener("submit", function(event) {
+      event.preventDefault();
+      postProductFeedback();
+    });
+
     // TODO: add another layout for products
 
     // if (window.sessionStorage.getItem("search") !== null) {
@@ -282,7 +289,7 @@
       reviewSection.appendChild(message);
     } else {
       for (let review = 0; review < results.length; review++) {
-        let reviewCard = createReviewCard(results[i]);
+        let reviewCard = createReviewCard(results[review]);
         reviewSection.appendChild(reviewCard);
       }
     }
@@ -311,6 +318,60 @@
     reviewCard.appendChild(review);
 
     return reviewCard;
+  }
+
+  async function postProductFeedback() {
+    try {
+      let ratingButtons = qsa("#feedback input");
+      let rating = 0;
+      for (let input = 0; input < ratingButtons.length; input++) {
+        if (ratingButtons[input].checked) {
+          rating = ratingButtons[input].value;
+        }
+      }
+
+      let itemName = qs("#product-description h2").textContent;
+      let username = localStorage.getItem("user");
+      let review = qs("textarea").value;
+
+      let formToSubmit = new FormData();
+      formToSubmit.append("item", itemName);
+      formToSubmit.append("username", username);
+      formToSubmit.append("rating", rating);
+      formToSubmit.append("review", review);
+
+      let result = await fetch(FEEDBACK_ENDPOINT, {
+        method: "POST",
+        body: formToSubmit
+      });
+      await statusCheck(result);
+      result = await result.text();
+      handleFeedbackResult(result, itemName);
+    } catch (error) {
+      handleQueryError(id("selected-product-page"));
+    }
+  }
+
+  function handleFeedbackResult(result, itemName) {
+    let message = gen("p");
+    message.textContent = result;
+    id("feedback").append(message);
+    setTimeout(function() {
+      qs("#feedback p").remove();
+    }, TEN_SECONDS);
+    clearFeedbackForm();
+    addReviews(itemName);
+    console.log(result);
+  }
+
+  function clearFeedbackForm() {
+    let ratingButtons = qsa("#feedback input");
+    for (let input = 0; input < ratingButtons.length - 1; input++) {
+      ratingButtons[input].checked = false;
+    }
+
+    ratingButtons[ratingButtons.length - 1].checked = true;
+    qs("textarea").value = "";
   }
 
   /**
