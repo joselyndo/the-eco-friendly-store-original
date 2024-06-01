@@ -102,16 +102,28 @@
               <input type="number" id="ratings-max" min="0" max="5" value="5">
             </form>
             <button id="clear-button">Clear filters</button>
-            <button id="filter-button">Search</button>
+            <button id="filter-button">Search & Filter</button>
           </section>
         </details>
-        <section id="product-page">
+        <section id="products-page">
           <h1>All products</h1>
           <section>
           </section>
         </section>
       </article>
       <article id="selected-product-view" class="hidden">
+        <button id="back-to-all-products-button">Return to all products</button>
+        <section id="selected-product-page">
+          <section id="product-description">
+          </section>
+          <form id="feedback">
+            <label for="entry">Feedback</label>
+            <textarea id="entry" name="entry"></textarea>
+            <button id="submit-button">Submit</button>
+          </form>
+          <section id="reviews-section">
+          </section>
+        </section>
       </article>
     </main>
     <footer>

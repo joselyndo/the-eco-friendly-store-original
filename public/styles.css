@@ -185,30 +185,30 @@ article {
   width: 500px;
 }
 
-#product-page section {
+#products-page section {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
 }
 
-#product-page section div {
+#products-page section div {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #0D750D;
+  background-color: #11a311;
   height: 250px;
   width: 210px;
   margin: 5px;
   padding: 10px;
 }
 
-#product-page section div img {
+#products-page section div img {
   height: 180px;
   width: 180px;
 }
 
-#product-page section div p {
+#products-page section div p {
   margin: 0px;
 }
 

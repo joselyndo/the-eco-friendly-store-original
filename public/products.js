@@ -12,6 +12,7 @@
 
 (function() {
   const ALL_PRODUCTS_ENDPOINT = "/products/all";
+  const SPECIFIC_PRODUCT_ENDPOINT = "/details/";
   const IMG_FILE_EXT = ".jpg";
   const IMG_ADS_DIR = "img/ads/";
   const ADS_ENDING = "-ad.png";
@@ -25,6 +26,9 @@
   function init() {
     getAds();
     displayAllProducts();
+    id("back-to-all-products-button").addEventListener("click", switchProductViews);
+
+    // TODO: init feedback section
 
     // if (window.sessionStorage.getItem("search") !== null) {
     //   id("search-entry").value = window.sessionStorage.getItem("search");
@@ -74,9 +78,9 @@
         body: productName
       });
       await statusCheck(res);
-      addProductsToPage(res, qs("#product-page section"));
+      addProductsToPage(res, qs("#products-page section"));
     } catch (error) {
-      handleQueryError(qs("#product-page section"));
+      handleQueryError(qs("#products-page section"));
       prevSearched = null;
     }
   }
@@ -105,9 +109,9 @@
         body: prevSearched
       });
       await statusCheck(res);
-      addProductsToPage(res, qs("#product-page section"));
+      addProductsToPage(res, qs("#products-page section"));
     } catch (error) {
-      handleQueryError(qs("#product-page section"));
+      handleQueryError(qs("#products-page section"));
       prevSearched = null;
     }
   }
@@ -120,9 +124,9 @@
       let res = await fetch(ALL_PRODUCTS_ENDPOINT);
       await statusCheck(res);
       res = await res.json();
-      addProductsToPage(res, qs("#product-page section"));
+      addProductsToPage(res, qs("#products-page section"));
     } catch (error) {
-      handleQueryError(qs("#product-page section"));
+      handleQueryError(qs("#products-page section"));
     }
   }
 
@@ -162,8 +166,92 @@
     }
   }
 
-  async function displaySpecificProduct() {
+  function displaySpecificProduct() {
+    switchProductViews();
+
+    let productName = this.firstElementChild.nextElementSibling.textContent;
+    addProductInfo(productName);
+    addReviewSection(productName);
     console.log("got clicked");
+  }
+
+  function switchProductViews() {
+    id("products-view").classList.toggle("hidden");
+    id("selected-product-view").classList.toggle("hidden");
+  }
+
+  async function addProductInfo(productName) {
+    try {
+      let results = await fetch(SPECIFIC_PRODUCT_ENDPOINT + productName);
+      await statusCheck(results);
+      results = await results.json();
+      populateProductDescription(results);
+    } catch (error) {
+      handleQueryError(id("selected-product-page"));
+    }
+  }
+
+  function populateProductDescription(productInfo) {
+    let productSection = id("product-description");
+    productSection.innerHTML = "";
+
+    let itemImage = gen("img");
+    itemImage.src = productInfo.image + IMG_FILE_EXT;
+    itemImage.alt = productInfo.item;
+
+    let itemName = gen("h2");
+    itemName.textContent = productInfo.item;
+    let itemRating = gen("h3");
+    itemRating.textContent = "Rating: " + productInfo.rating;
+    let itemPrice = gen("p");
+    itemPrice.textContent = "$" + productInfo.price;
+    let itemStock = gen("p");
+    itemStock = "Available stock: " + productInfo.stock;
+    let itemDescription = gen("p");
+    itemDescription.textContent = productInfo.description;
+
+    productSection.appendChild(itemImage);
+    productSection.appendChild(itemName);
+    productSection.appendChild(itemRating);
+    productSection.appendChild(itemPrice);
+    productSection.appendChild(itemStock);
+    productSection.appendChild(itemDescription);
+
+    addPurchaseButtons(productSection);
+  }
+
+  function addPurchaseButtons(productSection) {
+    let bulkPurchaseLabel = gen("label");
+    bulkPurchaseLabel.for = "bulk";
+
+    let bulkInput = gen("input");
+    bulkInput.id = "bulk";
+    bulkInput.type = "number";
+    bulkInput.step = "1";
+    bulkInput.value = "1";
+    bulkInput.required = true;
+
+    let buyBtn = gen("button");
+    buyBtn.textContent = "Buy item";
+    buyBtn.addEventListener("click", buyItem);
+
+    let addToCartBtn = gen("button");
+    addToCartBtn.textContent = "Add item to cart";
+    addToCartBtn.addEventListener("click", addItemToCart);
+  }
+
+  function buyItem() {
+    // TODO: implement
+  }
+
+  function addItemToCart() {
+    // TODO: implement
+  }
+
+  function addReviewSection(productName) {
+    // TODO: implement
+    let productPage = id("reviews-section");
+    // query for reviews with product name
   }
 
   /**
