@@ -118,9 +118,7 @@
     }
   }
 
-  /**
-   * Displays all products
-   */
+  /** Displays all products */
   async function displayAllProducts() {
     try {
       let res = await fetch(ALL_PRODUCTS_ENDPOINT);
@@ -145,7 +143,7 @@
     productsContainer.innerHTML = "";
     for (let item = 0; item < res.length; item++) {
       let productImg = gen("img");
-      productImg.src = "img/products/" + res[item]["image"] + IMG_FILE_EXT; // specific names may change
+      productImg.src = "img/products/" + res[item]["image"] + IMG_FILE_EXT;
       productImg.alt = res[item]["item"];
 
       let productName = gen("p");
@@ -173,8 +171,13 @@
 
     let productName = this.firstElementChild.nextElementSibling.textContent;
     addProductInfo(productName);
-    // TODO: check if logged in, then do stuff
     addReviews(productName);
+
+    let isLoggedIn = localStorage.getItem("loggedIn");
+    if (isLoggedIn) {
+      id("feedback").classList.remove("hidden");
+      id("feedback").classList.add("visible");
+    }
   }
 
   function switchProductViews() {

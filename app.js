@@ -38,7 +38,7 @@ app.post("/create-account", async function(req, res) {
       } else {
         let addUserQuery = "INSERT INTO users(username, password, email, balance) " +
                             "VALUES(?, ?, ?, 25);";
-        await db.run(addUserQuery, [username, email, password]);
+        await db.run(addUserQuery, [username, password, email]);
         await db.close();
         res.send("Account successfully created.");
       }

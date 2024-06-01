@@ -185,6 +185,11 @@ article {
   width: 550px;
 }
 
+#product-description {
+  padding-bottom: 20px;
+  border-bottom: 1px solid black;
+}
+
 #product-description img {
   width: 300px;
   margin-top: 20px;
@@ -257,13 +262,10 @@ article {
 }
 
 #feedback {
-  border-top: 1px solid black;
   border-bottom: 1px solid black;
-  margin-top: 20px;
   margin-bottom: 20px;
   padding-top: 20px;
   padding-bottom: 20px;
-  display: flex;
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
@@ -398,4 +400,8 @@ button:hover {
 
 .hidden {
   display: none;
+}
+
+.visible {
+  display: flex;
 }
