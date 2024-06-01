@@ -54,7 +54,7 @@ app.post("/log-in", async function(req, res) {
   try {
     let username = req.body.username;
     let password = req.body.password;
-    res.type("type");
+    res.type("text");
 
     if (username && password) {
       let db = await getDBConnection();
@@ -84,7 +84,6 @@ app.post("/buy/", async function (req, res) {
 
   try {
     let db = await getDBConnection();
-
     let exist = await db.get("SELECT id FROM products WHERE item = ?", [item]);
     if (!exist) {
       return res.status(INVALID_PARAM_ERROR).send("Product does not exist. Please try again");
@@ -100,52 +99,65 @@ app.post("/buy/", async function (req, res) {
   }
 });
 
-app.get("/products", async function (req, res) {
+app.get("/products/all", async function (req, res) {
   try {
     let db = await getDBConnection();
-    let rows = await db.all("SELECT item FROM products");
-    res.send(rows);
-
+    let query = "SELECT item, image, price, rating FROM products;";
+    let rows = await db.all(query);
+    res.send(rows); // TODO: check that APIDOC talks about sending arr of JSON
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
 
 app.get("/products/search", async function(req, res) {
-  let productName = req.query["product-name"];
-  let productPrice = req.query.price;
-  let productType = req.query["product-type"];
-  let productRating = req.query.rating;
+  let searchTerm = req.query["search-term"]; // TODO = update APIDOC
+  let productCategory = req.query["product-category"];
+  let maxPrice = req.query["max-price"];
+  let minRating = req.query["min-rating"];
+  let maxRating = req.query["max-rating"];
   try {
-    if (!(productName && productPrice && productType && productRating)) { // No query parameters are set
-      let genSearchQuery = "SELECT item, image, price, rating, stock FROM products;" // TODO: add image column
+    let query = "SELECT item, image, price, rating FROM products WHERE"; // MUST CHECK max > min
+    if (searchTerm && productCategory && maxPrice && minRating && maxRating) {
+      query += " ((item LIKE ?) OR (description LIKE ?) OR (category LIKE ?))";
+      query += " AND category = ?";
+      query += " AND price < ?";
+      query += " AND rating BETWEEN ? AND ?;";
+      let queryTerm = "%" + searchTerm + "%";
       let db = await getDBConnection();
-      let results = await db.all(genSearchQuery); // send results or format it?
+      let results = await db.all(query,
+        [queryTerm, queryTerm, queryTerm, productCategory, maxPrice, minRating, maxRating]);
+      await db.close();
+      res.send(results); // TODO: update APIDOC
+    } else if (searchTerm) {
+      let queryTerm = "%" + searchTerm + "%";
+      query += " (item LIKE ?) OR (description LIKE ?) OR (category LIKE ?);";
+      let db = await getDBConnection();
+      let results = await db.all(query, [queryTerm, queryTerm, queryTerm]);
+      await db.close();
+      res.send(results);
     } else {
-      // Handle the case where only one to all query parameters are set
+      res.type("text");
+      res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
     }
   } catch (error) {
-    res.type("type");
+    res.type("text");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
 
-app.get("/detail/:item", async function (req, res) {
-  let item = req.param["item"];
+app.get("/details/:item", async function (req, res) {
+  let item = req.params["item"];
 
   try {
     let db = await getDBConnection();
-    let rating = await db.get("SELECT rating FROM products WHERE item = ?", [item]);
-    let description = await db.get("SELECT description FROM products WHERE item = ?", [item]);
-    let reviews = await db.get("SELECT reviews FROM products WHERE item = ?", [item]);
-    res.send({
-      "item": item,
-      "rating": rating,
-      "description": description,
-      "reviews": reviews
-    })
-  } catch {
-    res.type("type");
+    let query = "SELECT item, image, description, price, rating, stock " +
+      "FROM products " +
+      "WHERE item = ?;";
+    let details = await db.get(query, item);
+    res.send(details); // TODO: JSON object is sent
+  } catch (error) {
+    res.type("text");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
@@ -169,7 +181,7 @@ app.post("/cart", async function (req, res) {
     res.send(result);
 
   } catch (error) {
-    res.type("type");
+    res.type("text");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
