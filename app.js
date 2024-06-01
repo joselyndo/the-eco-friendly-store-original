@@ -104,7 +104,7 @@ app.get("/products/all", async function(req, res) {
     let db = await getDBConnection();
     let query = "SELECT item, image, price, rating FROM products;";
     let rows = await db.all(query);
-    res.send(rows); // TODO: check that APIDOC talks about sending arr of JSON
+    res.json(rows); // TODO: check that APIDOC talks about sending arr of JSON
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
@@ -122,7 +122,7 @@ app.get("/products/search", async function(req, res) {
         let query = createSearchFilterQuery(true);
         let filters = [searchTerm, productCategory, maxPrice, minRating, maxRating];
         let results = await searchFilterProducts(query, filters);
-        res.send(results); // TODO: update APIDOC
+        res.json(results); // TODO: update APIDOC
       } else {
         res.type("text");
         res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
@@ -130,7 +130,7 @@ app.get("/products/search", async function(req, res) {
     } else if (searchTerm) {
       let query = createSearchFilterQuery(false);
       let results = await searchFilterProducts(query, [searchTerm]);
-      res.send(results);
+      res.json(results);
     } else {
       res.type("text");
       res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
@@ -150,7 +150,7 @@ app.get("/details/:item", async function(req, res) {
       "FROM products " +
       "WHERE item = ?;";
     let details = await db.get(query, item);
-    res.send(details); // TODO: JSON object is sent
+    res.json(details); // TODO: JSON object is sent
   } catch (error) {
     res.type("text");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
@@ -219,6 +219,30 @@ app.post("/feedback", async function(req, res) {
     await db.run(query, [JSON.stringify(feedback), item]);
     res.send("Review successfully submitted");
   } catch (error) {
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+});
+
+app.get("/reviews/:item", async function(req, res) { // TODO: add to apidoc
+  // arr of json with fields username, review, raating, date
+  let itemName = req.params["item"];
+  try {
+    let db = await getDBConnection();
+    let hasItem = await db.get("SELECT item FROM products WHERE item = ?;", itemName);
+    if (hasItem === undefined) {
+      await db.close();
+      res.type("text");
+      res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+    } else {
+      let query = "SELECT r.username, r.review, r.rating, r.date " +
+        "FROM reviews AS r, products AS p " +
+        "WHERE p.item = ? " +
+        "AND p.id = r.product_id;";
+      let results = await db.all(query, itemName);
+      res.json(results);
+    }
+  } catch (error) {
+    res.type("text");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });

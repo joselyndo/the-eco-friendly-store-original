@@ -29,7 +29,6 @@
     id("back-to-all-products-button").addEventListener("click", switchProductViews);
 
     // TODO: init feedback section
-    // TODO: correct adding product info
     // TODO: add code to get reviews for product
     // TODO: add another layout for products
 
@@ -175,8 +174,7 @@
     let productName = this.firstElementChild.nextElementSibling.textContent;
     addProductInfo(productName);
     // TODO: check if logged in, then do stuff
-    addReviewSection(productName);
-    console.log("got clicked");
+    addReviews(productName);
   }
 
   function switchProductViews() {
@@ -232,6 +230,7 @@
     let bulkInput = gen("input");
     bulkInput.id = "bulk";
     bulkInput.type = "number";
+    bulkInput.min = "1";
     bulkInput.step = "1";
     bulkInput.value = "1";
     bulkInput.required = true;
@@ -258,9 +257,17 @@
     // TODO: implement
   }
 
-  function addReviewSection(productName) {
+  async function addReviews(productName) {
     // TODO: implement
-    let productPage = id("reviews-section");
+    try {
+      let productPage = id("reviews-section");
+      let results = await fetch();
+      await statusCheck(results);
+      results = await results.json();
+      // handle reviews
+    } catch (error) {
+      handleQueryError(id("selected-product-page"));
+    }
     // query for reviews with product name
   }
 
