@@ -29,6 +29,9 @@
     id("back-to-all-products-button").addEventListener("click", switchProductViews);
 
     // TODO: init feedback section
+    // TODO: correct adding product info
+    // TODO: add code to get reviews for product
+    // TODO: add another layout for products
 
     // if (window.sessionStorage.getItem("search") !== null) {
     //   id("search-entry").value = window.sessionStorage.getItem("search");
