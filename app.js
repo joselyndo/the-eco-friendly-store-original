@@ -117,21 +117,22 @@ app.get("/products/search", async function(req, res) {
   let minRating = req.query["min-rating"];
   let maxRating = req.query["max-rating"];
   try {
-    let query = "SELECT item, image, price, rating FROM products WHERE"; // MUST CHECK max > min
     if (searchTerm && productCategory && maxPrice && minRating && maxRating) {
-      query += " ((item LIKE ?) OR (description LIKE ?) OR (category LIKE ?))";
-      query += " AND category = ?";
-      query += " AND price < ?";
-      query += " AND rating BETWEEN ? AND ?;";
-      let queryTerm = "%" + searchTerm + "%";
-      let db = await getDBConnection();
-      let results = await db.all(query,
-        [queryTerm, queryTerm, queryTerm, productCategory, maxPrice, minRating, maxRating]);
-      await db.close();
-      res.send(results); // TODO: update APIDOC
+      if (minRating <= maxRating) {
+        let queryTerm = "%" + searchTerm + "%";
+        let query = createSearchFilterQuery(true);
+        let db = await getDBConnection();
+        let results = await db.all(query,
+          [queryTerm, queryTerm, queryTerm, productCategory, maxPrice, minRating, maxRating]);
+        await db.close();
+        res.send(results); // TODO: update APIDOC
+      } else {
+        res.type("text");
+        res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+      }
     } else if (searchTerm) {
       let queryTerm = "%" + searchTerm + "%";
-      query += " (item LIKE ?) OR (description LIKE ?) OR (category LIKE ?);";
+      let query = createSearchFilterQuery(false);
       let db = await getDBConnection();
       let results = await db.all(query, [queryTerm, queryTerm, queryTerm]);
       await db.close();
@@ -226,6 +227,25 @@ app.post("/feedback", async function (req, res) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
+
+/**
+ * Returns a string representing a SQL query based on the given information
+ * @param {Boolean} useFilter - a Boolean representing whether the optional filters are being used
+ * @returns {String} - a string representing a SQL query
+ */
+function createSearchFilterQuery(useFilter) {
+  let query = "SELECT item, image, price, rating FROM products WHERE";
+  if (useFilter) {
+    query += " ((item LIKE ?) OR (description LIKE ?) OR (category LIKE ?))";
+    query += " AND category = ?";
+    query += " AND price < ?";
+    query += " AND rating BETWEEN ? AND ?;";
+  } else {
+    query += " (item LIKE ?) OR (description LIKE ?) OR (category LIKE ?);";
+  }
+
+  return query;
+}
 
 /**
  * Establishes a database connection to the database and returns the database object.
