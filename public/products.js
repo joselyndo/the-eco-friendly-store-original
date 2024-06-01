@@ -36,6 +36,8 @@
       postProductFeedback();
     });
 
+    qs("textarea").addEventListener("input", changeSubmitButton);
+
     // TODO: add another layout for products
 
     // if (window.sessionStorage.getItem("search") !== null) {
@@ -245,16 +247,33 @@
     bulkPurchaseLabel.appendChild(bulkInput);
 
     let buyBtn = gen("button");
+    buyBtn.id = "buy-btn";
     buyBtn.textContent = "Buy item";
     buyBtn.addEventListener("click", buyItem);
 
     let addToCartBtn = gen("button");
+    addToCartBtn.id = "add-to-cart-btn";
     addToCartBtn.textContent = "Add item to cart";
     addToCartBtn.addEventListener("click", addItemToCart);
 
     productSection.appendChild(bulkPurchaseLabel);
     productSection.appendChild(buyBtn);
     productSection.appendChild(addToCartBtn);
+
+    disablePurchaseButtons();
+  }
+
+  function disablePurchaseButtons() {
+    let buyBtn = id("buy-btn");
+    let cartBtn = id("add-to-cart-btn");
+    let isLoggedIn = localStorage.getItem("loggedIn");
+    if (isLoggedIn) {
+      buyBtn.disabled = false;
+      cartBtn.disabled = false;
+    } else {
+      buyBtn.disabled = true;
+      cartBtn.disabled = true;
+    }
   }
 
   function buyItem() {
@@ -371,6 +390,19 @@
 
     ratingButtons[ratingButtons.length - 1].checked = true;
     qs("textarea").value = "";
+  }
+
+  function changeSubmitButton() {
+    let reviewText = qs("textarea").value;
+    reviewText = reviewText.trim();
+    let submitBtn = id("submit-button");
+    console.log("changed");
+
+    if (reviewText === "") {
+      submitBtn.disabled = true;
+    } else {
+      submitBtn.disabled = false;
+    }
   }
 
   /**
