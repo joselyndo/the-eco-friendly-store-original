@@ -269,9 +269,6 @@ article {
   flex-direction: column;
 }
 
-#feedback {
-}
-
 #review-entry {
   min-height: 50px;
   min-width: 300px;

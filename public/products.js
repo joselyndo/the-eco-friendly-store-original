@@ -224,7 +224,6 @@
 
   function addPurchaseButtons(productSection) {
     let bulkPurchaseLabel = gen("label");
-    // bulkPurchaseLabel.for = "bulk";
     bulkPurchaseLabel.textContent = "Quantity: ";
 
     let bulkInput = gen("input");
@@ -245,7 +244,6 @@
     addToCartBtn.addEventListener("click", addItemToCart);
 
     productSection.appendChild(bulkPurchaseLabel);
-    // productSection.appendChild(bulkInput);
     productSection.appendChild(buyBtn);
     productSection.appendChild(addToCartBtn);
   }
