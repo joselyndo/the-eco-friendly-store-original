@@ -196,6 +196,7 @@
 
   function populateProductDescription(productInfo) {
     let productSection = id("product-description");
+    // issue: cannot set value of null
     productSection.innerHTML = "";
 
     let itemImage = gen("img");
@@ -241,6 +242,11 @@
     let addToCartBtn = gen("button");
     addToCartBtn.textContent = "Add item to cart";
     addToCartBtn.addEventListener("click", addItemToCart);
+
+    productSection.appendChild(bulkPurchaseLabel);
+    productSection.appendChild(bulkInput);
+    productSection.appendChild(buyBtn);
+    productSection.appendChild(addToCartBtn);
   }
 
   function buyItem() {
