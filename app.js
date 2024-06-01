@@ -237,7 +237,8 @@ app.get("/reviews/:item", async function(req, res) { // TODO: add to apidoc
       let query = "SELECT r.username, r.review, r.rating, r.date " +
         "FROM reviews AS r, products AS p " +
         "WHERE p.item = ? " +
-        "AND p.id = r.product_id;";
+        "AND p.id = r.product_id " +
+        "ORDER BY datetime(r.date) DESC;";
       let results = await db.all(query, itemName);
       res.json(results);
     }

@@ -13,6 +13,7 @@
 (function() {
   const ALL_PRODUCTS_ENDPOINT = "/products/all";
   const SPECIFIC_PRODUCT_ENDPOINT = "/details/";
+  const REVIEWS_ENDPOINT = "/reviews/";
   const IMG_FILE_EXT = ".jpg";
   const IMG_ADS_DIR = "img/ads/";
   const ADS_ENDING = "-ad.png";
@@ -29,7 +30,6 @@
     id("back-to-all-products-button").addEventListener("click", switchProductViews);
 
     // TODO: init feedback section
-    // TODO: add code to get reviews for product
     // TODO: add another layout for products
 
     // if (window.sessionStorage.getItem("search") !== null) {
@@ -133,7 +133,7 @@
   }
 
   function searchButton() {
-
+    // TODO: implement
   }
 
   /**
@@ -258,17 +258,57 @@
   }
 
   async function addReviews(productName) {
-    // TODO: implement
     try {
-      let productPage = id("reviews-section");
-      let results = await fetch();
+      let results = await fetch(REVIEWS_ENDPOINT + productName);
       await statusCheck(results);
       results = await results.json();
-      // handle reviews
+      handleReviews(results);
     } catch (error) {
       handleQueryError(id("selected-product-page"));
     }
-    // query for reviews with product name
+  }
+
+  function handleReviews(results) {
+    let reviewSection = id("reviews-section");
+    reviewSection.innerHTML = "";
+    let reviewsHeader = gen("h2");
+    reviewsHeader.textContent = "Reviews";
+    reviewSection.appendChild(reviewsHeader);
+    if (results.length === 0) {
+      let message = gen("p");
+      message.textContent = "No reviews for this product so far."
+      reviewSection.appendChild(message);
+    } else {
+      for (let review = 0; review < results.length; review++) {
+        let reviewCard = createReviewCard(results[i]);
+        reviewSection.appendChild(reviewCard);
+      }
+    }
+  }
+
+  function createReviewCard(reviewInfo) {
+    let username = gen("p");
+    username.textContent = reviewInfo.username;
+
+    let date = gen("p");
+    date.textContent = "Date: " + new Date(reviewInfo.date).toLocaleDateString();
+
+    let rating = gen("p");
+    rating.textContent = "Rating: " + reviewInfo.rating;
+
+    let reviewMetadata = gen("div");
+    reviewMetadata.appendChild(username);
+    reviewMetadata.appendChild(date);
+    reviewMetadata.appendChild(rating);
+
+    let review = gen("p");
+    review.textContent = reviewInfo.review;
+
+    let reviewCard = gen("div");
+    reviewCard.appendChild(reviewMetadata);
+    reviewCard.appendChild(review);
+
+    return reviewCard;
   }
 
   /**
