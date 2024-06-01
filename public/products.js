@@ -174,6 +174,7 @@
 
     let productName = this.firstElementChild.nextElementSibling.textContent;
     addProductInfo(productName);
+    // TODO: check if logged in, then do stuff
     addReviewSection(productName);
     console.log("got clicked");
   }
@@ -196,28 +197,27 @@
 
   function populateProductDescription(productInfo) {
     let productSection = id("product-description");
-    // issue: cannot set value of null
     productSection.innerHTML = "";
 
     let itemImage = gen("img");
-    itemImage.src = productInfo.image + IMG_FILE_EXT;
+    itemImage.src = "img/products/" + productInfo.image + IMG_FILE_EXT;
     itemImage.alt = productInfo.item;
 
     let itemName = gen("h2");
     itemName.textContent = productInfo.item;
-    let itemRating = gen("h3");
-    itemRating.textContent = "Rating: " + productInfo.rating;
     let itemPrice = gen("p");
     itemPrice.textContent = "$" + productInfo.price;
+    let itemRating = gen("p");
+    itemRating.textContent = "Rating: " + productInfo.rating;
     let itemStock = gen("p");
-    itemStock = "Available stock: " + productInfo.stock;
+    itemStock.textContent = "Available stock: " + productInfo.stock;
     let itemDescription = gen("p");
     itemDescription.textContent = productInfo.description;
 
     productSection.appendChild(itemImage);
     productSection.appendChild(itemName);
-    productSection.appendChild(itemRating);
     productSection.appendChild(itemPrice);
+    productSection.appendChild(itemRating);
     productSection.appendChild(itemStock);
     productSection.appendChild(itemDescription);
 
@@ -227,6 +227,7 @@
   function addPurchaseButtons(productSection) {
     let bulkPurchaseLabel = gen("label");
     bulkPurchaseLabel.for = "bulk";
+    bulkPurchaseLabel.textContent = "Quantity: ";
 
     let bulkInput = gen("input");
     bulkInput.id = "bulk";

@@ -89,7 +89,7 @@ header, footer {
   background-color: #0D750D;
 }
 
-footer, p, form label, form input[type="submit"], .nav-link, details, .filter h2 {
+footer, p, label, form input[type="submit"], .nav-link, details, .filter h2 {
   font-family: "Raleway", sans-serif;
 }
 
@@ -179,10 +179,24 @@ article {
   padding: 20px;
 }
 
-#product-details {
+#selected-product-view {
   background-color: #f0f0f0;
   border: 1px solid #ccc;
-  width: 500px;
+  width: 550px;
+}
+
+#product-description img {
+  width: 300px;
+  margin-top: 20px;
+}
+
+#product-description h2 {
+  font-size: 32pt;
+  margin: 0px;
+}
+
+#product-description button {
+  margin-left: 20px;
 }
 
 #products-page section {
@@ -244,15 +258,18 @@ article {
 
 #feedback {
   border-top: 1px solid black;
+  border-bottom: 1px solid black;
   margin-top: 20px;
+  margin-bottom: 20px;
   padding-top: 20px;
-}
-
-#feedback form {
+  padding-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
+}
+
+#feedback {
 }
 
 #entry {
