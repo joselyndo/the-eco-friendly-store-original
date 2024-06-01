@@ -40,12 +40,12 @@
       </nav>
     </header>
     <main>
-      <article>
+      <article id="products-view">
         <details id="search-and-filter">
           <summary>Search and filter products</summary>
           <form id="search-bar" class="filter">
             <h2>Search</h2>
-            <label for="search-entry">Enter product(s) name:</label>
+            <label for="search-entry">Enter product name:</label>
             <input type="text" name="search" id="search-entry" required>
             <button class="search-button">Search</button>
           </form>
@@ -97,6 +97,7 @@
               <label for="ratings-max">to</label>
               <input type="number" id="ratings-max" min="0" max="5" value="5">
             </form>
+            <button id="clear-button">Clear filters</button>
             <button id="filter-button">Search</button>
           </section>
         </details>
@@ -141,6 +142,8 @@
             </div>
           </section>
         </section>
+      </article>
+      <article id="selected-product-view" class="hidden">
       </article>
     </main>
     <footer>
