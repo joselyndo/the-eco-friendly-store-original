@@ -94,7 +94,7 @@ app.post("/buy/", async function (req, res) {
     await db.run(query, [price * quantity, USER_ID_PLACEHOLDER]); // Send error if user does not have enough money
     await db.close();
     res.send(quantity + " "  + item + "s were successfully purchased.");
-  } catch {
+  } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
