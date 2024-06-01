@@ -7,7 +7,7 @@ const sqlite = require('sqlite');
 const app = express();
 
 // for application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true })); // built-in middleware
+app.use(express.urlencoded({extended: true})); // built-in middleware
 // for application/json
 app.use(express.json()); // built-in middleware
 // for multipart/form-data (required with FormData)
@@ -18,7 +18,7 @@ const MISSING_PARAM_MSG = "Missing parameters. Please try again.";
 const INCORRECT_LOG_IN = "Incorrect username or password. Please try again.";
 const SERVER_ERROR = 500;
 const SERVER_ERROR_MSG = "An error occurred on the server. Try again later.";
-const PORT_NUM = 8000
+const PORT_NUM = 8000;
 
 app.post("/create-account", async function(req, res) {
   try {
@@ -74,7 +74,7 @@ app.post("/log-in", async function(req, res) {
   }
 });
 
-app.post("/buy/", async function (req, res) {
+app.post("/buy/", async function(req, res) {
   let item = req.body["item"]; // To implement: List of items for checkout
   let quantity = req.body["quantity"];
 
@@ -93,13 +93,13 @@ app.post("/buy/", async function (req, res) {
     let query = "UPDATE users SET balance = balance - ? WHERE user_id = ?";
     await db.run(query, [price * quantity, USER_ID_PLACEHOLDER]); // Send error if user does not have enough money
     await db.close();
-    res.send(quantity + " "  + item + "s were successfully purchased.");
+    res.send(quantity + " " + item + "s were successfully purchased.");
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
 
-app.get("/products/all", async function (req, res) {
+app.get("/products/all", async function(req, res) {
   try {
     let db = await getDBConnection();
     let query = "SELECT item, image, price, rating FROM products;";
