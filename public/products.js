@@ -31,7 +31,6 @@
     displayAllProducts();
     id("back-to-all-products-button").addEventListener("click", switchProductViews);
 
-    // TODO: init feedback section
     id("feedback").addEventListener("submit", function(event) {
       event.preventDefault();
       postProductFeedback();
