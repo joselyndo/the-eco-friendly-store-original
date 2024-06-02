@@ -347,10 +347,12 @@
     }
   }
 
+  /** Purchases the item the user is currently view or notes that the item cannot be purchased */
   function buyItem() {
     // TODO: implement
   }
 
+  /** Adds the item the user is currently looking at to the user's cart */
   function addItemToCart() {
     // TODO: implement
   }
