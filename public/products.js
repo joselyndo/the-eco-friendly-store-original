@@ -17,6 +17,7 @@
   const FEEDBACK_ENDPOINT = "/feedback";
   const IMG_FILE_EXT = ".jpg";
   const TEN_SECONDS = 10000;
+  const TOTAL_PRODUCTS = 30;
   let TO_DISPLAY;
 
   window.addEventListener("load", init);
@@ -40,7 +41,13 @@
     id("load").addEventListener("click", function() {
       addProductsToPage(TO_DISPLAY, qs("#products-page section"));
       TO_DISPLAY = null;
-      id("load").disabled = true;
+      let cards = qsa("#products-page section > div");
+      console.log(cards.length);
+      if (TOTAL_PRODUCTS > cards.length) {
+        id("load").disabled = false;
+      } else {
+        id("load").disabled = true;
+      }
     });
 
     // if (window.sessionStorage.getItem("search") !== null) {
