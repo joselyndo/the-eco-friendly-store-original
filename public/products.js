@@ -17,6 +17,7 @@
   const FEEDBACK_ENDPOINT = "/feedback";
   const IMG_FILE_EXT = ".jpg";
   const TEN_SECONDS = 10000;
+  let TO_DISPLAY;
 
   window.addEventListener("load", init);
 
@@ -34,6 +35,12 @@
     id("toggle-layout").addEventListener("change", function(event) {
       updateCheckbox();
       updateProductsLayout();
+    });
+
+    id("load").addEventListener("click", function() {
+      addProductsToPage(TO_DISPLAY, qs("#products-page section"));
+      TO_DISPLAY = null;
+      id("load").disabled = true;
     });
 
     // if (window.sessionStorage.getItem("search") !== null) {
@@ -110,6 +117,7 @@
       let res = await fetch(ALL_PRODUCTS_ENDPOINT);
       await statusCheck(res);
       res = await res.json();
+      TO_DISPLAY = res.splice(res.length/2, res.length/2)
       addProductsToPage(res, qs("#products-page section"));
     } catch (error) {
       handleQueryError(qs("#products-page section"));
@@ -126,7 +134,9 @@
    * @param {HTMLElement} productsContainer - HTMLElement to contain information about the products
    */
   function addProductsToPage(res, productsContainer) {
-    productsContainer.innerHTML = "";
+    if (id("load").disabled) {
+      productsContainer.innerHTML = "";
+    }
     for (let item = 0; item < res.length; item++) {
       let productImg = gen("img");
       productImg.src = "img/products/" + res[item]["image"] + IMG_FILE_EXT;
