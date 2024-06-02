@@ -32,7 +32,12 @@
       postProductFeedback();
     });
 
-    qs("textarea").addEventListener("input", changeSubmitButton);
+    qs("textarea").addEventListener("input", function() {
+      changeButton(this, id("submit-button"));
+    });
+    id("search-entry").addEventListener("input", function() {
+      changeButton(this, this.nextElementSibling);
+    });
     id("toggle-layout").addEventListener("change", function(event) {
       updateCheckbox();
       updateProductsLayout();
@@ -421,15 +426,14 @@
   }
 
   /** Changes the submit button depending on the text box's input */
-  function changeSubmitButton() {
-    let reviewText = qs("textarea").value;
+  function changeButton(textContainer, button) {
+    let reviewText = textContainer.value;
     reviewText = reviewText.trim();
-    let submitBtn = id("submit-button");
 
     if (reviewText === "") {
-      submitBtn.disabled = true;
+      button.disabled = true;
     } else {
-      submitBtn.disabled = false;
+      button.disabled = false;
     }
   }
 
