@@ -23,9 +23,7 @@
 
   window.addEventListener("load", init);
 
-  /**
-   * Initializes the products page
-   */
+  /** Initializes the products page */
   function init() {
     getAds();
     displayAllProducts();
@@ -62,9 +60,7 @@
     // qs(".search-button").addEventListener("click", searchButton);
   }
 
-  /**
-   * Displays ads onto the home page
-   */
+  /** Displays ads onto the home page */
   function getAds() {
     let ad1 = gen("img");
     let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
@@ -78,9 +74,7 @@
     qs("main").appendChild(ad2);
   }
 
-  /**
-   * Displays the products that the user searched for
-   */
+  /** Displays the products that the user searched for */
   async function searchForProductName() {
     try {
       let productName = new FormData(id("search-bar"));
@@ -176,6 +170,7 @@
     }
   }
 
+  /** Shows a product and its details onto the page*/
   function displaySpecificProduct() {
     switchProductViews();
 
@@ -190,11 +185,16 @@
     }
   }
 
+  /** Switches between showing all the products and a single product */
   function switchProductViews() {
     id("products-view").classList.toggle("hidden");
     id("selected-product-view").classList.toggle("hidden");
   }
 
+  /**
+   * Adds a product's information to the screen
+   * @param {String} productName - name of the product whose info will be added to the screen
+   */
   async function addProductInfo(productName) {
     try {
       let results = await fetch(SPECIFIC_PRODUCT_ENDPOINT + productName);
@@ -206,6 +206,10 @@
     }
   }
 
+  /**
+   * A helper function to add a product's information to the screen
+   * @param {JSON} productInfo - object containing information to add to the screen
+   */
   function populateProductDescription(productInfo) {
     let productSection = id("product-description");
     productSection.innerHTML = "";
@@ -235,6 +239,10 @@
     addPurchaseButtons(productSection);
   }
 
+  /**
+   * Adds buttons to a section of the page
+   * @param {HTMLElement} productSection - the section that gets buttons added
+   */
   function addPurchaseButtons(productSection) {
     let bulkPurchaseLabel = gen("label");
     bulkPurchaseLabel.textContent = "Quantity: ";
@@ -265,6 +273,7 @@
     disablePurchaseButtons();
   }
 
+  /** Disables or enables the purchase buttons depending on a user's logged in status */
   function disablePurchaseButtons() {
     let buyBtn = id("buy-btn");
     let cartBtn = id("add-to-cart-btn");
@@ -286,6 +295,10 @@
     // TODO: implement
   }
 
+  /**
+   * Adds a product's reviews to the page
+   * @param {String} productName - the name of the product whose reviews will be retrieved
+   */
   async function addReviews(productName) {
     try {
       let results = await fetch(REVIEWS_ENDPOINT + productName);
@@ -297,6 +310,10 @@
     }
   }
 
+  /**
+   * A helper function to add a product's reviews to the page
+   * @param {JSON} results
+   */
   function handleReviews(results) {
     let reviewSection = id("reviews-section");
     reviewSection.innerHTML = "";
@@ -315,6 +332,11 @@
     }
   }
 
+  /**
+   * Creates a review card with the given information
+   * @param {JSON} reviewInfo - information about a specific review
+   * @returns {HTMLElement} - the card containing a review
+   */
   function createReviewCard(reviewInfo) {
     let username = gen("p");
     username.textContent = reviewInfo.username;
@@ -340,6 +362,7 @@
     return reviewCard;
   }
 
+  /** Collects the feedback information */
   async function postProductFeedback() {
     try {
       let ratingButtons = qsa("#feedback input");
@@ -359,7 +382,6 @@
       formToSubmit.append("username", username);
       formToSubmit.append("rating", rating);
       formToSubmit.append("review", review);
-
       let result = await fetch(FEEDBACK_ENDPOINT, {
         method: "POST",
         body: formToSubmit
@@ -372,6 +394,11 @@
     }
   }
 
+  /**
+   * Adds confirmation that the feedback was successfully collected
+   * @param {String} result - the result to add to the screen
+   * @param {String} itemName - the name of the item
+   */
   function handleFeedbackResult(result, itemName) {
     let message = gen("p");
     message.textContent = result;
@@ -381,9 +408,9 @@
     }, TEN_SECONDS);
     clearFeedbackForm();
     addReviews(itemName);
-    console.log(result);
   }
 
+  /** Clears the feedback form */
   function clearFeedbackForm() {
     let ratingButtons = qsa("#feedback input");
     for (let input = 0; input < ratingButtons.length - 1; input++) {
@@ -394,11 +421,11 @@
     qs("textarea").value = "";
   }
 
+  /** Changes the submit button depending on the text box's input */
   function changeSubmitButton() {
     let reviewText = qs("textarea").value;
     reviewText = reviewText.trim();
     let submitBtn = id("submit-button");
-    console.log("changed");
 
     if (reviewText === "") {
       submitBtn.disabled = true;
@@ -407,6 +434,7 @@
     }
   }
 
+  /** Changes the appearance of the checkbox */
   function updateCheckbox() {
     let toggleImgs = qsa("label img");
     for (let img = 0; img < toggleImgs.length; img++) {
@@ -414,6 +442,7 @@
     }
   }
 
+  /** Toggles the layouts of the product page */
   function updateProductsLayout() {
     let productsContainer = qs("#products-page > section");
     productsContainer.classList.toggle("grid-layout");
