@@ -17,6 +17,10 @@
   window.addEventListener("load", init);
 
   function init() {
+    let isLoggedIn = localStorage.getItem("loggedIn");
+    if (isLoggedIn) {
+
+    }
     // getAds();
   }
 
