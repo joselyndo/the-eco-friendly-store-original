@@ -19,6 +19,7 @@ hr {
 
 h1 {
   font-size: 36pt;
+  margin: 10px 5px 25px 5px;
 }
 
 h2 {
@@ -68,6 +69,10 @@ main {
   margin-left: -60px;
 }
 
+details {
+  font-size: 16pt;
+}
+
 summary {
   padding: 10px;
   text-align: left;
@@ -105,7 +110,7 @@ h1, h2, h3, h4 {
   font-family: "Freeman", sans-serif;
 }
 
-h2, h3, h4 {
+h2, h4 {
   text-decoration: underline;
 }
 
@@ -232,6 +237,8 @@ article {
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   width: 550px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #product-description {
@@ -382,10 +389,20 @@ article {
   margin-right: 50px;
 }
 
+#products-view {
+  width: 100%;
+}
+
 #toggle-layout-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #A6866A;
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+  border: solid 2px #6a523d;
 }
 
 #toggle-layout-container > img {
@@ -483,6 +500,7 @@ button:disabled {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  align-items: center;
   margin-left: 5px;
   margin-right: 5px;
 }
