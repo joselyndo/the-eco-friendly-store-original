@@ -42,8 +42,6 @@
       updateProductsLayout();
     });
 
-    // TODO: add another layout for products
-
     // if (window.sessionStorage.getItem("search") !== null) {
     //   id("search-entry").value = window.sessionStorage.getItem("search");
     //   searchForProductName();
