@@ -12,9 +12,6 @@
 
 (function() {
   const NEW_ACC_ENDPOINT = "/create-account";
-  const IMG_ADS_DIR = "img/ads/";
-  const ADS_ENDING = "-ad.png";
-  const NUM_ADS = 5;
   const ONE_SECOND = 1000;
   const WAIT_TIME = 10;
   const SECOND_STR = " second";
@@ -25,7 +22,6 @@
    * Initializes the account creation page
    */
   function init() {
-    getAds();
     qs("#create-user form").addEventListener("submit", function(event) {
       event.preventDefault();
       submitCredentials();
@@ -110,20 +106,6 @@
   /** Adds an account creation error */
   function addAccountCreationError() {
     addMessageToScreen("Error in creating a new account. Please try again.", true);
-  }
-
-  /** Displays ads onto the home page */
-  function getAds() {
-    let ad1 = gen("img");
-    let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
-    ad1.src = IMG_ADS_DIR + randNum + ADS_ENDING;
-    ad1.alt = "ad " + randNum;
-    randNum = Math.floor(Math.random() * NUM_ADS) + 1;
-    let ad2 = gen("img");
-    ad2.src = IMG_ADS_DIR + randNum + ADS_ENDING;
-    ad2.alt = "ad " + randNum;
-    qs("main").prepend(ad1);
-    qs("main").appendChild(ad2);
   }
 
   /**

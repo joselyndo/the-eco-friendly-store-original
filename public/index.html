@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Freeman&family=Raleway&display=swap">
     <script src="index.js"></script>
+    <script src="master.js"></script>
     <title>Store Home</title>
   </head>
   <body>
@@ -42,87 +43,39 @@
       </nav>
     </header>
     <main>
+      <section class="sidebar-left">
+        <h2>Weekly Best Sellers</h2>
+        <a href="products.html" class="nav-link">View all products</a>
+        <br>
+        <section id="best-sellers"></section>
+      </section>
       <article id="home">
         <section id="welcome">
+          <img src="/img/welcome-branch.png">
           <h2>Welcome!</h2>
-          <p>
-            Welcome to The Eco-Friendly Store! The one-stop stop for eco-friendly products. Feel
-            free to view our current promotion, browse our stock, and create an account with us!
-          </p>
         </section>
         <section id="promo">
-          <h2>Specials!</h2>
+          <h2></h2>
           <img src="img/grand-opening-special.png" alt="grand opening special for getting store credit when creating an account">
         </section>
-        <section id="products">
-          <h2>Products</h2>
-          <a href="products.html" class="nav-link">View all products</a>
-          <br>
-          <h3>Weekly best sellers</h3>
-          <section id="best-sellers">
-            <!-- <div>
-              <a href="product-details.html">
-                <img src="img/placeholder-product.png" alt="product-placeholder">
-              </a>
-              <h4>Product 1</h4>
-            </div>
-            <div>
-              <a href="product-details.html">
-                <img src="img/placeholder-product.png" alt="product-placeholder">
-              </a>
-              <h4>Product 2</h4>
-            </div>
-            <div>
-              <a href="product-details.html">
-                <img src="img/placeholder-product.png" alt="product-placeholder">
-              </a>
-              <h4>Product 3</h4>
-            </div>
-            <div>
-              <a href="product-details.html">
-                <img src="img/placeholder-product.png" alt="product-placeholder">
-              </a>
-              <h4>Product 4</h4>
-            </div>
-            <div>
-              <a href="product-details.html">
-                <img src="img/placeholder-product.png" alt="product-placeholder">
-              </a>
-              <h4>Product 5</h4>
-            </div>
-            <div>
-              <a href="product-details.html">
-                <img src="img/placeholder-product.png" alt="product-placeholder">
-              </a>
-              <h4>Product 6</h4>
-            </div>
-            <div>
-              <a href="product-details.html">
-                <img src="img/placeholder-product.png" alt="product-placeholder">
-              </a>
-              <h4>Product 7</h4>
-            </div> -->
-          </section>
-        </section>
-        <section id="about">
-          <h2>About us</h2>
-          <p>
-            The Eco-Friendly Store strives to create a greener world by promoting eco-friendly
-            items that can help make that world a reality! Our products are created and shipped
-            sustainably from ethical manufacturers that share the same passion as us for
-            environmentally friendly products.
-          </p>
-          <p>
-            When deciding our manufacturers, we conduct in-depth research on our potential partners
-            to ensure that the top-quality products can be made while balancing environmental costs
-            associated with production.
-          </p>
-          <p>
-            Although The Eco-Friendly Store has a very limited selection of products now, we hope
-            to expand this store to produce more eco-friendly products for a greener world!
-          </p>
-        </section>
       </article>
+      <section class="sidebar-right">
+        <p>
+          The Eco-Friendly Store strives to create a greener world by promoting eco-friendly
+          items that can help make that world a reality! Our products are created and shipped
+          sustainably from ethical manufacturers that share the same passion as us for
+          environmentally friendly products.
+        </p>
+        <p>
+          When deciding our manufacturers, we conduct in-depth research on our potential partners
+          to ensure that the top-quality products can be made while balancing environmental costs
+          associated with production.
+        </p>
+        <p>
+          Although The Eco-Friendly Store has a very limited selection of products now, we hope
+          to expand this store to produce more eco-friendly products for a greener world!
+        </p>
+      </section>
     </main>
     <footer>
       <p>&copy; 2024 The Eco-Friendly Store. All rights reserved.</p>

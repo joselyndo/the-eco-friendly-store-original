@@ -11,9 +11,6 @@
 "use strict";
 
 (function() {
-  const IMG_ADS_DIR = "img/ads/";
-  const ADS_ENDING = "-ad.png";
-  const NUM_ADS = 5;
 
   window.addEventListener("load", init);
 
@@ -21,7 +18,6 @@
    * Initializes page functionality.
    */
   function init() {
-    getAds();
     let currentItem = qs("#product-description h2").textContent;
     let submitButton = id("submit-button");
     submitButton.addEventListener("click", function(event) {
@@ -120,22 +116,6 @@
   function addedToCart(success) {
     // Implement DOM elements
     console.log(success);
-  }
-
-  /**
-   * Displays ads onto the home page
-   */
-  function getAds() {
-    let ad1 = gen("img");
-    let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
-    ad1.src = IMG_ADS_DIR + randNum + ADS_ENDING;
-    ad1.alt = "ad " + randNum;
-    randNum = Math.floor(Math.random() * NUM_ADS) + 1;
-    let ad2 = gen("img");
-    ad2.src = IMG_ADS_DIR + randNum + ADS_ENDING;
-    ad2.alt = "ad " + randNum;
-    qs("main").prepend(ad1);
-    qs("main").appendChild(ad2);
   }
 
   /**

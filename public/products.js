@@ -16,26 +16,22 @@
   const REVIEWS_ENDPOINT = "/reviews/";
   const FEEDBACK_ENDPOINT = "/feedback";
   const IMG_FILE_EXT = ".jpg";
-  const IMG_ADS_DIR = "img/ads/";
-  const ADS_ENDING = "-ad.png";
-  const NUM_ADS = 5;
   const TEN_SECONDS = 10000;
 
   window.addEventListener("load", init);
 
   /** Initializes the products page */
   function init() {
-    getAds();
     displayAllProducts();
     id("back-to-all-products-button").addEventListener("click", switchProductViews);
 
-    id("feedback").addEventListener("submit", function(event) {
+    id("feedback").addEventListener("submit", function() {
       event.preventDefault();
       postProductFeedback();
     });
 
     qs("textarea").addEventListener("input", changeSubmitButton);
-    id("toggle-layout").addEventListener("change", function() {
+    id("toggle-layout").addEventListener("change", function(event) {
       updateCheckbox();
       updateProductsLayout();
     });
@@ -58,20 +54,6 @@
     //   }
     // });
     // qs(".search-button").addEventListener("click", searchButton);
-  }
-
-  /** Displays ads onto the home page */
-  function getAds() {
-    let ad1 = gen("img");
-    let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
-    ad1.src = IMG_ADS_DIR + randNum + ADS_ENDING;
-    ad1.alt = "ad " + randNum;
-    randNum = Math.floor(Math.random() * NUM_ADS) + 1;
-    let ad2 = gen("img");
-    ad2.src = IMG_ADS_DIR + randNum + ADS_ENDING;
-    ad2.alt = "ad " + randNum;
-    qs("main").prepend(ad1);
-    qs("main").appendChild(ad2);
   }
 
   /** Displays the products that the user searched for */

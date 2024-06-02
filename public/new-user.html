@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Freeman&family=Raleway&display=swap">
   <script src="new-user.js"></script>
+  <script src="master.js"></script>
   <title>Create an account</title>
 </head>
 <body>
@@ -37,6 +38,7 @@
     </nav>
   </header>
   <main>
+    <div class="sidebar-left"></div>
     <article id="create-user">
       <h2>Create an account</h2>
       <form>
@@ -49,13 +51,14 @@
           <input type="email" name="email" id="email" class="account" required>
         </section>
         <section>
-          <label for="password">Enter new password:</label>
+          <label for="password">Enter password:</label>
           <input type="password" name="password" id="password" class="account" required>
         </section>
         <br>
         <input type="submit" value="Create a new account">
       </form>
     </article>
+    <div class="sidebar-right"></div>
   </main>
   <footer>
     <p>&copy; 2024 The Eco-Friendly Store. All rights reserved.</p>

@@ -29,19 +29,42 @@ h3 {
   font-size: 24pt;
 }
 
+body {
+  background-color: antiquewhite;
+}
+
 header {
   background-image: url("img/leaves.png");
   padding-bottom: 10px;
 }
 
 main {
-  text-align: center;
+  min-height: 500px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  text-align: center;
   margin: 0px;
   padding: 0px;
+}
+
+.sidebar-left .ad, .sidebar-right .ad {
+  width: 300px;
+}
+
+.sidebar-left, .sidebar-right {
+  padding: 100px;
+  justify-content: center;
+  min-width: 18%;
+}
+
+.sidebar-left {
+  margin-top: -150px;
+}
+
+.sidebar-right {
+  margin-left: -80px;
 }
 
 summary {
@@ -145,22 +168,28 @@ section a {
   width: 100px;
 }
 
+#products {
+  max-width: 15%;
+}
+
 #best-sellers {
-  border: 1px solid black;
+  background-color: #fadcb6;
+  border: 5px solid #e7bc91;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   overflow: hidden;
-  overflow-x: scroll;
-  width: 600px;
-  margin-top: 10px;
+  overflow-y: scroll;
+  max-height: 500px;
+  margin-top: 50px;
 }
 
 #best-sellers div {
+  border-bottom: 2px solid #e7bc91;
+  background-color:#fadcb6;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   align-items: center;
-  background-color: #11a311;
   width: 175px;
   margin: 12px;
   padding: 10px;
@@ -182,7 +211,7 @@ section a {
 #best-sellers > div img:nth-of-type(2) {
   width: 150px;
   height: 50px;
-  clip-path: inset(0px 44px 0px 0px); /* Adjust to define the cropping region */
+  /* clip-path: inset(0px 44px 0px 0px); Adjust to define the cropping region */
 }
 
 #account-info {
@@ -230,17 +259,24 @@ article {
 }
 
 #create-user form, #log-in form {
+  text-align: center;
+  align-items: center;
   width: 315px;
 }
 
 #create-user form > section, #log-in form > section {
+  align-items: center;
   display: flex;
   justify-content: flex-end;
   padding: 3px;
 }
 
+#log-in form > section {
+  width: 90%;
+}
+
 #promo img {
-  width: 82%;
+  width: 90%;
   border: solid 2px #A6866A;
 }
 
@@ -299,15 +335,38 @@ article {
 }
 
 #home {
-  /* background-image: url("img/tree.png");
-  background-size: contain;
-  background-color: rgba(255,255,255,0.2);
-  background-blend-mode: lighten; */
+  color: black;
+  height: 1000px;
+  width: 500px;
+  background-image: url("img/tree.png");
+  background-size: 65%;
+  background-color: rgba(255,255,255,0.1);
+  background-blend-mode: lighten;
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  margin: 0px;
+}
+
+#welcome h2 {
+  margin-bottom: -200px;
+  margin-top: -130px;
+  margin-left: 700px;
+  padding-left: 200px;
+}
+
+#welcome img {
+  width: 50%;
+  margin-left: 100px;
+  padding-left: 650px;
+}
+
+#about {
+  background-image: url("/img/leaf-background.png");
+  background-size: 120%;
+  background-position: center;
 }
 
 #home p {
@@ -398,7 +457,8 @@ button:disabled {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #11a311;
+  border: 5px solid #11a311;
+  background-color: #17c917;
   height: 250px;
   width: 210px;
   margin: 5px;

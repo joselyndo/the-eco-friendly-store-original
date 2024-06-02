@@ -4,59 +4,49 @@
  * Section AA: Kevin Wu
  * Section AB: Elias & Quinton
  *
- * This log-in.js adds functionality to the website's log in page, allowing users to
- * submit or attempt to submit credentials to log in.
+ * This is the master.js file that is shared between all pages and provides
+ * common functions.
  */
-
 "use strict";
 
 (function() {
-  const LOG_IN_ENDPOINT = "/log-in";
+  const IMG_ADS_DIR = "img/ads/";
+  const ADS_ENDING = "-ad.png";
+  const NUM_ADS = 5;
 
   window.addEventListener("load", init);
 
-  /**
-   * Initializes the log in page
-   */
   function init() {
-    qs("#log-in form").addEventListener("submit", function(event) {
-      event.preventDefault();
-      submitCredentials();
-    });
+    // getAds();
   }
 
   /**
-   * Submits user input to log in and responds differently based on the result
+   * Displays ads onto the home page
    */
-  async function submitCredentials() {
-    try {
-      let credentials = new FormData(qs("#log-in form"));
-      let res = await fetch(LOG_IN_ENDPOINT, {
-        method: "POST",
-        body: credentials
-      });
-      await statusCheck(res);
-      localStorage.setItem("user", id("username").value);
-      localStorage.setItem("loggedIn", "true");
-      location.assign("my-account.html");
-    } catch (error) {
-      addLogInError();
-    }
+  function getAds() {
+    let ad1 = gen("img");
+    ad1.classList.add("ad");
+    let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
+    ad1.src = IMG_ADS_DIR + randNum + ADS_ENDING;
+    ad1.alt = "ad " + randNum;
+    randNum = Math.floor(Math.random() * NUM_ADS) + 1;
+    let ad2 = gen("img");
+    ad2.classList.add("ad");
+    ad2.src = IMG_ADS_DIR + randNum + ADS_ENDING;
+    ad2.alt = "ad " + randNum;
+    qs(".sidebar-left").appendChild(ad1);
+    qs(".sidebar-right").appendChild(ad2);
   }
 
   /**
-   * Adds a log in error to the webpage
+   * Adds a message onto the web page about an error fetching data
    */
-  function addLogInError() {
-    let parent = id("log-in");
-    let hasMessage = qs("#log-in p");
-
-    if (hasMessage === null) {
-      let errorMessage = gen("p");
-      errorMessage.textContent = "Error in submitting credentials. Please try again.";
-      errorMessage.classList.add("error");
-      parent.prepend(errorMessage);
-    }
+  function handleQueryError() {
+    let productsContainer = id("best-sellers");
+    let errorMessage = gen("p");
+    errorMessage.textContent = "Error. Please try again later.";
+    errorMessage.classList.add("error");
+    productsContainer.appendChild(errorMessage);
   }
 
   /**
@@ -98,5 +88,14 @@
    */
   function qs(query) {
     return document.querySelector(query);
+  }
+
+  /**
+   * Returns the array of elements that match the given CSS selector.
+   * @param {string} query - CSS query selector
+   * @returns {object[]} array of DOM objects matching the query.
+   */
+  function qsa(query) {
+    return document.querySelectorAll(query);
   }
 })();
