@@ -223,33 +223,6 @@ article {
   margin-left: 20px;
 }
 
-#products-page section {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-
-#products-page section div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #11a311;
-  height: 250px;
-  width: 210px;
-  margin: 5px;
-  padding: 10px 10px 20px 10px;
-}
-
-#products-page section div img {
-  height: 180px;
-  width: 180px;
-}
-
-#products-page section div p {
-  margin: 0px;
-}
-
 #create-user, #log-in {
   display: flex;
   flex-direction: column;
@@ -349,6 +322,24 @@ article {
   margin-right: 50px;
 }
 
+#toggle-layout-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#toggle-layout-container > img {
+  width: 70px;
+  height: 70px;
+}
+
+#toggle-layout-container label img {
+  width: 90px;
+  height: 40px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
 .nav-link {
   font-size: 14pt;
 }
@@ -394,6 +385,63 @@ button:hover {
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.grid-layout {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.grid-layout > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #11a311;
+  height: 250px;
+  width: 210px;
+  margin: 5px;
+  padding: 10px 10px 20px 10px;
+}
+
+.grid-layout > div > img {
+  height: 180px;
+  width: 180px;
+}
+
+.grid-layout > div > p {
+  margin: 0px;
+}
+
+.list-layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.list-layout > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #11a311;
+  height: 130px;
+  width: 85%;
+  margin: 5px;
+  padding: 15px 90px 15px 10px;
+}
+
+.list-layout > div > img {
+  height: 120px;
+  width: 120px;
+}
+
+.list-layout > div > p {
+  margin: 10px;
+  font-size: 14pt;
 }
 
 .hidden {
