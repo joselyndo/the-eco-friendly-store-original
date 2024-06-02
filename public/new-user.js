@@ -61,7 +61,7 @@
 
   /**
    * Decrements the given number by one and adds a message reflecting this number
-   * @param {Number} timeRemaining
+   * @param {Number} timeRemaining - a number representing the amount of time left in a countdown
    */
   function countdown(timeRemaining) {
     let msg = "Successful account creation! Redirecting to the login page in " + timeRemaining;
