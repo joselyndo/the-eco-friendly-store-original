@@ -11,22 +11,13 @@
 "use strict";
 
 (function() {
-  // const DAYS_OF_WEEK = [
-  //   "sunday", "monday", "tuesday", "wednesday",
-  //   "thursday", "friday", "saturday"
-  // ];
-  // const IMG_DEALS_DIR = "img/deals/";
-  // const DEAL_IMG_ENDING = "-deal-image.png";
   const IMG_FILE_EXT = ".jpg";
   const PRODUCTS_QUERY_URL = "/best-sellers";
 
   window.addEventListener("load", init);
 
-  /**
-   * Initializes the home page
-   */
+  /** Initializes the home page */
   function init() {
-    // getDeal();
     displayProductsOnHome();
 
     qs(".search-entry").addEventListener("input", function() {
@@ -37,25 +28,13 @@
       }
     });
 
-    qs(".search-button").addEventListener("click", function() {
+    qs(".search-bar").addEventListener("submit", function(event) {
       event.preventDefault();
-      searchButton();
+      searchTerm();
     });
   }
 
-  /**
-   * Displays a deal onto the home page
-   */
-  // function getDeal() {
-    // let today = new Date();
-    // let dealImg = qs("#promo img");
-    // dealImg.src = IMG_DEALS_DIR + DAYS_OF_WEEK[today.getDay()] + DEAL_IMG_ENDING;
-    // dealImg.alt = DAYS_OF_WEEK[today.getDay()] + " deal";
-  // }
-
-  /**
-   * Displays products onto the home page
-   */
+  /** Displays products onto the home page */
   async function displayProductsOnHome() {
     try {
       let res = await fetch(PRODUCTS_QUERY_URL);
@@ -76,7 +55,7 @@
     for (let item = 0; item < res.length; item++) {
 
       let productImg = gen("img");
-      productImg.src = "img/products/" + res[item]["image"] + IMG_FILE_EXT // specific names may change
+      productImg.src = "img/products/" + res[item]["image"] + IMG_FILE_EXT;
       productImg.alt = res[item]["item"];
 
       let productName = gen("h4");
@@ -97,14 +76,13 @@
     }
   }
 
-  function searchButton() {
-    window.sessionStorage.setItem("search", qs(".search-entry").value);
-    window.location.href = "http://localhost:8000/products.html";
+  /** Redirects to the products page with the search results */
+  function searchTerm() {
+    sessionStorage.setItem("search", qs(".search-entry").value);
+    location.assign("products.html");
   }
 
-  /**
-   * Adds a message onto the web page about an error fetching data
-   */
+  /** Adds a message onto the web page about an error fetching data */
   function handleQueryError() {
     let productsContainer = id("best-sellers");
     let errorMessage = gen("p");
@@ -152,14 +130,5 @@
    */
   function qs(query) {
     return document.querySelector(query);
-  }
-
-  /**
-   * Returns the array of elements that match the given CSS selector.
-   * @param {string} query - CSS query selector
-   * @returns {object[]} array of DOM objects matching the query.
-   */
-  function qsa(query) {
-    return document.querySelectorAll(query);
   }
 })();
