@@ -182,6 +182,7 @@ section a {
 #best-sellers > div img:nth-of-type(2) {
   width: 150px;
   height: 50px;
+  clip-path: inset(0px 44px 0px 0px); /* Adjust to define the cropping region */
 }
 
 #account-info {
