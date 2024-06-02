@@ -481,7 +481,7 @@ button:disabled {
   align-items: center;
   border: 5px solid #11a311;
   background-color: #17c917;
-  height: 250px;
+  max-height: max-content;
   width: 210px;
   margin: 5px;
   padding: 10px 10px 20px 10px;

@@ -15,10 +15,16 @@
   const SPECIFIC_PRODUCT_ENDPOINT = "/details/";
   const REVIEWS_ENDPOINT = "/reviews/";
   const FEEDBACK_ENDPOINT = "/feedback";
+  const SEARCH_ENDPOINT = "/products/search"; // todo:  have a "/products/" const
   const IMG_FILE_EXT = ".jpg";
   const TEN_SECONDS = 10000;
   const TOTAL_PRODUCTS = 30;
   let TO_DISPLAY;
+  let prevSearched = null;
+  let searchBarIsFilled = false;
+  let categoryFilterIsFilled = false;
+  let priceFilterIsFilled = false;
+  let ratingFilterIsFilled = false;
 
   window.addEventListener("load", init);
 
@@ -26,6 +32,8 @@
   function init() {
     displayAllProducts();
     initButtons();
+    initSearchAndFilter();
+
     id("toggle-layout").addEventListener("change", function(event) {
       updateCheckbox();
       updateProductsLayout();
@@ -45,22 +53,40 @@
 
     // if (window.sessionStorage.getItem("search") !== null) {
     //   id("search-entry").value = window.sessionStorage.getItem("search");
-    //   searchForProductName();
+    //   searchForProducts();
     // }
+  }
 
-    // id("search-bar").addEventListener("submit", function(event) {
-    //   event.preventDefault();
-    //   searchForProductName();
-    // });
-    // id("filter-button").addEventListener("click", filterProducts);
-    // qs(".search-entry").addEventListener("input", function() {
-    //   if (qs(".search-entry").value.trim() !== "") {
-    //     qs(".search-button").disabled = false;
-    //   } else {
-    //     qs(".search-button").disabled = true;
-    //   }
-    // });
-    // qs(".search-button").addEventListener("click", searchButton);
+  /** Initializes the interactability of the Search and Filter panel */
+  function initSearchAndFilter() {
+    id("search-bar").addEventListener("submit", function(event) {
+      event.preventDefault();
+      searchForProducts();
+    });
+
+    id("clear-button").addEventListener("click", clearFilters);
+    id("filter-button").addEventListener("click", searchAndFilterProducts);
+  }
+
+  /** Clears the search bar and the filters */
+  function clearFilters() {
+    id("search-entry").value = "";
+    id("ratings-min").value = "";
+    id("ratings-max").value = "";
+
+    let categoryBtns = qsa("#category-filter input");
+    for (let btnNum = 0; btnNum < categoryBtns.length; btnNum++) {
+      categoryBtns[btnNum].checked = false;
+    }
+
+    let priceRangeBtns = qsa("#price-filter input");
+    for (let btnNum = 0; btnNum < priceRangeBtns.length; btnNum++) {
+      priceRangeBtns[btnNum].checked = false;
+    }
+
+    // id("filter-button").disabled = true;
+    console.log("boom: filter button is disabled (not really)");
+    displayAllProducts();
   }
 
   /** Initializes the interactability of buttons on the page */
@@ -79,49 +105,79 @@
     id("search-entry").addEventListener("input", function() {
       changeButton(this, this.nextElementSibling);
     });
+
+    // initUpdateSearchFilterBtn();
   }
 
-  /** Displays the products that the user searched for */
-  async function searchForProductName() {
-    try {
-      let productName = new FormData(id("search-bar"));
-      prevSearched = productName;
-      let res = await fetch(PRODUCTS_ENDPOINT, {
-        method: "GET",
-        body: productName
-      });
-      await statusCheck(res);
-      addProductsToPage(res, qs("#products-page section"));
-    } catch (error) {
-      handleQueryError(qs("#products-page section"));
-      prevSearched = null;
+  // /** Initializes the functionality of updating the search and filter button */
+  // function initUpdateSearchFilterBtn() {
+  //   let forms = qsa(".filter");
+  //   for (let formNum = 0; formNum < forms.length; formNum++) {
+  //     forms[formNum].addEventListener("change", checkFilterOptions);
+  //   }
+  // }
+
+  // function checkFilterOptions() {
+  //   let id = this.id;
+  //   let inputs = qsa("#" + id + " input");
+  //   let isFilled = false;
+  //   for (let inputNum = 0; inputNum < inputs.length; inputNum++) {
+  //     let inputElement = inputs[inputNum];
+  //     let inputType = inputElement.type;
+  //     if (inputType === "text") {
+  //       searchBarIsFilled = (inputElement.value.trim() !== "");
+  //     } else if (inputType === "number") {
+  //       ratingFilterIsFilled = (inputElement.value.trim() !== "");
+  //     } else if (inputElement.value) {
+
+  //     }
+  //   }
+  // }
+
+  /** Searches for products matching the user's input */
+   function searchForProducts() {
+    id("load").classList.add("hidden");
+    let productTerm = id("search-entry").value;
+    let query = SEARCH_ENDPOINT + "?search-term=" + productTerm;
+    searchAndDisplay(query);
+  }
+
+  /** Searches for products with filters added */
+  function searchAndFilterProducts() {
+    id("load").classList.add("hidden");
+    let query = SEARCH_ENDPOINT + "?search-term=" + id("search-entry").value;
+
+    let categoryBtns = qsa("#category-filter input");
+    let category = "";
+    for (let btnNum = 0; btnNum < categoryBtns.length; btnNum++) {
+      if (categoryBtns[btnNum].checked) {
+        category = categoryBtns[btnNum].value;
+      }
     }
+    query += "&product-category=" + category;
+
+    let priceRangeBtns = qsa("#price-filter input");
+    let maxPrice = 0;
+    for (let btnNum = 0; btnNum < priceRangeBtns.length; btnNum++) {
+      if (priceRangeBtns[btnNum].checked) {
+        maxPrice = priceRangeBtns[btnNum].value;
+      }
+    }
+    query += "&max-price=" + maxPrice;
+
+    query += "&min-rating=" + id("ratings-min").value;
+    query += "&max-rating=" + id("ratings-max").value;
+    console.log(query);
+    searchAndDisplay(query);
   }
 
-  /**
-   * Filters the products that are already displayed on the webpage. The products
-   * that can be filtered are either all the products or products matching the
-   * user's search phrase.
-   */
-  async function filterProducts() {
+  /** Searches for and displays the products that the user defined for */
+  async function searchAndDisplay(query) {
     try {
-      let forms = qsa(".filter");
-      if (prevSearched === null) {
-        prevSearched = new FormData();
-        prevSearched.append("search", "all");
-      }
-
-      for (let form = 0; form < forms.length; form++) {
-        for (let keyValuePair of forms[form].entries()) {
-          prevSearched.append(keyValuePair[0], keyValuePair[1]);
-        }
-      }
-
-      let res = await fetch(PRODUCTS_ENDPOINT, {
-        method: "GET",
-        body: prevSearched
-      });
+      // prevSearched = productTerm;
+      let res = await fetch(query);
       await statusCheck(res);
+      res = await res.json();
       addProductsToPage(res, qs("#products-page section"));
     } catch (error) {
       handleQueryError(qs("#products-page section"));
@@ -142,19 +198,15 @@
     }
   }
 
-  function searchButton() {
-    // TODO: implement
-  }
-
   /**
    * Adds product cards to the home page
    * @param {JSON} res - JSON file containing information about the products
    * @param {HTMLElement} productsContainer - HTMLElement to contain information about the products
    */
   function addProductsToPage(res, productsContainer) {
-    if (id("load").disabled) {
-      productsContainer.innerHTML = "";
-    }
+    // if (id("load").disabled) {
+    productsContainer.innerHTML = "";
+    // }
     for (let item = 0; item < res.length; item++) {
       let productImg = gen("img");
       productImg.src = "img/products/" + res[item]["image"] + IMG_FILE_EXT;
