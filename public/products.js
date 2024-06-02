@@ -37,6 +37,10 @@
     });
 
     qs("textarea").addEventListener("input", changeSubmitButton);
+    id("toggle-layout").addEventListener("change", function() {
+      updateCheckbox();
+      updateProductsLayout();
+    });
 
     // TODO: add another layout for products
 
@@ -403,6 +407,19 @@
     } else {
       submitBtn.disabled = false;
     }
+  }
+
+  function updateCheckbox() {
+    let toggleImgs = qsa("label img");
+    for (let img = 0; img < toggleImgs.length; img++) {
+      toggleImgs[img].classList.toggle("hidden");
+    }
+  }
+
+  function updateProductsLayout() {
+    let productsContainer = qs("#products-page > section");
+    productsContainer.classList.toggle("grid-layout");
+    productsContainer.classList.toggle("list-layout");
   }
 
   /**
