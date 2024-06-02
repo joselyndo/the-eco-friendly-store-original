@@ -312,7 +312,7 @@
 
   /**
    * A helper function to add a product's reviews to the page
-   * @param {JSON} results
+   * @param {JSON} results - the resulting reviews for a product
    */
   function handleReviews(results) {
     let reviewSection = id("reviews-section");
@@ -322,7 +322,7 @@
     reviewSection.appendChild(reviewsHeader);
     if (results.length === 0) {
       let message = gen("p");
-      message.textContent = "No reviews for this product so far."
+      message.textContent = "No reviews for this product so far.";
       reviewSection.appendChild(message);
     } else {
       for (let review = 0; review < results.length; review++) {
