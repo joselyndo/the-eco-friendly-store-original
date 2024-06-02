@@ -18,10 +18,10 @@
   const SEARCH_ENDPOINT = "/products/search";
   const IMG_FILE_EXT = ".jpg";
   const TEN_SECONDS = 10000;
-  let searchBarIsFilled = false;
-  let categoryFilterIsFilled = false;
-  let priceFilterIsFilled = false;
-  let ratingFilterIsFilled = false;
+  let isSearchBarFilled = false;
+  let isCategoryFilterFilled = false;
+  let isPriceFilterFilled = false;
+  let isRatingFilterFilled = false;
 
   window.addEventListener("load", init);
 
@@ -38,7 +38,6 @@
     if (sessionStorage.getItem("search") !== null) {
       let productTerm = sessionStorage.getItem("search");
       sessionStorage.removeItem("search");
-      console.log(productTerm);
       id("search-entry").value = productTerm;
       let query = SEARCH_ENDPOINT + "?search-term=" + productTerm;
       searchAndDisplay(query);
@@ -56,6 +55,44 @@
 
     id("clear-button").addEventListener("click", clearFilters);
     id("filter-button").addEventListener("click", searchAndFilterProducts);
+
+    id("search-bar").addEventListener("change", function() {
+      isSearchBarFilled = (id("search-entry").value.trim() !== "");
+      enableSearchAndFilterBtn();
+    });
+    id("category-filter").addEventListener("change", function() {
+      isCategoryFilterFilled = true;
+      enableSearchAndFilterBtn();
+    });
+    id("price-filter").addEventListener("change", function() {
+      isPriceFilterFilled = true;
+      enableSearchAndFilterBtn();
+    });
+    id("ratings-filter").addEventListener("change", checkNums);
+  }
+
+  /** Checks if the rating boxes are empty or full */
+  function checkNums() {
+    let ratingInput = qsa("#ratings-filter input");
+    let hasMinValue = (ratingInput[0].value !== "");
+    let hasMaxValue = (ratingInput[1].value !== "");
+    isRatingFilterFilled = (hasMinValue && hasMaxValue);
+    enableSearchAndFilterBtn();
+  }
+
+  /** Checks if the required search and filter forms are filled */
+  function enableSearchAndFilterBtn() {
+    let filterBtn = id("filter-button");
+    if (
+      isSearchBarFilled &&
+      isCategoryFilterFilled &&
+      isPriceFilterFilled &&
+      isRatingFilterFilled
+    ) {
+      filterBtn.disabled = false;
+    } else {
+      filterBtn.disabled = true;
+    }
   }
 
   /** Clears the search bar and the filters */
@@ -74,8 +111,11 @@
       priceRangeBtns[btnNum].checked = false;
     }
 
-    // id("filter-button").disabled = true;
-    console.log("boom: filter button is disabled (not really)");
+    id("filter-button").disabled = true;
+    isSearchBarFilled = false;
+    isCategoryFilterFilled = false;
+    isPriceFilterFilled = false;
+    isRatingFilterFilled = false;
     displayAllProducts();
   }
 
@@ -95,34 +135,7 @@
     id("search-entry").addEventListener("input", function() {
       changeButton(this, this.nextElementSibling);
     });
-
-    // initUpdateSearchFilterBtn();
   }
-
-  // /** Initializes the functionality of updating the search and filter button */
-  // function initUpdateSearchFilterBtn() {
-  //   let forms = qsa(".filter");
-  //   for (let formNum = 0; formNum < forms.length; formNum++) {
-  //     forms[formNum].addEventListener("change", checkFilterOptions);
-  //   }
-  // }
-
-  // function checkFilterOptions() {
-  //   let id = this.id;
-  //   let inputs = qsa("#" + id + " input");
-  //   let isFilled = false;
-  //   for (let inputNum = 0; inputNum < inputs.length; inputNum++) {
-  //     let inputElement = inputs[inputNum];
-  //     let inputType = inputElement.type;
-  //     if (inputType === "text") {
-  //       searchBarIsFilled = (inputElement.value.trim() !== "");
-  //     } else if (inputType === "number") {
-  //       ratingFilterIsFilled = (inputElement.value.trim() !== "");
-  //     } else if (inputElement.value) {
-
-  //     }
-  //   }
-  // }
 
   /** Searches for products matching the user's input */
   function searchForProducts() {
