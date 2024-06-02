@@ -51,10 +51,10 @@
 
   /** Adds a sucessful account creation method which later redirects the user to the login screen*/
   function handleSuccess() {
-    let successMsg = "Successful account creation! Redirecting to the login page in "
-                      + WAIT_TIME + SECOND_STR + "s";
+    let successMsg = "Successful account creation! Redirecting to the login page in " +
+                      WAIT_TIME + SECOND_STR + "s";
     addMessageToScreen(successMsg, false);
-    setTimeout(function () {
+    setTimeout(function() {
       countdown(WAIT_TIME - 1);
     }, ONE_SECOND);
   }
@@ -107,7 +107,6 @@
   function addAccountCreationError() {
     addMessageToScreen("Error in creating a new account. Please try again.", true);
   }
-
 
   /** Displays ads onto the home page */
   function getAds() {
@@ -162,14 +161,5 @@
    */
   function qs(query) {
     return document.querySelector(query);
-  }
-
-/**
- * Returns the array of elements that match the given CSS selector.
- * @param {string} query - CSS query selector
- * @returns {object[]} array of DOM objects matching the query.
- */
-  function qsa(query) {
-    return document.querySelectorAll(query);
   }
 })();
