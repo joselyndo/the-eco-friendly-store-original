@@ -249,7 +249,8 @@ app.get("/reviews/:item", async function(req, res) { // TODO: add to apidoc
  * @returns {String} - a string representing a search query
  */
 function createSearchFilterQuery(useFilter) {
-  let query = "SELECT item, image, price, rating FROM products WHERE";
+  let query = "SELECT item FROM products WHERE";
+  // let query = "SELECT item, image, price, rating FROM products WHERE";
   if (useFilter) {
     query += " ((item LIKE ?) OR (description LIKE ?) OR (category LIKE ?))";
     query += " AND category = ?";

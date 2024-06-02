@@ -52,7 +52,7 @@
             </p>
             <label for="search-entry">Enter product name:</label>
             <input type="text" name="search" id="search-entry" required>
-            <button class="search-button">Search</button>
+            <button class="search-button" disabled>Search</button>
           </form>
           <section>
             <form id="category-filter" class="filter">
@@ -98,12 +98,12 @@
             <form id="ratings-filter" class="filter">
               <h2>Ratings</h2>
               <label for="ratings-min">Search for ratings ranging from</label>
-              <input type="number" id="ratings-min" min="0" max="5" value="0">
+              <input type="number" id="ratings-min" min="0" max="5" placeholder="0">
               <label for="ratings-max">to</label>
-              <input type="number" id="ratings-max" min="0" max="5" value="5">
+              <input type="number" id="ratings-max" min="0" max="5" placeholder="5">
             </form>
             <button id="clear-button">Clear filters</button>
-            <button id="filter-button">Search and Filter</button>
+            <button id="filter-button" disabled>Search and Filter</button>
           </section>
         </details>
         <div id="toggle-layout-container">
