@@ -59,6 +59,10 @@
     }, ONE_SECOND);
   }
 
+  /**
+   * Decrements the given number by one and adds a message reflecting this number
+   * @param {Number} timeRemaining
+   */
   function countdown(timeRemaining) {
     let msg = "Successful account creation! Redirecting to the login page in " + timeRemaining;
 
@@ -72,7 +76,7 @@
         msg += SECOND_STR + "s.";
       }
 
-      setTimeout(function () {
+      setTimeout(function() {
         countdown(timeRemaining - 1);
       }, ONE_SECOND);
     }
