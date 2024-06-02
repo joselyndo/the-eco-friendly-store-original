@@ -17,11 +17,28 @@
   window.addEventListener("load", init);
 
   function init() {
+    toggleLogIn();
+    id("log-out-link").addEventListener("click", function() {
+      logOut();
+      toggleLogIn();
+    });
+    // getAds();
+  }
+
+  function toggleLogIn() {
     let isLoggedIn = localStorage.getItem("loggedIn");
     if (isLoggedIn) {
-
+      id("log-in-link").classList.remove("hidden");
+      id("log-out-link").classList.add("hidden");
+    } else {
+      id("log-in-link").classList.add("hidden");
+      id("log-out-link").classList.remove("hidden");
     }
-    // getAds();
+  }
+
+  function logOut() {
+    window.localStorage.setItem("user", "");
+    window.localStorage.setItem("loggedIn", false);
   }
 
   /**
