@@ -25,19 +25,7 @@
   /** Initializes the products page */
   function init() {
     displayAllProducts();
-    id("back-to-all-products-button").addEventListener("click", switchProductViews);
-
-    id("feedback").addEventListener("submit", function() {
-      event.preventDefault();
-      postProductFeedback();
-    });
-
-    qs("textarea").addEventListener("input", function() {
-      changeButton(this, id("submit-button"));
-    });
-    id("search-entry").addEventListener("input", function() {
-      changeButton(this, this.nextElementSibling);
-    });
+    initButtons();
     id("toggle-layout").addEventListener("change", function(event) {
       updateCheckbox();
       updateProductsLayout();
@@ -73,6 +61,24 @@
     //   }
     // });
     // qs(".search-button").addEventListener("click", searchButton);
+  }
+
+  /** Initializes the interactability of buttons on the page */
+  function initButtons() {
+    id("back-to-all-products-button").addEventListener("click", switchProductViews);
+
+    id("feedback").addEventListener("submit", function(event) {
+      event.preventDefault();
+      postProductFeedback();
+    });
+
+    qs("textarea").addEventListener("input", function() {
+      changeButton(this, id("submit-button"));
+    });
+
+    id("search-entry").addEventListener("input", function() {
+      changeButton(this, this.nextElementSibling);
+    });
   }
 
   /** Displays the products that the user searched for */
