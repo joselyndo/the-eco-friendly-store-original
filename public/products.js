@@ -15,12 +15,9 @@
   const SPECIFIC_PRODUCT_ENDPOINT = "/details/";
   const REVIEWS_ENDPOINT = "/reviews/";
   const FEEDBACK_ENDPOINT = "/feedback";
-  const SEARCH_ENDPOINT = "/products/search"; // todo:  have a "/products/" const
+  const SEARCH_ENDPOINT = "/products/search";
   const IMG_FILE_EXT = ".jpg";
   const TEN_SECONDS = 10000;
-  const TOTAL_PRODUCTS = 30;
-  let TO_DISPLAY;
-  let prevSearched = null;
   let searchBarIsFilled = false;
   let categoryFilterIsFilled = false;
   let priceFilterIsFilled = false;
@@ -30,31 +27,24 @@
 
   /** Initializes the products page */
   function init() {
-    displayAllProducts();
     initButtons();
     initSearchAndFilter();
 
-    id("toggle-layout").addEventListener("change", function(event) {
+    id("toggle-layout").addEventListener("change", function() {
       updateCheckbox();
       updateProductsLayout();
     });
 
-    id("load").addEventListener("click", function() {
-      addProductsToPage(TO_DISPLAY, qs("#products-page section"));
-      TO_DISPLAY = null;
-      let cards = qsa("#products-page section > div");
-      console.log(cards.length);
-      if (TOTAL_PRODUCTS > cards.length) {
-        id("load").disabled = false;
-      } else {
-        id("load").disabled = true;
-      }
-    });
-
-    // if (window.sessionStorage.getItem("search") !== null) {
-    //   id("search-entry").value = window.sessionStorage.getItem("search");
-    //   searchForProducts();
-    // }
+    if (sessionStorage.getItem("search") !== null) {
+      let productTerm = sessionStorage.getItem("search");
+      sessionStorage.removeItem("search");
+      console.log(productTerm);
+      id("search-entry").value = productTerm;
+      let query = SEARCH_ENDPOINT + "?search-term=" + productTerm;
+      searchAndDisplay(query);
+    } else {
+      displayAllProducts();
+    }
   }
 
   /** Initializes the interactability of the Search and Filter panel */
@@ -135,8 +125,7 @@
   // }
 
   /** Searches for products matching the user's input */
-   function searchForProducts() {
-    id("load").classList.add("hidden");
+  function searchForProducts() {
     let productTerm = id("search-entry").value;
     let query = SEARCH_ENDPOINT + "?search-term=" + productTerm;
     searchAndDisplay(query);
@@ -144,8 +133,7 @@
 
   /** Searches for products with filters added */
   function searchAndFilterProducts() {
-    id("load").classList.add("hidden");
-    let query = SEARCH_ENDPOINT + "?search-term=" + id("search-entry").value;
+    let url = SEARCH_ENDPOINT + "?search-term=" + id("search-entry").value;
 
     let categoryBtns = qsa("#category-filter input");
     let category = "";
@@ -154,7 +142,7 @@
         category = categoryBtns[btnNum].value;
       }
     }
-    query += "&product-category=" + category;
+    url += "&product-category=" + category;
 
     let priceRangeBtns = qsa("#price-filter input");
     let maxPrice = 0;
@@ -163,25 +151,25 @@
         maxPrice = priceRangeBtns[btnNum].value;
       }
     }
-    query += "&max-price=" + maxPrice;
+    url += "&max-price=" + maxPrice;
 
-    query += "&min-rating=" + id("ratings-min").value;
-    query += "&max-rating=" + id("ratings-max").value;
-    console.log(query);
-    searchAndDisplay(query);
+    url += "&min-rating=" + id("ratings-min").value;
+    url += "&max-rating=" + id("ratings-max").value;
+    searchAndDisplay(url);
   }
 
-  /** Searches for and displays the products that the user defined for */
-  async function searchAndDisplay(query) {
+  /**
+   * Searches for and displays the products that the user defined for
+   * @param {String} url - the address to search products from
+   */
+  async function searchAndDisplay(url) {
     try {
-      // prevSearched = productTerm;
-      let res = await fetch(query);
+      let res = await fetch(url);
       await statusCheck(res);
       res = await res.json();
       addProductsToPage(res, qs("#products-page section"));
     } catch (error) {
       handleQueryError(qs("#products-page section"));
-      prevSearched = null;
     }
   }
 
@@ -191,7 +179,6 @@
       let res = await fetch(ALL_PRODUCTS_ENDPOINT);
       await statusCheck(res);
       res = await res.json();
-      TO_DISPLAY = res.splice(res.length/2, res.length/2)
       addProductsToPage(res, qs("#products-page section"));
     } catch (error) {
       handleQueryError(qs("#products-page section"));
@@ -204,9 +191,7 @@
    * @param {HTMLElement} productsContainer - HTMLElement to contain information about the products
    */
   function addProductsToPage(res, productsContainer) {
-    // if (id("load").disabled) {
     productsContainer.innerHTML = "";
-    // }
     for (let item = 0; item < res.length; item++) {
       let productImg = gen("img");
       productImg.src = "img/products/" + res[item]["image"] + IMG_FILE_EXT;
@@ -483,7 +468,11 @@
     qs("textarea").value = "";
   }
 
-  /** Changes the submit button depending on the text box's input */
+  /**
+   * Changes the submit button depending on the text box's input
+   * @param {HTMLElement} textContainer - the element containing text
+   * @param {HTMLElement} button - the button associated with the text container
+   */
   function changeButton(textContainer, button) {
     let reviewText = textContainer.value;
     reviewText = reviewText.trim();
