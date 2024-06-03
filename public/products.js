@@ -16,6 +16,7 @@
   const REVIEWS_ENDPOINT = "/reviews/";
   const FEEDBACK_ENDPOINT = "/feedback";
   const SEARCH_ENDPOINT = "/products/search";
+  const FILTER_ENDPOINT = "/products/filter";
   const IMG_FILE_EXT = ".jpg";
   const TEN_SECONDS = 10000;
   let isSearchBarFilled = false;
@@ -54,7 +55,7 @@
     });
 
     id("clear-button").addEventListener("click", clearFilters);
-    id("filter-button").addEventListener("click", searchAndFilterProducts);
+    id("filter-button").addEventListener("click", searchAndOrFilterProducts);
 
     id("search-bar").addEventListener("change", function() {
       isSearchBarFilled = (id("search-entry").value.trim() !== "");
@@ -84,13 +85,21 @@
   function enableSearchAndFilterBtn() {
     let filterBtn = id("filter-button");
     if (
+      (!isSearchBarFilled) &&
+      (isCategoryFilterFilled || isPriceFilterFilled || isRatingFilterFilled)
+    ) {
+      filterBtn.disabled = false;
+      filterBtn.textContent = "Filter products";
+    } else if (
       isSearchBarFilled &&
       isCategoryFilterFilled &&
       isPriceFilterFilled &&
       isRatingFilterFilled
     ) {
+      filterBtn.textContent = "Search and Filter products";
       filterBtn.disabled = false;
     } else {
+      filterBtn.textContent = "Search and Filter products";
       filterBtn.disabled = true;
     }
   }
@@ -116,6 +125,7 @@
     isCategoryFilterFilled = false;
     isPriceFilterFilled = false;
     isRatingFilterFilled = false;
+    id("filter-button").textContent = "Search and Filter products";
     displayAllProducts();
   }
 
@@ -137,6 +147,106 @@
     });
   }
 
+  /**
+   * Searches and filters products OR only filters products depending on
+   * if the user is searching for a term or not
+   */
+  function searchAndOrFilterProducts() {
+    if (id("search-entry").value.trim() !== "") {
+      searchAndFilterProducts();
+    } else {
+      filterProducts();
+    }
+  }
+
+  /** Keeps the products matching the filters */
+  async function filterProducts() {
+    try {
+      let query = createFilterQuery();
+      let results = await fetch(query);
+      await statusCheck(results);
+      results = await results.json();
+      addProductsToPage(results, qs("#products-page section"));
+    } catch (error) {
+      handleQueryError(qs("#products-page section"));
+    }
+  }
+
+  /**
+   * Creates a url to obtain filtered products from
+   * @returns {String} - the url to obtain filtered products from
+   */
+  function createFilterQuery() {
+    let query = "";
+
+    let category = getCategory();
+    if (category) {
+      query += "product-category=" + category;
+    }
+
+    let maxPrice = getMaxPrice();
+    if (maxPrice) {
+      query = addAmpersand(query);
+      query += "max-price=" + maxPrice;
+    }
+
+    let minRating = id("ratings-min").value;
+    let maxRating = id("ratings-max").value;
+    if (minRating && maxRating) {
+      query = addAmpersand(query);
+      query += "min-rating=" + minRating;
+      query += "&max-rating=" + maxRating;
+    }
+
+    let url = FILTER_ENDPOINT + "?";
+    return url + query;
+  }
+
+  /**
+   * Returns the selected product category
+   * @returns {String} - the selected product category
+   */
+  function getCategory() {
+    let categoryBtns = qsa("#category-filter input");
+    let category = "";
+    for (let btnNum = 0; btnNum < categoryBtns.length; btnNum++) {
+      if (categoryBtns[btnNum].checked) {
+        category = categoryBtns[btnNum].value;
+      }
+    }
+    return category;
+  }
+
+  /**
+   * Returns the selected max price if selected, else return undefined
+   * @returns {Number} - the selected max price for products to have
+   */
+  function getMaxPrice() {
+    let maxPrice = undefined;
+    let priceRangeBtns = qsa("#price-filter input");
+    for (let btnNum = 0; btnNum < priceRangeBtns.length; btnNum++) {
+      if (priceRangeBtns[btnNum].checked) {
+        maxPrice = priceRangeBtns[btnNum].value;
+      }
+    }
+
+    return maxPrice;
+  }
+
+  /**
+   * Adds an ampersand (&) onto the end of the given string if the string is not empty
+   * @param {String} string - the string that can receive an ampersand
+   * @returns {String} - a string with or without an ampersand
+   */
+  function addAmpersand(string) {
+    let returnedString = string;
+    if (returnedString !== "") {
+      returnedString += "&";
+    }
+
+    return returnedString;
+  }
+
   /** Searches for products matching the user's input */
   function searchForProducts() {
     let productTerm = id("search-entry").value;
@@ -148,24 +258,8 @@
   function searchAndFilterProducts() {
     let url = SEARCH_ENDPOINT + "?search-term=" + id("search-entry").value;
 
-    let categoryBtns = qsa("#category-filter input");
-    let category = "";
-    for (let btnNum = 0; btnNum < categoryBtns.length; btnNum++) {
-      if (categoryBtns[btnNum].checked) {
-        category = categoryBtns[btnNum].value;
-      }
-    }
-    url += "&product-category=" + category;
-
-    let priceRangeBtns = qsa("#price-filter input");
-    let maxPrice = 0;
-    for (let btnNum = 0; btnNum < priceRangeBtns.length; btnNum++) {
-      if (priceRangeBtns[btnNum].checked) {
-        maxPrice = priceRangeBtns[btnNum].value;
-      }
-    }
-    url += "&max-price=" + maxPrice;
-
+    url += "&product-category=" + getCategory();
+    url += "&max-price=" + getMaxPrice();
     url += "&min-rating=" + id("ratings-min").value;
     url += "&max-rating=" + id("ratings-max").value;
     searchAndDisplay(url);
