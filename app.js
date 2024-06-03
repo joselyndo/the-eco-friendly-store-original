@@ -413,7 +413,6 @@ async function updateProductRating(itemName) {
   let avgQuery = "SELECT AVG(rating) AS avg_rating FROM reviews WHERE item = ?;";
   let averageRating = await db.get(avgQuery, itemName);
   let updateQuery = "UPDATE products SET rating = ? WHERE item = ?;";
-  console.log(averageRating.avg_rating);
   await db.run(updateQuery, [averageRating.avg_rating, itemName]);
   await db.close();
 }
