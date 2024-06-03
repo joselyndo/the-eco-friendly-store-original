@@ -11,7 +11,7 @@ important user data.*
 
 **Returned Data Format**: Plain Text
 
-**Description:** Creates a new user account if the provided username and email are unique
+**Description:** Creates a new user account if the provided username is unique
 
 **Example Request:**
 
@@ -69,7 +69,7 @@ POST request: /log-in
 - 500 Internal Server Error:
     - If an error occurred on the server, returns an error with the response: "An error occurred during account login. Please try again later."
 
-## *Buy item*
+## Buy item
 **Request Format:** /buy
 
 **Request Type:** POST
@@ -102,6 +102,194 @@ POST request: /buy
     - If an error occured on the server, returns an error with the response: "An error occured during the buy process. Please try again
     later."
 
+## Retrieve all products
+**Request Format:** /products/all
+
+**Request Type:** GET
+
+**Returned Data Format**: JSON
+
+**Description:** Retrieves all the products in the store
+
+**Example Request:** /products/all
+
+**Example Response:**
+```json
+[
+  {
+    "item": "Bamboo Toothbrush",
+    "image": "bamboo-toothbrush",
+    "price": 4.99,
+    "rating": 4.8
+  },
+  {
+    "item": "Reusable Shopping Bag",
+    "image": "reusable-shopping-bag",
+    "price": 9.99,
+    "rating": 4.7
+  },
+    ...
+  {
+    "item": "Zero Waste Toothpaste Tablets",
+    "image": "biodegradable-toothpaste-tablets",
+    "price": 9.99,
+    "rating": 4.5
+  }
+]
+```
+
+**Error Handling:**
+- 500 Internal Server Error:
+    - If an error occured on the server, returns an error with the response: "An error occurred on the server. Try again later."
+
+## Search and (optionally) filter products
+**Request Format:** /products/search with 5 parameters ("search-term", "product-category", "max-price", "min-rating", "max-rating")
+
+**Request Type:** GET
+
+**Returned Data Format**: JSON
+
+**Description:** Searches for the products matching for a search term or searches and filters the products matching the requirements
+
+**Example Request 1:** /products/search?search-term=ho&product-category=Home&max-price=25&min-rating=0&max-rating=5
+
+**Example Response 1:**
+```json
+[
+  {
+    "item": "Compostable Trash Bags",
+    "image": "compostable-trash-bags",
+    "price": 12.99,
+    "rating": 4.6
+  },
+  {
+    "item": "Soy Wax Candles",
+    "image": "soy-wax-candles",
+    "price": 19.99,
+    "rating": 4.8
+  },
+    ...
+  {
+    "item": "Organic Wool Dryer Balls",
+    "image": "organic-wool-dryer-balls",
+    "price": 14.99,
+    "rating": 4.8
+  }
+]
+```
+
+**Example Request 2:** /products/search?search-term=ho
+
+**Example Response 2:**
+```json
+[
+  {
+    "item": "Reusable Shopping Bag",
+    "image": "reusable-shopping-bag",
+    "price": 9.99,
+    "rating": 4.7
+  },
+  {
+    "item": "Stainless Steel Water Bottle",
+    "image": "stainless-steel-water-bottle",
+    "price": 19.99,
+    "rating": 4.9
+  },
+    ...
+  {
+    "item": "Organic Wool Dryer Balls",
+    "image": "organic-wool-dryer-balls",
+    "price": 14.99,
+    "rating": 4.8
+  }
+]
+```
+
+**Error Handling:**
+- 400 Bad Request Error:
+    - If min-rating and max-rating is provided but max-rating is less than min-rating, return error with response: "min-rating must be less than or equal to max-rating."
+    - If searchTerm is not given, returns error with response: "Missing parameters. Please try again."
+
+- 500 Internal Server Error:
+    - If an error occured on the server, returns an error with the response: "An error occured during the buy process. Please try again
+    later."
+
+## Applies filters to all products
+**Request Format:** /products/filter with four query parameters ("product-category", "max-price", "min-rating", "max-rating")
+
+**Request Type:** GET
+
+**Returned Data Format**: JSON
+
+**Description:** Retrieves the products from the entire store that matches the given filters
+
+**Example Request:** /products/filter?max-price=15&min-rating=1&max-rating=5
+
+**Example Response:**
+```json
+[
+  {
+    "item": "Bamboo Toothbrush",
+    "image": "bamboo-toothbrush",
+    "price": 4.99,
+    "rating": 4.8
+  },
+  {
+    "item": "Reusable Shopping Bag",
+    "image": "reusable-shopping-bag",
+    "price": 9.99,
+    "rating": 4.7
+  },
+    ...
+  {
+    "item": "Zero Waste Toothpaste Tablets",
+    "image": "biodegradable-toothpaste-tablets",
+    "price": 9.99,
+    "rating": 4.5
+  }
+]
+```
+
+**Error Handling:**
+- 400 Bad Request Error:
+    - If product-category, or max-price, or min-rating and max-rating are not given, returns error with response: "Missing or invalid parameters. Please try again."
+    - If min-rating and max-rating are given but max-rating is less than min-rating, returns error with response: "Missing or invalid parameters. Please try again."
+
+- 500 Internal Server Error:
+    - If an error occured on the server, returns an error with the response: "An error occured during the buy process. Please try again
+    later."
+
+## Get product information
+**Request Format:** /detail/:item
+
+**Request Type:** GET
+**Parameters:** "item" (String)
+
+**Returned Data Format**: JSON
+
+**Description:** Retrieves information for a specific product
+
+**Example Request:** /details/Bamboo Toothbrush
+
+**Example Response:**
+
+```
+{
+  "item": "Bamboo Toothbrush",
+  "image": "bamboo-toothbrush",
+  "description": "Eco-friendly toothbrush made from sustainably sourced bamboo.",
+  "price": 4.99,
+  "rating": 4.8,
+  "stock": 150
+}
+```
+
+**Error Handling:**
+- 404 Not Found (plain text):
+    - If the product is not in the database, returns an error with response: “Product not found.”
+
+- 500 Internal Server Error (plain text):
+    - If an error occured on the server, returns an error with the response: "An error occurred during information retrieval. Please try again later."
 
 ## Retrieve cart
 **Request Format:** /cart
@@ -146,79 +334,8 @@ POST request: /cart
 - 500 Internal Server Error:
     - If an error occured on the server, returns an error with the response: "An error occured when attempting to retrieve the cart. Please try again later."
 
-## Search products
-**Request Format:** /products/search?item
-
-**Request Type:** GET
-**Query:** "item", "type", "price-filter"
-
-**Returned Data Format**: Plain text
-
-**Description:** Retrieves all products
-
-**Example Request:** /products/
-
-**Example Response:**
-
-```
-[
-    {"item": "Compostable trash bags"}
-    {"item": "Reusable metal straws"}
-    {"item": "Paper straws"}
-    {"item": "Recycled notebook"}
-    {"item": "Reusable shopping bag"}
-    {"item": "Reusable tote bag"}
-    {"item": "Stainless steel water bottle"}
-]
-```
-
-**Error Handling:**
-- 500 Internal Server Error:
-    - If an error occurred on the server, returns an error with the response: "An error occurred during product retrieval. Please try again later."
-
-## Search products
-**Request Format:** /products/search?item
-
-**Request Type:** GET
-**Query:** "item", "type", "price-filter"
-
-**Returned Data Format**: Plain text
-
-**Description:** Retrieves products with a specified product name and/or filters
-
-**Example Request 2:** /products?name=reusable
-
-**Example Response 2:**
-
-```
-Reusable metal straws
-Reusable shopping bag
-Reusable tote bag
-```
-
-**Example Request 3:** /products?name=reusable&type=bag
-
-**Example Response 3:**
-
-```
-Reusable shopping bag
-Reusable tote bag
-```
-
-**Example Request 4:** /products?name=alsefmlaskngs&type=akjsdfasljkdfhl
-
-**Example Response 4:**
-
-```
-"There are no results for the given query."
-```
-
-**Error Handling:**
-- 500 Internal Server Error:
-    - If an error occurred on the server, returns an error with the response: "An error occurred during product search. Please try again later."
-
 ## Get best sellers
-**Request Format:** /best-sellers/
+**Request Format:** /best-sellers
 
 **Request Type:** GET
 
@@ -247,114 +364,7 @@ Reusable tote bag
 - 500 Internal Server Error:
     - If an error occurred on the server, returns an error with the response: "An error occurred during account login. Please try again later."
 
-## Get product information
-**Request Format:** /detail/:item
-
-**Request Type:** GET
-**Parameters:** "item" (String)
-
-**Returned Data Format**: JSON
-
-**Description:** Retrieves information for a specific product
-
-**Example Request:** /detail/paper-straws
-
-**Example Response:**
-
-```
-{
-    “name”: “Paper Straws”,
-    “rating”: 5,
-    “description”: “Paper straws are eco-friendly.”,
-    <!-- “image”: “img/placeholder-product.png”,
-    “dimensions”:  “0.4 in x 0.4 in x 6 in”,
-    “materials”: “paper”, -->
-    "reviews": [
-        “review1”,
-        “review2”,
-        ...
-        "reviewn"
-    ]
-}
-```
-
-**Error Handling:**
-- 404 Not Found (plain text):
-    - If the product name is not in the database, returns an error with response: “Product not found.”
-
-- 500 Internal Server Error (plain text):
-    - If an error occured on the server, returns an error with the response: "An error occurred during information retrieval. Please try again later."
-
-**Error Handling:**
-- 404 Not Found (plain text):
-    - If the product name is not in the database, returns an error with response: “Product not found.”
-
-- 500 Internal Server Error (plain text):
-    - If an error occured on the server, returns an error with the response: "An error occurred during information retrieval. Please try again later."
-
-## Get product recommendations
-**Request Format:** /recommendations
-
-**Request Type:** POST
-**Parameters:** "username" (String)
-
-**Returned Data Format**: Plain Text
-
-**Description:** Returns a list of recommended products for the logged in user
-
-**Example Request:**
-
-POST request: /recommendations
-{
-    "username" = "user1"
-}
-
-**Example Response:**
-
-```
-bag2
-bag3
-bag4
-bag5
-bag6
-```
-
-**Error Handling:**
-- 401 Unauthorized (plain text):
-    - If the user with username is not logged in, returns an error with response: "User not logged in. Please log in to see recommendations."
-
-- 500 Internal Server Error (plain text):
-    - If an error occurred on the server, returns an error with the response: "An error occurred. Please try again later."
-
-## Get ads
-**Request Format:** /ad/:quantity
-
-**Request Type:** GET
-**Parameter:** "quantity" (int)
-
-**Returned Data Format**: Plain Text
-
-**Description:** Retrieves a certain number of ads
-
-**Example Request:** /ad/4
-
-**Example Response:**
-
-```
-img/ad1.png
-img/ad2.png
-img/ad7.png
-img/ad4.png
-```
-
-**Error Handling:**
-- 400 Bad Request Error (plain text):
-    - If the user passes in a quantity of 0, returns an error with response: "Invalid quantity."
-
-- 500 Internal Server Error (plain text):
-    - If an error occured on the server, returns an error with the response: “An error occurred during retrieval. Please try again later.”
-
-## Review
+## Upload product review
 **Request Format:** /feedback
 
 **Request Type:** POST
@@ -368,7 +378,7 @@ img/ad4.png
 POST request: /feedback
 {
     "username": "user1",
-    "date": "08-18-2024",
+    "item": "Bamboo Toothbrush",
     "review": "Works well! Works well! Works well!",
     "rating": 5.0
 }
@@ -381,7 +391,51 @@ POST request: /feedback
 
 **Error Handling:**
 - 400 Bad Request Error (plain text):
-    - If review length does not exceed 20 characters, returns an error with the response: "Review is too short. Please try again."
+    - If all parameters (item, username, rating, review) are missing, returns an error with the response: "Missing parameters. Please try again."
+
+- 500 Internal Server Error (plain text):
+    - If an error occured on the server, returns an error with the response: “An error occurred during retrieval. Please try again later.”
+
+## Retrieve reviews of a product
+**Request Format:** "/reviews/:item"
+
+**Request Type:** GET
+
+**Returned Data Format**: JSON
+
+**Description:** Retrieves all reviews for a product
+
+**Example Request:** /reviews/Bamboo Toothbrush
+
+**Example Response:**
+*Fill in example response in the {}*
+
+```json
+[
+  {
+    "username": "keith123",
+    "review": "Nice",
+    "rating": 5,
+    "date": "2024-06-03 01:23:06"
+  },
+  {
+    "username": "joselynd",
+    "review": "10/10 would recommend",
+    "rating": 5,
+    "date": "2024-06-01 21:48:59"
+  },
+  {
+    "username": "duckduckgoose",
+    "review": "AMAZING",
+    "rating": 5,
+    "date": "2024-06-01 21:18:37"
+  }
+]
+```
+
+**Error Handling:**
+- 400 Bad Request Error (plain text):
+    - If the given item does not exist, returns an error with the response: "Missing parameters. Please try again."
 
 - 500 Internal Server Error (plain text):
     - If an error occured on the server, returns an error with the response: “An error occurred during retrieval. Please try again later.”

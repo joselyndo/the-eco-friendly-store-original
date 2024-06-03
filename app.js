@@ -85,8 +85,8 @@ app.post("/buy/", async function(req, res) {
   try {
     let db = await getDBConnection();
     let exist = await db.get("SELECT id FROM products WHERE item = ?", [item]);
-    if (!exist) {
-      return res.status(INVALID_PARAM_ERROR).send("Product does not exist. Please try again");
+    if (!exist) { // should have await db.close() in this if statement
+      return res.status(INVALID_PARAM_ERROR).send("Product does not exist. Please try again"); // return???
     }
     let priceQuery = "SELECT price FROM products WHERE item = ?";
     let price = await db.get(priceQuery, [item]);
@@ -104,6 +104,7 @@ app.get("/products/all", async function(req, res) {
     let db = await getDBConnection();
     let query = "SELECT item, image, price, rating FROM products;";
     let rows = await db.all(query);
+    await db.close();
     res.json(rows);
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
@@ -111,7 +112,7 @@ app.get("/products/all", async function(req, res) {
 });
 
 app.get("/products/search", async function(req, res) {
-  let searchTerm = req.query["search-term"]; // TODO = update APIDOC
+  let searchTerm = req.query["search-term"];
   let productCategory = req.query["product-category"];
   let maxPrice = req.query["max-price"];
   let minRating = req.query["min-rating"];
@@ -122,10 +123,11 @@ app.get("/products/search", async function(req, res) {
         let query = createSearchFilterQuery(true);
         let filters = [searchTerm, productCategory, maxPrice, minRating, maxRating];
         let results = await searchFilterProducts(query, filters);
-        res.json(results); // TODO: update APIDOC
+        res.json(results);
       } else {
         res.type("text");
-        res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+        res.status(INVALID_PARAM_ERROR);
+        res.send("min-rating must be less than or equal to max-rating.");
       }
     } else if (searchTerm) {
       let query = createSearchFilterQuery(false);
@@ -141,7 +143,7 @@ app.get("/products/search", async function(req, res) {
   }
 });
 
-app.get("/products/filter", async function(req, res) { // TODO = update APIDOC
+app.get("/products/filter", async function(req, res) {
   let productCategory = req.query["product-category"];
   let maxPrice = req.query["max-price"];
   let minRating = req.query["min-rating"];
@@ -155,7 +157,7 @@ app.get("/products/filter", async function(req, res) { // TODO = update APIDOC
       res.json(results);
     } else {
       res.type("text");
-      res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+      res.status("Missing or invalid parameters. Please try again.").send(MISSING_PARAM_MSG);
     }
   } catch (error) {
     res.type("text");
@@ -172,7 +174,13 @@ app.get("/details/:item", async function(req, res) {
       "FROM products " +
       "WHERE item = ?;";
     let details = await db.get(query, item);
-    res.json(details); // TODO: JSON object is sent
+    await db.close();
+    if (details) {
+      res.json(details);
+    } else {
+      res.type("text");
+      res.status(INVALID_PARAM_ERROR).send("Product not found.");
+    }
   } catch (error) {
     res.type("text");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
@@ -192,7 +200,7 @@ app.post("/cart", async function(req, res) {
     for (let i = 0; i < items.length; i++) {
       let item = await db.get("SELECT id FROM products WHERE item = ?", [items[i]]);
 
-      if (!item) {
+      if (!item) { // add in an await db.close here
         res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
       }
 
@@ -221,36 +229,37 @@ app.get("/best-sellers", async function(req, res) {
       "ORDER BY " + orderBy + " DESC " +
       "LIMIT " + limit + ";";
     let result = await db.all(query);
+    await db.close();
     res.send(result);
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
 
-app.post("/feedback", async function(req, res) { // TODO: check apidoc entry
+app.post("/feedback", async function(req, res) {
   let item = req.body.item;
   let username = req.body.username;
   let rating = req.body.rating;
   let review = req.body.review;
   res.type("text");
 
-  if (!(item && username && rating && review)) {
-    res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
-  }
-
   try {
-    let db = await getDBConnection();
-    let query = "INSERT INTO reviews(item, username, review, rating) " +
-      "VALUES(?, ?, ?, ?);";
-    await db.run(query, [item, username, review, rating]);
-    res.send("Review successfully submitted.");
+    if (!(item && username && rating && review)) {
+      res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+    } else {
+      let db = await getDBConnection();
+      let query = "INSERT INTO reviews(item, username, review, rating) " +
+        "VALUES(?, ?, ?, ?);";
+      await db.run(query, [item, username, review, rating]);
+      await db.close();
+      res.send("Review successfully submitted.");
+    }
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
 
-app.get("/reviews/:item", async function(req, res) { // TODO: add to apidoc
-  // arr of json with fields username, review, raating, date
+app.get("/reviews/:item", async function(req, res) {
   let itemName = req.params["item"];
   try {
     let db = await getDBConnection();
@@ -265,6 +274,7 @@ app.get("/reviews/:item", async function(req, res) { // TODO: add to apidoc
         "WHERE p.item = ? " +
         "AND p.item = r.item " +
         "ORDER BY datetime(r.date) DESC;";
+        await db.close();
       let results = await db.all(query, itemName);
       res.json(results);
     }
