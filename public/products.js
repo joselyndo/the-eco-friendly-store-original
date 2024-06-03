@@ -339,7 +339,17 @@
   }
 
   function addItemToCart() {
-    // TODO: implement
+    let item = qs("#product-description h2").textContent;
+    let cart = window.localStorage.getItem("cart");
+
+    if (cart) {
+      cart = JSON.parse(cart);
+    } else {
+      cart = [];
+    }
+
+    cart.push(item);
+    window.localStorage.setItem("cart", JSON.stringify(cart));
   }
 
   /**

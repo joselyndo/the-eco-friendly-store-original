@@ -106,13 +106,17 @@ POST request: /buy
 ## Retrieve cart
 **Request Format:** /cart
 
-**Request Type:** GET
+**Request Type:** POST
+**Parameters:** "cart" (String)
 
 **Returned Data Format**: JSON
 
 **Description:** Retrieves the user's shopping cart
 
-**Example Request:** /cart
+**Example Request:**
+
+POST request: /cart
+"{cart: ["item1", "item2"]}"
 
 **Example Response:**
 
@@ -121,12 +125,14 @@ POST request: /buy
   {
     "item": "item1",
     "rating": 4.5,
+    "price": 1.00,
     "description": "Description 1",
     "image": "image1.png"
   },
   {
     "item": "item2",
     "rating": 4.0,
+    "price": 9.99,
     "description": "Description 2",
     "image": "image2.png"
   }

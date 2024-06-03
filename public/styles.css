@@ -142,7 +142,6 @@ header a {
 
 header a img {
   width: 100%;
-  border: #A6866A 2px solid;
 }
 
 main img {
@@ -168,10 +167,10 @@ section a {
   width: 7%;
 }
 
-#checkout {
+#checkout, #clear {
   margin-top: 50px;
   height: 50px;
-  width: 100px;
+  width: 80px;
 }
 
 #products {
@@ -186,7 +185,8 @@ section a {
   overflow: hidden;
   overflow-y: scroll;
   max-height: 500px;
-  margin-top: 50px;
+  margin-top: 0px;
+  margin-bottom: 40px;
 }
 
 #best-sellers div {
@@ -212,6 +212,19 @@ section a {
   min-height: 150px;
   height: 150px;
   width: 150px;
+}
+
+#cart {
+  border: 5px solid #e7bc91;
+  background-color: #fadcb6;
+}
+
+#cart-container img {
+  width: 150px;
+}
+
+#cart-container .card {
+  border-bottom: 2px solid #e7bc91;
 }
 
 #best-sellers > div img:nth-of-type(2) {
@@ -367,8 +380,8 @@ article {
 
 #welcome img {
   width: 50%;
-  margin-left: 100px;
-  padding-left: 650px;
+  margin-left: 620px;
+  padding-left: 150px;
 }
 
 #about {

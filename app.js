@@ -159,10 +159,14 @@ app.get("/details/:item", async function(req, res) {
 
 app.post("/cart", async function(req, res) {
   let items = req.body.cart;
+  items = JSON.parse(items);
+  if (!items || items.length === 0) {
+    return res.status(400).send("Cart is empty");
+  }
+
   try {
     let db = await getDBConnection();
     let result = [];
-
     for (let i = 0; i < items.length; i++) {
       let item = await db.get("SELECT id FROM products WHERE item = ?", [items[i]]);
 
@@ -170,10 +174,12 @@ app.post("/cart", async function(req, res) {
         res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
       }
 
-      let query = "SELECT item, rating, description, image FROM products WHERE item = ?;";
-      let row = await db.all(query, [item]);
+      let query = "SELECT item, price, rating, description, image FROM products WHERE id = ?";
+      let row = await db.get(query, [item["id"]]);
+
       result.push(row);
     }
+    await db.close();
     res.send(result);
 
   } catch (error) {
@@ -183,8 +189,8 @@ app.post("/cart", async function(req, res) {
 });
 
 app.get("/best-sellers", async function(req, res) {
-  let orderBy = "rating"; // Default filter is rating for now
-  let limit = 5; // Default 5 products
+  let orderBy = "rating";
+  let limit = 5;
 
   try {
     let db = await getDBConnection();

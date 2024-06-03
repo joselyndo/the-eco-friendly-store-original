@@ -20,31 +20,73 @@
    */
   function init() {
     getCart();
+    id("clear").addEventListener("click", clearCart);
   }
 
-  // Endpoint test for /cart (Working)
+  /**
+   * Makes a POST fetch to retrieve details on user's cart
+   */
   async function getCart() {
     let body = new FormData();
     let cart = window.localStorage.getItem("cart");
 
-    if (!cart) {
-      cart = [];
+    if (cart) {
+      body.append("cart", cart);
+      try {
+        let response = await fetch("/cart", {method: "POST", body: body});
+        statusCheck(response);
+        let result = await response.json();
+        populateCart(result);
+      } catch (error) {
+        console.error(error);
+      }
     } else {
-      cart = JSON.parse(cart);
+      clearCart();
     }
+  }
 
-    body.append("cart", cart);
+  /**
+   * Generates DOM elements representing the user's cart.
+   * @param {Object} items Details of each product
+   */
+  function populateCart(items) {
+    let cart = id("cart-container");
+    for (let i = 0; i < items.length; i++) {
+      let productCard = gen("section");
+      productCard.classList.add("card");
 
-    try {
-      let response = await fetch("/cart", {method: "POST", body: body});
-      statusCheck(response);
-      let result = await response.text();
-      console.log(result);
-    } catch (error) {
-      // Clears cart cache
-      window.localStorage.setItem("cart", "");
-      console.error(error);
+      let product = gen("div");
+      let productName = gen("h4");
+      productName.textContent = items[i]["item"];
+      let productImg = gen("img");
+      productImg.src = "img/products/" + items[i]["image"] + ".jpg";
+      let productPrice = gen("p");
+      productPrice.textContent = "$" + items[i]["price"];
+      product.appendChild(productName);
+      product.appendChild(productImg);
+      product.appendChild(productPrice);
+
+      let productDescription = gen("div");
+      let productDescriptionP = gen("p");
+      productDescriptionP.textContent = items[i]["description"];
+      productDescription.appendChild(productDescriptionP);
+
+      productCard.appendChild(product);
+      productCard.appendChild(productDescription);
+      cart.appendChild(productCard);
     }
+  }
+
+  /**
+   * Clears the user's stored cart
+   */
+  function clearCart() {
+    id("cart-container").innerHTML = "";
+    window.localStorage.setItem("cart", "");
+
+    let inform = gen("p");
+    inform.textContent = "There is nothing in your cart!";
+    id("cart-container").appendChild(inform);
   }
 
   /**
