@@ -64,7 +64,7 @@ app.post("/log-in", async function(req, res) {
         await db.close();
         res.status(INVALID_PARAM_ERROR).send(INCORRECT_LOG_IN);
       } else {
-        let rst = await db.run("UPDATE users SET logged_in = 'true' WHERE username = ?;", username);
+        await db.run("UPDATE users SET logged_in = 'true' WHERE username = ?;", username);
         await db.close();
         res.send("Login successful");
       }
@@ -199,13 +199,13 @@ app.post("/cart", async function(req, res) {
     let db = await getDBConnection();
     let result = [];
     for (let i = 0; i < items.length; i++) {
-      let item = await db.get("SELECT id FROM products WHERE item = ?", [items[i]]);
+      let item = await db.get("SELECT id FROM products WHERE item = ?;", [items[i]]);
 
       if (!item) { // add in an await db.close here
         res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
       }
 
-      let query = "SELECT item, price, rating, description, image FROM products WHERE id = ?";
+      let query = "SELECT item, price, rating, description, image FROM products WHERE id = ?;";
       let row = await db.get(query, [item["id"]]);
 
       result.push(row);
@@ -249,13 +249,14 @@ app.post("/feedback", async function(req, res) {
       res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
     } else {
       let db = await getDBConnection();
-      let userID = await db.get("SELECT user_id FROM users WHERE username = ?", username);
-      let itemID = await db.get("SELECT id FROM products WHERE item = ?", item);
+      let userID = await db.get("SELECT user_id FROM users WHERE username = ?;", username);
+      let itemID = await db.get("SELECT id FROM products WHERE item = ?;", item);
       if (userID && itemID) {
         let query = "INSERT INTO reviews(item_id, item, user_id, username, review, rating) " +
           "VALUES(?, ?, ?, ?, ?, ?);";
         await db.run(query, [itemID.id, item, userID.user_id, username, review, rating]);
         await db.close();
+        updateProductRating(item);
         res.send("Review successfully submitted.");
       } else {
         await db.close();
@@ -288,6 +289,23 @@ app.get("/reviews/:item", async function(req, res) {
     }
   } catch (error) {
     res.type("text");
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+});
+
+app.get("/details/rating/:item", async function(req, res) {
+  let itemName = req.params["item"];
+  try {
+    res.type("text");
+    let db = await getDBConnection();
+    let avgRating = await db.get("SELECT rating FROM products WHERE item = ?;", itemName);
+    await db.close();
+    if (avgRating) {
+      res.send("" + avgRating.rating);
+    } else {
+      res.status(INVALID_PARAM_ERROR).send("Item does not exist. Please try again.");
+    }
+  } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
@@ -384,6 +402,20 @@ async function searchFilterProducts(query, filters) {
 
   await db.close();
   return results;
+}
+
+/**
+ * Update the given product's average rating
+ * @param {String} itemName - the name of the item whose rating is updated
+ */
+async function updateProductRating(itemName) {
+  let db = await getDBConnection();
+  let avgQuery = "SELECT AVG(rating) AS avg_rating FROM reviews WHERE item = ?;";
+  let averageRating = await db.get(avgQuery, itemName);
+  let updateQuery = "UPDATE products SET rating = ? WHERE item = ?;";
+  console.log(averageRating.avg_rating);
+  await db.run(updateQuery, [averageRating.avg_rating, itemName]);
+  await db.close();
 }
 
 /**
