@@ -86,7 +86,6 @@ app.post("/buy", async function(req, res) {
     res.status(INVALID_PARAM_ERROR).send("Cart is empty");
     return;
   }
-
   if (typeof username === 'undefined') {
     res.type("text");
     res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
@@ -96,7 +95,6 @@ app.post("/buy", async function(req, res) {
   try {
     let db = await getDBConnection();
     let userId = await db.get("SELECT user_id FROM users WHERE username = ?", [username]);
-
     if (!userId) {
       await db.close();
       res.type("text");
@@ -107,7 +105,7 @@ app.post("/buy", async function(req, res) {
 
     let sum = 0;
     for (let i = 0; i < items.length; i++) {
-      let stockQuery = "SELECT stock FROM products WHERE item = ?";
+      let stockQuery = "SELECT stock FROM products WHERE item = ?;";
       let stock = await db.get(stockQuery, items[i]);
       stock = stock["stock"];
 
@@ -122,16 +120,15 @@ app.post("/buy", async function(req, res) {
         return;
       }
 
-      let priceQuery = "SELECT price FROM products WHERE item = ?";
+      let priceQuery = "SELECT price FROM products WHERE item = ?;";
       let price = await db.get(priceQuery, [items[i]]);
+      await db.run("UPDATE products SET stock = ? WHERE item = ?;", [stock-1, items[i]]);
       sum += price["price"];
     }
 
     let balance = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
     balance = balance["balance"];
-
     let newBalance = (balance - sum).toFixed(2);
-
     if (newBalance < 0) {
       await db.close();
       res.type("text");
