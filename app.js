@@ -126,8 +126,7 @@ app.get("/products/search", async function(req, res) {
         res.json(results);
       } else {
         res.type("text");
-        res.status(INVALID_PARAM_ERROR);
-        res.send("min-rating must be less than or equal to max-rating.");
+        res.status(INVALID_PARAM_ERROR).send("max-rating cannot be less than min-rating.");
       }
     } else if (searchTerm) {
       let query = createSearchFilterQuery(false);
@@ -191,7 +190,7 @@ app.post("/cart", async function(req, res) {
   let items = req.body.cart;
   items = JSON.parse(items);
   if (!items || items.length === 0) {
-    return res.status(400).send("Cart is empty");
+    return res.status(INVALID_PARAM_ERROR).send("Cart is empty");
   }
 
   try {
