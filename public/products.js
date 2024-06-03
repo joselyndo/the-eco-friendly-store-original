@@ -16,12 +16,13 @@
   const REVIEWS_ENDPOINT = "/reviews/";
   const FEEDBACK_ENDPOINT = "/feedback";
   const SEARCH_ENDPOINT = "/products/search";
+  const FILTER_ENDPOINT = "/products/filter";
   const IMG_FILE_EXT = ".jpg";
   const TEN_SECONDS = 10000;
-  let searchBarIsFilled = false;
-  let categoryFilterIsFilled = false;
-  let priceFilterIsFilled = false;
-  let ratingFilterIsFilled = false;
+  let isSearchBarFilled = false;
+  let isCategoryFilterFilled = false;
+  let isPriceFilterFilled = false;
+  let isRatingFilterFilled = false;
 
   window.addEventListener("load", init);
 
@@ -38,7 +39,6 @@
     if (sessionStorage.getItem("search") !== null) {
       let productTerm = sessionStorage.getItem("search");
       sessionStorage.removeItem("search");
-      console.log(productTerm);
       id("search-entry").value = productTerm;
       let query = SEARCH_ENDPOINT + "?search-term=" + productTerm;
       searchAndDisplay(query);
@@ -55,7 +55,53 @@
     });
 
     id("clear-button").addEventListener("click", clearFilters);
-    id("filter-button").addEventListener("click", searchAndFilterProducts);
+    id("filter-button").addEventListener("click", searchAndOrFilterProducts);
+
+    id("search-bar").addEventListener("change", function() {
+      isSearchBarFilled = (id("search-entry").value.trim() !== "");
+      enableSearchAndFilterBtn();
+    });
+    id("category-filter").addEventListener("change", function() {
+      isCategoryFilterFilled = true;
+      enableSearchAndFilterBtn();
+    });
+    id("price-filter").addEventListener("change", function() {
+      isPriceFilterFilled = true;
+      enableSearchAndFilterBtn();
+    });
+    id("ratings-filter").addEventListener("change", checkNums);
+  }
+
+  /** Checks if the rating boxes are empty or full */
+  function checkNums() {
+    let ratingInput = qsa("#ratings-filter input");
+    let hasMinValue = (ratingInput[0].value !== "");
+    let hasMaxValue = (ratingInput[1].value !== "");
+    isRatingFilterFilled = (hasMinValue && hasMaxValue);
+    enableSearchAndFilterBtn();
+  }
+
+  /** Checks if the required search and filter forms are filled */
+  function enableSearchAndFilterBtn() {
+    let filterBtn = id("filter-button");
+    if (
+      (!isSearchBarFilled) &&
+      (isCategoryFilterFilled || isPriceFilterFilled || isRatingFilterFilled)
+    ) {
+      filterBtn.disabled = false;
+      filterBtn.textContent = "Filter products";
+    } else if (
+      isSearchBarFilled &&
+      isCategoryFilterFilled &&
+      isPriceFilterFilled &&
+      isRatingFilterFilled
+    ) {
+      filterBtn.textContent = "Search and Filter products";
+      filterBtn.disabled = false;
+    } else {
+      filterBtn.textContent = "Search and Filter products";
+      filterBtn.disabled = true;
+    }
   }
 
   /** Clears the search bar and the filters */
@@ -74,8 +120,12 @@
       priceRangeBtns[btnNum].checked = false;
     }
 
-    // id("filter-button").disabled = true;
-    console.log("boom: filter button is disabled (not really)");
+    id("filter-button").disabled = true;
+    isSearchBarFilled = false;
+    isCategoryFilterFilled = false;
+    isPriceFilterFilled = false;
+    isRatingFilterFilled = false;
+    id("filter-button").textContent = "Search and Filter products";
     displayAllProducts();
   }
 
@@ -95,34 +145,107 @@
     id("search-entry").addEventListener("input", function() {
       changeButton(this, this.nextElementSibling);
     });
-
-    // initUpdateSearchFilterBtn();
   }
 
-  // /** Initializes the functionality of updating the search and filter button */
-  // function initUpdateSearchFilterBtn() {
-  //   let forms = qsa(".filter");
-  //   for (let formNum = 0; formNum < forms.length; formNum++) {
-  //     forms[formNum].addEventListener("change", checkFilterOptions);
-  //   }
-  // }
+  /**
+   * Searches and filters products OR only filters products depending on
+   * if the user is searching for a term or not
+   */
+  function searchAndOrFilterProducts() {
+    if (id("search-entry").value.trim() !== "") {
+      searchAndFilterProducts();
+    } else {
+      filterProducts();
+    }
+  }
 
-  // function checkFilterOptions() {
-  //   let id = this.id;
-  //   let inputs = qsa("#" + id + " input");
-  //   let isFilled = false;
-  //   for (let inputNum = 0; inputNum < inputs.length; inputNum++) {
-  //     let inputElement = inputs[inputNum];
-  //     let inputType = inputElement.type;
-  //     if (inputType === "text") {
-  //       searchBarIsFilled = (inputElement.value.trim() !== "");
-  //     } else if (inputType === "number") {
-  //       ratingFilterIsFilled = (inputElement.value.trim() !== "");
-  //     } else if (inputElement.value) {
+  /** Keeps the products matching the filters */
+  async function filterProducts() {
+    try {
+      let query = createFilterQuery();
+      let results = await fetch(query);
+      await statusCheck(results);
+      results = await results.json();
+      addProductsToPage(results, qs("#products-page section"));
+    } catch (error) {
+      handleQueryError(qs("#products-page section"));
+    }
+  }
 
-  //     }
-  //   }
-  // }
+  /**
+   * Creates a url to obtain filtered products from
+   * @returns {String} - the url to obtain filtered products from
+   */
+  function createFilterQuery() {
+    let query = "";
+
+    let category = getCategory();
+    if (category) {
+      query += "product-category=" + category;
+    }
+
+    let maxPrice = getMaxPrice();
+    if (maxPrice) {
+      query = addAmpersand(query);
+      query += "max-price=" + maxPrice;
+    }
+
+    let minRating = id("ratings-min").value;
+    let maxRating = id("ratings-max").value;
+    if (minRating && maxRating) {
+      query = addAmpersand(query);
+      query += "min-rating=" + minRating;
+      query += "&max-rating=" + maxRating;
+    }
+
+    let url = FILTER_ENDPOINT + "?";
+    return url + query;
+  }
+
+  /**
+   * Returns the selected product category
+   * @returns {String} - the selected product category
+   */
+  function getCategory() {
+    let categoryBtns = qsa("#category-filter input");
+    let category = "";
+    for (let btnNum = 0; btnNum < categoryBtns.length; btnNum++) {
+      if (categoryBtns[btnNum].checked) {
+        category = categoryBtns[btnNum].value;
+      }
+    }
+    return category;
+  }
+
+  /**
+   * Returns the selected max price if selected, else return undefined
+   * @returns {Number} - the selected max price for products to have
+   */
+  function getMaxPrice() {
+    let maxPrice = undefined;
+    let priceRangeBtns = qsa("#price-filter input");
+    for (let btnNum = 0; btnNum < priceRangeBtns.length; btnNum++) {
+      if (priceRangeBtns[btnNum].checked) {
+        maxPrice = priceRangeBtns[btnNum].value;
+      }
+    }
+
+    return maxPrice;
+  }
+
+  /**
+   * Adds an ampersand (&) onto the end of the given string if the string is not empty
+   * @param {String} string - the string that can receive an ampersand
+   * @returns {String} - a string with or without an ampersand
+   */
+  function addAmpersand(string) {
+    let returnedString = string;
+    if (returnedString !== "") {
+      returnedString += "&";
+    }
+
+    return returnedString;
+  }
 
   /** Searches for products matching the user's input */
   function searchForProducts() {
@@ -135,24 +258,8 @@
   function searchAndFilterProducts() {
     let url = SEARCH_ENDPOINT + "?search-term=" + id("search-entry").value;
 
-    let categoryBtns = qsa("#category-filter input");
-    let category = "";
-    for (let btnNum = 0; btnNum < categoryBtns.length; btnNum++) {
-      if (categoryBtns[btnNum].checked) {
-        category = categoryBtns[btnNum].value;
-      }
-    }
-    url += "&product-category=" + category;
-
-    let priceRangeBtns = qsa("#price-filter input");
-    let maxPrice = 0;
-    for (let btnNum = 0; btnNum < priceRangeBtns.length; btnNum++) {
-      if (priceRangeBtns[btnNum].checked) {
-        maxPrice = priceRangeBtns[btnNum].value;
-      }
-    }
-    url += "&max-price=" + maxPrice;
-
+    url += "&product-category=" + getCategory();
+    url += "&max-price=" + getMaxPrice();
     url += "&min-rating=" + id("ratings-min").value;
     url += "&max-rating=" + id("ratings-max").value;
     searchAndDisplay(url);
@@ -334,10 +441,12 @@
     }
   }
 
+  /** Purchases the item the user is currently view or notes that the item cannot be purchased */
   function buyItem() {
     // TODO: implement
   }
 
+  /** Adds the item the user is currently looking at to the user's cart */
   function addItemToCart() {
     let item = qs("#product-description h2").textContent;
     let cart = window.localStorage.getItem("cart");
