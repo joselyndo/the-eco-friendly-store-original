@@ -349,7 +349,7 @@
     addReviews(productName);
 
     let isLoggedIn = localStorage.getItem("loggedIn");
-    if (isLoggedIn) {
+    if (isLoggedIn && isLoggedIn === "true") {
       id("feedback").classList.remove("hidden");
       id("feedback").classList.add("visible");
     }
@@ -460,7 +460,18 @@
     }
 
     cart.push(item);
-    window.localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem("cart", JSON.stringify(cart));
+    addCartAdditionFeedback();
+  }
+
+  /** Informs the user that an item was added to the cart */
+  function addCartAdditionFeedback() {
+    let message = gen("p");
+    message.textContent = "Item(s) added to cart!";
+    id("product-description").append(message);
+    setTimeout(function() {
+      id("product-description").lastElementChild.remove();
+    }, TEN_SECONDS);
   }
 
   /**
