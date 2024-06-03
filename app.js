@@ -216,7 +216,10 @@ app.get("/best-sellers", async function(req, res) {
 
   try {
     let db = await getDBConnection();
-    let query = "SELECT item, image, price, rating FROM products ORDER BY " + orderBy + " DESC LIMIT 5";
+    let query = "SELECT item, image, price, rating " +
+      "FROM products " +
+      "ORDER BY " + orderBy + " DESC " +
+      "LIMIT " + limit + ";";
     let result = await db.all(query);
     res.send(result);
   } catch (error) {
