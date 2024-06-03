@@ -130,21 +130,21 @@ app.post("/buy", async function(req, res) {
     let balance = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
     balance = balance["balance"];
 
-    if (balance < sum) {
+    let newBalance = (balance - sum).toFixed(2);
+
+    if (newBalance < 0) {
+      await db.close();
       res.type("text");
       res.status(INVALID_PARAM_ERROR).send("Insufficient balance.");
-      return;
+    } else {
+      let query = "UPDATE users SET balance = ? WHERE user_id = ?";
+      await db.run(query, [newBalance, userId]);
+      let bal = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
+      bal = bal["balance"].toString();
+
+      await db.close();
+      res.send("Successful transaction: Your new balance is " + bal);
     }
-
-    let newBalance = (balance - sum).toFixed(2);
-    let query = "UPDATE users SET balance = ? WHERE user_id = ?";
-    await db.run(query, [newBalance, userId]);
-    let bal = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
-    bal = bal["balance"].toString();
-
-    await db.close();
-    res.send("Successful transaction: Your new balance is " + bal);
-
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
@@ -250,7 +250,8 @@ app.post("/cart", async function(req, res) {
     for (let i = 0; i < items.length; i++) {
       let item = await db.get("SELECT id FROM products WHERE item = ?;", [items[i]]);
 
-      if (!item) { // add in an await db.close here
+      if (!item) {
+        await db.close();
         res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
       }
 
