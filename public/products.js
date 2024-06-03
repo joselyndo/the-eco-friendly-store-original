@@ -293,35 +293,50 @@
   }
 
   /**
-   * Adds product cards to the home page
+   * Adds product cards to the products page
    * @param {JSON} res - JSON file containing information about the products
    * @param {HTMLElement} productsContainer - HTMLElement to contain information about the products
    */
   function addProductsToPage(res, productsContainer) {
     productsContainer.innerHTML = "";
-    for (let item = 0; item < res.length; item++) {
-      let productImg = gen("img");
-      productImg.src = "img/products/" + res[item]["image"] + IMG_FILE_EXT;
-      productImg.alt = res[item]["item"];
-
-      let productName = gen("p");
-      productName.textContent = res[item]["item"];
-
-      let productPrice = gen("p");
-      productPrice.textContent = "$" + res[item]["price"];
-
-      let productRating = gen("p");
-      productRating.textContent = "Rating: " + res[item]["rating"];
-
-      let productCard = gen("div");
-      productCard.appendChild(productImg);
-      productCard.appendChild(productName);
-      productCard.appendChild(productPrice);
-      productCard.appendChild(productRating);
-      productCard.addEventListener("click", displaySpecificProduct);
-
-      productsContainer.appendChild(productCard);
+    if (res.length === 0) {
+      let noResultsMsg = gen("p");
+      noResultsMsg.textContent = "No results found for the given search query and/or filters.";
+      productsContainer.appendChild(noResultsMsg);
+    } else {
+      for (let item = 0; item < res.length; item++) {
+        let productCard = createProductCard(res[item]);
+        productsContainer.appendChild(productCard);
+      }
     }
+  }
+
+  /**
+   * Creates a product card
+   * @param {JSON} res - JSON object containing information about a product
+   * @returns {HTMLElement} - HTMLElement with information about a product
+   */
+  function createProductCard(res) {
+    let productImg = gen("img");
+    productImg.src = "img/products/" + res["image"] + IMG_FILE_EXT;
+    productImg.alt = res["item"];
+
+    let productName = gen("p");
+    productName.textContent = res["item"];
+
+    let productPrice = gen("p");
+    productPrice.textContent = "$" + res["price"];
+
+    let productRating = gen("p");
+    productRating.textContent = "Rating: " + res["rating"];
+
+    let productCard = gen("div");
+    productCard.appendChild(productImg);
+    productCard.appendChild(productName);
+    productCard.appendChild(productPrice);
+    productCard.appendChild(productRating);
+    productCard.addEventListener("click", displaySpecificProduct);
+    return productCard;
   }
 
   /** Shows a product and its details onto the page*/
@@ -410,18 +425,12 @@
     bulkInput.required = true;
     bulkPurchaseLabel.appendChild(bulkInput);
 
-    let buyBtn = gen("button");
-    buyBtn.id = "buy-btn";
-    buyBtn.textContent = "Buy item";
-    buyBtn.addEventListener("click", buyItem);
-
     let addToCartBtn = gen("button");
     addToCartBtn.id = "add-to-cart-btn";
     addToCartBtn.textContent = "Add item to cart";
     addToCartBtn.addEventListener("click", addItemToCart);
 
     productSection.appendChild(bulkPurchaseLabel);
-    productSection.appendChild(buyBtn);
     productSection.appendChild(addToCartBtn);
 
     disablePurchaseButtons();
@@ -429,21 +438,13 @@
 
   /** Disables or enables the purchase buttons depending on a user's logged in status */
   function disablePurchaseButtons() {
-    let buyBtn = id("buy-btn");
     let cartBtn = id("add-to-cart-btn");
     let isLoggedIn = localStorage.getItem("loggedIn");
     if (isLoggedIn) {
-      buyBtn.disabled = false;
       cartBtn.disabled = false;
     } else {
-      buyBtn.disabled = true;
       cartBtn.disabled = true;
     }
-  }
-
-  /** Purchases the item the user is currently view or notes that the item cannot be purchased */
-  function buyItem() {
-    // TODO: implement
   }
 
   /** Adds the item the user is currently looking at to the user's cart */
