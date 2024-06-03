@@ -42,7 +42,7 @@
 
       try {
         let response = await fetch("/buy", {method: "POST", body: body});
-        statusCheck(response);
+        await statusCheck(response);
         let result = await response.text();
         console.log(result);
       } catch (error) {
@@ -68,7 +68,7 @@
       body.append("cart", cart);
       try {
         let response = await fetch("/cart", {method: "POST", body: body});
-        statusCheck(response);
+        await statusCheck(response);
         let result = await response.json();
         populateCart(result);
       } catch (error) {
