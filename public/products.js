@@ -17,6 +17,7 @@
   const FEEDBACK_ENDPOINT = "/feedback";
   const SEARCH_ENDPOINT = "/products/search";
   const FILTER_ENDPOINT = "/products/filter";
+  const AVG_RATING_ENDPOINT = "/details/rating/";
   const IMG_FILE_EXT = ".jpg";
   const TEN_SECONDS = 10000;
   let isSearchBarFilled = false;
@@ -478,6 +479,31 @@
   }
 
   /**
+   * Updates the product's rating
+   * @param {String} productName - the product's name
+   */
+  async function updateProductRating(productName) {
+    try {
+      let result = await fetch(AVG_RATING_ENDPOINT + productName);
+      await statusCheck(result);
+      result = await result.text();
+      let newRatingMsg = "Rating: " + result;
+      let text = qsa("#product-description p");
+      text[1].textContent = newRatingMsg;
+
+      let productCards = qsa("#products-page > section > div");
+      for (let card = 0; card < productCards.length; card++) {
+        let cardNameElement = productCards[card].firstElementChild.nextElementSibling;
+        if (cardNameElement.textContent === productName) {
+          cardNameElement.nextElementSibling.nextElementSibling.textContent = newRatingMsg;
+        }
+      }
+    } catch (error) {
+      handleQueryError(id("selected-product-page"));
+    }
+  }
+
+  /**
    * A helper function to add a product's reviews to the page
    * @param {JSON} results - the resulting reviews for a product
    */
@@ -575,6 +601,7 @@
     }, TEN_SECONDS);
     clearFeedbackForm();
     addReviews(itemName);
+    updateProductRating(itemName);
   }
 
   /** Clears the feedback form */
