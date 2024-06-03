@@ -316,8 +316,6 @@ function createFilterQueryWithParams(productCategory, maxPrice, minRating, maxRa
 
   filter += ";";
   let query = "SELECT item, image, price, rating FROM products WHERE";
-  console.log(query + filter);
-  console.log(requiredParameters);
   return [query + filter, requiredParameters];
 }
 
