@@ -546,3 +546,25 @@ POST request: /account/new-transaction
 
 - 500 Internal Server Error (plain text):
     - If an error occurred on the server, returns an error with the response: "An error occurred processing the transaction. Please try again later."
+
+## Retrieve average rating for a product
+**Request Format:** /details/rating/:item
+
+**Request Type:** GET
+
+**Returned Data Format**: Plain Text
+
+**Description:** Retrieves the average rating for a product
+
+**Example Request:** /details/rating/Bamboo Toothbrush
+
+**Example Response:**
+```
+3.5
+```
+
+**Error Handling:**
+- 404 Not Found Error (plain text):
+    - If the item does not exist in the store, returns an error with response: "Item does not exist. Please try again."
+- 500 Internal Server Error (plain text):
+    - If an error occurred on the server, returns an error with the response: "An error occurred on the server. Try again later."
