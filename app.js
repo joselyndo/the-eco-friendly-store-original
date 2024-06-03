@@ -76,6 +76,25 @@ app.post("/log-in", async function(req, res) {
   }
 });
 
+app.post("/log-out", async function(req, res) {
+  try {
+    res.type("text");
+    let username = req.body.username;
+    let db = await getDBConnection();
+    let hasUser = await db.get("SELECT username FROM users WHERE username = ?;", username);
+    if (hasUser) {
+      await db.run("UPDATE users SET logged_in = '' WHERE username = ?;", username);
+      await db.close();
+      res.send("Successfully logged out.");
+    } else {
+      await db.close();
+      res.status(INVALID_PARAM_ERROR).send("User does not exist. Please try again.");
+    }
+  } catch (error) {
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+});
+
 app.post("/buy", async function(req, res) {
   let username = req.body.username;
   let items = req.body.cart;
