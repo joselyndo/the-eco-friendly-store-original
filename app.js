@@ -60,10 +60,12 @@ app.post("/log-in", async function(req, res) {
       let db = await getDBConnection();
       let getUserQuery = "SELECT username, password FROM users WHERE username = ?";
       let result = await db.get(getUserQuery, username);
-      await db.close();
       if (result === undefined || result.password !== password) {
+        await db.close();
         res.status(INVALID_PARAM_ERROR).send(INCORRECT_LOG_IN);
       } else {
+        let rst = await db.run("UPDATE users SET logged_in = 'true' WHERE username = ?;", username);
+        await db.close();
         res.send("Login successful");
       }
     } else {
@@ -247,11 +249,18 @@ app.post("/feedback", async function(req, res) {
       res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
     } else {
       let db = await getDBConnection();
-      let query = "INSERT INTO reviews(item, username, review, rating) " +
-        "VALUES(?, ?, ?, ?);";
-      await db.run(query, [item, username, review, rating]);
-      await db.close();
-      res.send("Review successfully submitted.");
+      let userID = await db.get("SELECT user_id FROM users WHERE username = ?", username);
+      let itemID = await db.get("SELECT id FROM products WHERE item = ?", item);
+      if (userID && itemID) {
+        let query = "INSERT INTO reviews(item_id, item, user_id, username, review, rating) " +
+          "VALUES(?, ?, ?, ?, ?, ?);";
+        await db.run(query, [itemID.id, item, userID.user_id, username, review, rating]);
+        await db.close();
+        res.send("Review successfully submitted.");
+      } else {
+        await db.close();
+        res.status(INVALID_PARAM_ERROR).send("Invalid parameters. Please try again.");
+      }
     }
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);

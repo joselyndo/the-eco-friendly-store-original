@@ -392,6 +392,7 @@ POST request: /feedback
 **Error Handling:**
 - 400 Bad Request Error (plain text):
     - If all parameters (item, username, rating, review) are missing, returns an error with the response: "Missing parameters. Please try again."
+    - If the user's username or item is not in the store's system, returns an error with the response: "Invalid parameters. Please try again."
 
 - 500 Internal Server Error (plain text):
     - If an error occured on the server, returns an error with the response: “An error occurred during retrieval. Please try again later.”
