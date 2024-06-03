@@ -216,6 +216,7 @@ section a {
 }
 
 #cart {
+  margin: auto;
   border: 5px solid #e7bc91;
   background-color: #fadcb6;
 }
