@@ -479,8 +479,14 @@ button:disabled {
   cursor: not-allowed;
 }
 
-#load {
+#load, #confirm, .confirmed {
   margin-top: 20px;
+}
+
+.labelConfirmed {
+  font-size: 20px;
+  color: red;
+  font-weight: bold;
 }
 
 .grid-layout {

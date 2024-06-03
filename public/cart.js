@@ -17,6 +17,10 @@
    * Initializes the log in page
    */
   function init() {
+    if (window.localStorage.getItem("confirmPurchase") === "true") {
+      console.log("?");
+      id("confirm").checked = true;
+    }
     getCart();
     id("clear").addEventListener("click", clearCart);
     id("checkout").addEventListener("click", function() {
@@ -24,6 +28,7 @@
       let cart = window.localStorage.getItem("cart");
       checkOut(username, cart);
     });
+    id("confirm").addEventListener("change", confirmationStatus);
   }
 
   /**
@@ -122,6 +127,11 @@
     let inform = gen("p");
     inform.textContent = "There is nothing in your cart!";
     id("cart-container").appendChild(inform);
+  }
+
+  function confirmationStatus() {
+    let value = id("confirm").checked;
+    window.localStorage.setItem("confirmPurchase", value);
   }
 
   /**

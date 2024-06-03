@@ -415,6 +415,7 @@
    */
   function addPurchaseButtons(productSection) {
     let bulkPurchaseLabel = gen("label");
+    bulkPurchaseLabel.id = "bulk-label";
     bulkPurchaseLabel.textContent = "Quantity: ";
 
     let bulkInput = gen("input");
@@ -433,6 +434,17 @@
 
     productSection.appendChild(bulkPurchaseLabel);
     productSection.appendChild(addToCartBtn);
+
+    if (window.localStorage.getItem("confirmPurchase") === "true") {
+      addToCartBtn.disabled = true;
+      addToCartBtn.classList.add("confirmed");
+      bulkInput.classList.add("hidden");
+      bulkPurchaseLabel.textContent = "You have already confirmed your purchase. Go checkout!";
+      bulkPurchaseLabel.classList.add("labelConfirmed");
+    } else {
+      addToCartBtn.disabled = false;
+      bulkPurchaseLabel.classList.remove("hidden");
+    }
 
     disablePurchaseButtons();
   }

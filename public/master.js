@@ -25,6 +25,9 @@
     getAds();
   }
 
+  /**
+   *
+   */
   function toggleLogIn() {
     let isLoggedIn = localStorage.getItem("loggedIn");
     if (isLoggedIn === "true") {
@@ -38,6 +41,9 @@
     }
   }
 
+  /**
+   *
+   */
   function logOut() {
     window.localStorage.setItem("cart", "");
     window.localStorage.setItem("user", "");
