@@ -22,7 +22,7 @@
       logOut();
       toggleLogIn();
     });
-    // getAds();
+    getAds();
   }
 
   function toggleLogIn() {
