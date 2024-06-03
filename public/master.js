@@ -27,12 +27,14 @@
 
   function toggleLogIn() {
     let isLoggedIn = localStorage.getItem("loggedIn");
-    if (isLoggedIn) {
-      id("log-in-link").classList.remove("hidden");
-      id("log-out-link").classList.add("hidden");
-    } else {
+    if (isLoggedIn === "true") {
       id("log-in-link").classList.add("hidden");
       id("log-out-link").classList.remove("hidden");
+      qs(".cart").classList.remove("hidden");
+    } else {
+      id("log-in-link").classList.remove("hidden");
+      id("log-out-link").classList.add("hidden");
+      qs(".cart").classList.add("hidden");
     }
   }
 

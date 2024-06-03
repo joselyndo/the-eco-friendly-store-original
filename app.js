@@ -250,7 +250,8 @@ app.post("/cart", async function(req, res) {
     for (let i = 0; i < items.length; i++) {
       let item = await db.get("SELECT id FROM products WHERE item = ?;", [items[i]]);
 
-      if (!item) { // add in an await db.close here
+      if (!item) {
+        await db.close();
         res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
       }
 
