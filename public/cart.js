@@ -29,6 +29,9 @@
       checkOut(username, cart);
     });
     id("confirm").addEventListener("change", confirmationStatus);
+    id("view-history").addEventListener("click", function() {
+      toggleHistory();
+    });
   }
 
   /**

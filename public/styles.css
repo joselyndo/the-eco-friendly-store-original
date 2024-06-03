@@ -168,6 +168,16 @@ section a {
   width: 7%;
 }
 
+#cart h2 {
+  margin-bottom: 10px;
+}
+
+#view-history {
+  color: black;
+  border: 2px solid black;
+  background-color: #e7bc91;
+}
+
 #checkout, #clear {
   margin-top: 50px;
   height: 50px;
