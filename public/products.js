@@ -435,9 +435,26 @@
     productSection.appendChild(bulkPurchaseLabel);
     productSection.appendChild(addToCartBtn);
 
-    if (window.localStorage.getItem("confirmPurchase") === "true") {
+    let hasTransactionPending = localStorage.getItem("confirmPurchase");
+    if (hasTransactionPending) {
+      handleBtnForCart();
+    } else {
+      disablePurchaseButtons();
+    }
+  }
+
+  /**
+   * Checks if the user has a confirmed transaction and
+   * disables the add to cart button accordingly
+   */
+  function handleBtnForCart() {
+    let hasTransactionPending = localStorage.getItem("confirmPurchase");
+    let addToCartBtn = id("add-to-cart-btn");
+    let bulkPurchaseLabel = id("bulk-label");
+    if (hasTransactionPending === "true") {
       addToCartBtn.disabled = true;
       addToCartBtn.classList.add("confirmed");
+      let bulkInput = id("bulk");
       bulkInput.classList.add("hidden");
       bulkPurchaseLabel.textContent = "You have already confirmed your purchase. Go checkout!";
       bulkPurchaseLabel.classList.add("labelConfirmed");
@@ -445,15 +462,13 @@
       addToCartBtn.disabled = false;
       bulkPurchaseLabel.classList.remove("hidden");
     }
-
-    disablePurchaseButtons();
   }
 
   /** Disables or enables the purchase buttons depending on a user's logged in status */
   function disablePurchaseButtons() {
     let cartBtn = id("add-to-cart-btn");
     let isLoggedIn = localStorage.getItem("loggedIn");
-    if (isLoggedIn) {
+    if (isLoggedIn && isLoggedIn === "true") {
       cartBtn.disabled = false;
     } else {
       cartBtn.disabled = true;
