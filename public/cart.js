@@ -21,6 +21,36 @@
   function init() {
     getCart();
     id("clear").addEventListener("click", clearCart);
+    id("checkout").addEventListener("click", function() {
+      let username = window.localStorage.getItem("user");
+      let cart = window.localStorage.getItem("cart");
+      checkOut(username, cart);
+    });
+  }
+
+  /**
+   * Makes a fetch to update transactions and process the sale
+   * @param {Array} cart Contains a list of items in current cart
+   */
+  async function checkOut(username, cart) {
+    let body = new FormData();
+    let loggedIn = window.localStorage.getItem("loggedIn");
+
+    if (loggedIn && username && cart) {
+      body.append("username", username);
+      body.append("cart", cart);
+
+      try {
+        let response = await fetch("/buy", {method: "POST", body: body});
+        statusCheck(response);
+        let result = await response.text();
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      console.log("Bad");
+    }
   }
 
   /**
@@ -29,8 +59,12 @@
   async function getCart() {
     let body = new FormData();
     let cart = window.localStorage.getItem("cart");
+    let loggedIn = window.localStorage.getItem("loggedIn");
 
-    if (cart) {
+    if (loggedIn && cart) {
+      id("checkout").classList.remove("hidden");
+      id("clear").classList.remove("hidden");
+
       body.append("cart", cart);
       try {
         let response = await fetch("/cart", {method: "POST", body: body});
@@ -42,6 +76,8 @@
       }
     } else {
       clearCart();
+      id("checkout").classList.add("hidden");
+      id("clear").classList.add("hidden");
     }
   }
 

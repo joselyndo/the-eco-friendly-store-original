@@ -76,26 +76,75 @@ app.post("/log-in", async function(req, res) {
   }
 });
 
-app.post("/buy/", async function(req, res) {
-  let item = req.body["item"]; // To implement: List of items for checkout
-  let quantity = req.body["quantity"];
+app.post("/buy", async function(req, res) {
+  let username = req.body.username;
+  let items = req.body.cart;
+  items = JSON.parse(items);
 
-  if (typeof item === 'undefined' || typeof quantity === 'undefined' || quantity <= 0) {
+  if (!items || items.length === 0) {
+    res.type("text");
+    res.status(INVALID_PARAM_ERROR).send("Cart is empty");
+    return;
+  }
+
+  if (typeof username === 'undefined') {
+    res.type("text");
     res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+    return;
   }
 
   try {
     let db = await getDBConnection();
-    let exist = await db.get("SELECT id FROM products WHERE item = ?", [item]);
-    if (!exist) { // should have await db.close() in this if statement
-      return res.status(INVALID_PARAM_ERROR).send("Product does not exist. Please try again"); // return???
+    let userId = await db.get("SELECT user_id FROM users WHERE username = ?", [username]);
+
+    if (!userId) {
+      await db.close();
+      res.type("text");
+      res.status(INVALID_PARAM_ERROR).send("User does not exist. Please try again");
+      return;
     }
-    let priceQuery = "SELECT price FROM products WHERE item = ?";
-    let price = await db.get(priceQuery, [item]);
-    let query = "UPDATE users SET balance = balance - ? WHERE user_id = ?";
-    await db.run(query, [price * quantity, USER_ID_PLACEHOLDER]); // Send error if user does not have enough money
+    userId = userId["user_id"];
+
+    let sum = 0;
+    for (let i = 0; i < items.length; i++) {
+      let stockQuery = "SELECT stock FROM products WHERE item = ?";
+      let stock = await db.get(stockQuery, items[i]);
+      stock = stock["stock"];
+
+      if (!stock) {
+        res.type("text");
+        res.status(INVALID_PARAM_ERROR).send("Item does not exist. Please try again");
+        return;
+      }
+      if (stock <= 0) {
+        res.type("text");
+        res.status(INVALID_PARAM_ERROR).send("Item is currently out of stock.");
+        return;
+      }
+
+      let priceQuery = "SELECT price FROM products WHERE item = ?";
+      let price = await db.get(priceQuery, [items[i]]);
+      sum += price["price"];
+    }
+
+    let balance = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
+    balance = balance["balance"];
+
+    if (balance < sum) {
+      res.type("text");
+      res.status(INVALID_PARAM_ERROR).send("Insufficient balance.");
+      return;
+    }
+
+    let newBalance = (balance - sum).toFixed(2);
+    let query = "UPDATE users SET balance = ? WHERE user_id = ?";
+    await db.run(query, [newBalance, userId]);
+    let bal = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
+    bal = bal["balance"].toString();
+
     await db.close();
-    res.send(quantity + " " + item + "s were successfully purchased.");
+    res.send("Successful transaction: Your new balance is " + bal);
+
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }

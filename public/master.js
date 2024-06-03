@@ -37,6 +37,7 @@
   }
 
   function logOut() {
+    window.localStorage.setItem("cart", "");
     window.localStorage.setItem("user", "");
     window.localStorage.setItem("loggedIn", false);
   }
