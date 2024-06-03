@@ -99,48 +99,49 @@ app.post("/buy", async function(req, res) {
       await db.close();
       res.type("text");
       res.status(INVALID_PARAM_ERROR).send("User does not exist. Please try again");
-      return;
-    }
-    userId = userId["user_id"];
-
-    let sum = 0;
-    for (let i = 0; i < items.length; i++) {
-      let stockQuery = "SELECT stock FROM products WHERE item = ?;";
-      let stock = await db.get(stockQuery, items[i]);
-      stock = stock["stock"];
-
-      if (!stock) {
-        res.type("text");
-        res.status(INVALID_PARAM_ERROR).send("Item does not exist. Please try again");
-        return;
-      }
-      if (stock <= 0) {
-        res.type("text");
-        res.status(INVALID_PARAM_ERROR).send("Item is currently out of stock.");
-        return;
-      }
-
-      let priceQuery = "SELECT price FROM products WHERE item = ?;";
-      let price = await db.get(priceQuery, [items[i]]);
-      await db.run("UPDATE products SET stock = ? WHERE item = ?;", [stock-1, items[i]]);
-      sum += price["price"];
-    }
-
-    let balance = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
-    balance = balance["balance"];
-    let newBalance = (balance - sum).toFixed(2);
-    if (newBalance < 0) {
-      await db.close();
-      res.type("text");
-      res.status(INVALID_PARAM_ERROR).send("Insufficient balance.");
     } else {
-      let query = "UPDATE users SET balance = ? WHERE user_id = ?";
-      await db.run(query, [newBalance, userId]);
-      let bal = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
-      bal = bal["balance"].toString();
+      userId = userId["user_id"];
 
-      await db.close();
-      res.send("Successful transaction: Your new balance is " + bal);
+      let sum = 0;
+      for (let i = 0; i < items.length; i++) {
+        let stockQuery = "SELECT stock FROM products WHERE item = ?;";
+        let stock = await db.get(stockQuery, items[i]);
+        stock = stock["stock"];
+
+        if (!stock) {
+          res.type("text");
+          res.status(INVALID_PARAM_ERROR).send("Item does not exist. Please try again");
+          return;
+        }
+        if (stock <= 0) {
+          res.type("text");
+          res.status(INVALID_PARAM_ERROR).send("Item is currently out of stock.");
+          return;
+        }
+
+        let priceQuery = "SELECT price FROM products WHERE item = ?;";
+        let price = await db.get(priceQuery, [items[i]]);
+        await db.run("UPDATE products SET stock = ? WHERE item = ?;", [stock-1, items[i]]);
+        sum += price["price"];
+      }
+
+      let transactionCode = await logTransaction(userId, items, sum);
+      let balance = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
+      balance = balance["balance"];
+      let newBalance = (balance - sum).toFixed(2);
+      if (newBalance < 0) {
+        await db.close();
+        res.type("text");
+        res.status(INVALID_PARAM_ERROR).send("Insufficient balance.");
+      } else {
+        let query = "UPDATE users SET balance = ? WHERE user_id = ?";
+        await db.run(query, [newBalance, userId]);
+        let bal = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
+        bal = bal["balance"].toString();
+
+        await db.close();
+        res.send("Successful transaction: Your new balance is " + bal + " Confirmation code: " + transactionCode);
+      }
     }
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
@@ -356,6 +357,49 @@ app.get("/details/rating/:item", async function(req, res) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
+
+/**
+ * Databases the transaction and returns a generated transaction code
+ * @param {int} userId Verified existing userId
+ * @param {List} items List of purchased items
+ * @param {int} total Total cost of items
+ * @returns {String} transaction confirmation code
+ */
+async function logTransaction(userId, items, total) {
+  let code = Math.floor(Math.random() * 9000) + 1000;
+  let unique = false;
+
+  try {
+    let db = await getDBConnection();
+
+    while (!unique) {
+      let exist = await db.get("SELECT transaction_code FROM transactions WHERE transaction_code = ?;", [code]);
+      if (!exist) {
+        unique = true;
+      } else {
+        code = Math.floor(Math.random() * 9000) + 1000;
+      }
+    }
+
+    let query = "INSERT INTO transactions (user_id, transaction_code, cart, total) VALUES (?, ?, ?, ?);";
+    await db.run(query, [userId, code, JSON.stringify(items), total]);
+    await db.close();
+    return code;
+
+  } catch (error) {
+    throw new Error("Unable to log transaction. Please try again later.");
+  }
+}
+
+/**
+ * Generates a unique transaction code that does not exist within the database
+ * @returns {String} Unique transaction confirmation code
+ */
+function generateUniqueTransactionCode() {
+  let code = 0;
+
+  return code;
+}
 
 /**
  * Returns a string representing a query based on the given information

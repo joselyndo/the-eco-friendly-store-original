@@ -11,8 +11,6 @@
 "use strict";
 
 (function() {
-  const LOG_IN_ENDPOINT = "[log in endpoint]";
-
   window.addEventListener("load", init);
 
   /**
@@ -44,6 +42,7 @@
         let response = await fetch("/buy", {method: "POST", body: body});
         await statusCheck(response);
         let result = await response.text();
+        clearCart();
         console.log(result);
       } catch (error) {
         console.log(error);
