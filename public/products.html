@@ -41,15 +41,14 @@
       </nav>
     </header>
     <main>
-      <!-- <div class="sidebar-left"></div> -->
       <article id="products-view">
         <details id="search-and-filter">
           <summary>Search and filter products</summary>
           <form id="search-bar" class="filter">
             <h2>Search</h2>
             <p>
-              NOTE: You can either search for a term OR search and filter using both the search bar
-              and all the filters (the category, price, and rating filters).
+              Note: You can either search for a term, search and filter products using both the
+              search bar and all the filters, or filter products.
             </p>
             <label for="search-entry">Enter product name:</label>
             <input type="text" name="search" id="search-entry" required>
@@ -105,7 +104,7 @@
               <input type="number" id="ratings-max" min="0" max="5" placeholder="5">
             </form>
             <button id="clear-button">Clear filters</button>
-            <button id="filter-button">Search and Filter products</button>
+            <button id="filter-button" disabled>Search and Filter products</button>
           </section>
         </details>
         <div id="toggle-layout-container">
@@ -156,7 +155,6 @@
           </section>
         </section>
       </article>
-      <!-- <div class="sidebar-right"></div> -->
     </main>
     <footer>
       <p>&copy; 2024 The Eco-Friendly Store. All rights reserved.</p>

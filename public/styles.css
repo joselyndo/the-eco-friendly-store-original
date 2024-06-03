@@ -182,6 +182,7 @@ section a {
   border: 5px solid #e7bc91;
   display: flex;
   flex-direction: column;
+  align-items: center;
   overflow: hidden;
   overflow-y: scroll;
   max-height: 500px;

@@ -141,6 +141,28 @@ app.get("/products/search", async function(req, res) {
   }
 });
 
+app.get("/products/filter", async function(req, res) { // TODO = update APIDOC
+  let productCategory = req.query["product-category"];
+  let maxPrice = req.query["max-price"];
+  let minRating = req.query["min-rating"];
+  let maxRating = req.query["max-rating"];
+  try {
+    if (productCategory || maxPrice || (minRating && maxRating && (minRating <= maxRating))) {
+      let parameters = createFilterQueryWithParams(productCategory, maxPrice, minRating, maxRating);
+      let db = await getDBConnection();
+      let results = await db.all(parameters[0], parameters[1]);
+      await db.close();
+      res.json(results);
+    } else {
+      res.type("text");
+      res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+    }
+  } catch (error) {
+    res.type("text");
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+  }
+});
+
 app.get("/details/:item", async function(req, res) {
   let item = req.params["item"];
 
@@ -266,6 +288,55 @@ function createSearchFilterQuery(useFilter) {
   }
 
   return query;
+}
+
+/**
+ * Creates a query with the required parameters for that query
+ * @param {String} productCategory - the desired category of products
+ * @param {Number} maxPrice - the desired max price of products
+ * @param {Number} minRating - the desired minimum rating of products
+ * @param {Number} maxRating - the desired maximum rating of products
+ * @returns {Object[]} - returns a string query and an array of parameters for that query
+ */
+function createFilterQueryWithParams(productCategory, maxPrice, minRating, maxRating) {
+  let filter = "";
+  let requiredParameters = [];
+
+  if (productCategory) {
+    filter += " category = ?";
+    requiredParameters.push(productCategory);
+  }
+
+  if (maxPrice) {
+    filter = addAndKeyword(filter);
+    filter += " price < ?";
+    requiredParameters.push(maxPrice);
+  }
+
+  if (minRating && maxRating) {
+    filter = addAndKeyword(filter);
+    filter += " rating BETWEEN ? AND ?";
+    requiredParameters.push(minRating);
+    requiredParameters.push(maxRating);
+  }
+
+  filter += ";";
+  let query = "SELECT item, image, price, rating FROM products WHERE";
+  return [query + filter, requiredParameters];
+}
+
+/**
+ * Adds "AND" to the given string if it is not empty
+ * @param {String} string - the string to add "AND" to
+ * @returns {String} - the string that may or may not have "AND" added to
+ */
+function addAndKeyword(string) {
+  let returnedString = string;
+  if (returnedString !== "") {
+    returnedString += " AND";
+  }
+
+  return returnedString;
 }
 
 /**
