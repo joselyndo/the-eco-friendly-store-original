@@ -16,6 +16,7 @@
 
   window.addEventListener("load", init);
 
+  /** Initializes the page */
   function init() {
     toggleLogIn();
     id("log-out-link").addEventListener("click", function() {
@@ -25,9 +26,7 @@
     getAds();
   }
 
-  /**
-   *
-   */
+  /** Toggles the appearance of the navigation bar depending on if the user is logged in */
   function toggleLogIn() {
     let isLoggedIn = localStorage.getItem("loggedIn");
     if (isLoggedIn === "true") {
@@ -41,18 +40,14 @@
     }
   }
 
-  /**
-   *
-   */
+  /** Logs the user out */
   function logOut() {
-    window.localStorage.setItem("cart", "");
-    window.localStorage.setItem("user", "");
-    window.localStorage.setItem("loggedIn", false);
+    localStorage.setItem("cart", "");
+    localStorage.setItem("user", "");
+    localStorage.setItem("loggedIn", false);
   }
 
-  /**
-   * Displays ads onto the home page
-   */
+  /** Displays ads onto the home page */
   function getAds() {
     if ((qs(".sidebar-left")) && (qs(".sidebar-left"))) {
       let ad1 = gen("img");
@@ -120,14 +115,5 @@
    */
   function qs(query) {
     return document.querySelector(query);
-  }
-
-  /**
-   * Returns the array of elements that match the given CSS selector.
-   * @param {string} query - CSS query selector
-   * @returns {object[]} array of DOM objects matching the query.
-   */
-  function qsa(query) {
-    return document.querySelectorAll(query);
   }
 })();

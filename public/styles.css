@@ -50,7 +50,8 @@ main {
   padding: 0px;
 }
 
-.sidebar-left .ad, .sidebar-right .ad {
+.ad {
+  padding-top: 75px;
   width: 300px;
 }
 
