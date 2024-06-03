@@ -274,8 +274,8 @@ app.get("/reviews/:item", async function(req, res) {
         "WHERE p.item = ? " +
         "AND p.item = r.item " +
         "ORDER BY datetime(r.date) DESC;";
-        await db.close();
       let results = await db.all(query, itemName);
+      await db.close();
       res.json(results);
     }
   } catch (error) {
