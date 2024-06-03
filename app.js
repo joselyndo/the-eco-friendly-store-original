@@ -104,7 +104,7 @@ app.get("/products/all", async function(req, res) {
     let db = await getDBConnection();
     let query = "SELECT item, image, price, rating FROM products;";
     let rows = await db.all(query);
-    res.json(rows); // TODO: check that APIDOC talks about sending arr of JSON
+    res.json(rows);
   } catch (error) {
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
@@ -212,7 +212,7 @@ app.post("/cart", async function(req, res) {
 
 app.get("/best-sellers", async function(req, res) {
   let orderBy = "rating";
-  let limit = 5;
+  const limit = 5;
 
   try {
     let db = await getDBConnection();
