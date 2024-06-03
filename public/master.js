@@ -48,18 +48,20 @@
    * Displays ads onto the home page
    */
   function getAds() {
-    let ad1 = gen("img");
-    ad1.classList.add("ad");
-    let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
-    ad1.src = IMG_ADS_DIR + randNum + ADS_ENDING;
-    ad1.alt = "ad " + randNum;
-    randNum = Math.floor(Math.random() * NUM_ADS) + 1;
-    let ad2 = gen("img");
-    ad2.classList.add("ad");
-    ad2.src = IMG_ADS_DIR + randNum + ADS_ENDING;
-    ad2.alt = "ad " + randNum;
-    qs(".sidebar-left").appendChild(ad1);
-    qs(".sidebar-right").appendChild(ad2);
+    if ((qs(".sidebar-left")) && (qs(".sidebar-left"))) {
+      let ad1 = gen("img");
+      ad1.classList.add("ad");
+      let randNum = Math.floor(Math.random() * NUM_ADS) + 1;
+      ad1.src = IMG_ADS_DIR + randNum + ADS_ENDING;
+      ad1.alt = "ad " + randNum;
+      randNum = Math.floor(Math.random() * NUM_ADS) + 1;
+      let ad2 = gen("img");
+      ad2.classList.add("ad");
+      ad2.src = IMG_ADS_DIR + randNum + ADS_ENDING;
+      ad2.alt = "ad " + randNum;
+      qs(".sidebar-left").appendChild(ad1);
+      qs(".sidebar-right").appendChild(ad2);
+    }
   }
 
   /**

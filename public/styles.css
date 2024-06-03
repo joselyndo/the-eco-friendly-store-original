@@ -54,17 +54,17 @@ main {
   width: 300px;
 }
 
-.sidebar-left, .sidebar-right {
+.sidebar-left, .sidebar-right, .left-side-panel, .right-side-panel {
   padding: 100px;
   justify-content: center;
   min-width: 18%;
 }
 
-.sidebar-left {
+.sidebar-left, .left-side-panel {
   margin-top: -150px;
 }
 
-.sidebar-right {
+.sidebar-right, .right-side-panel {
   margin-top: -100px;
   margin-left: -60px;
 }
