@@ -20,18 +20,21 @@
   function init() {
     displayProductsOnHome();
 
-    qs(".search-entry").addEventListener("input", function() {
-      if (qs(".search-entry").value.trim() !== "") {
-        qs(".search-button").disabled = false;
-      } else {
-        qs(".search-button").disabled = true;
-      }
-    });
+    qs(".search-entry").addEventListener("input", changeButton);
 
     qs(".search-bar").addEventListener("submit", function(event) {
       event.preventDefault();
       searchTerm();
     });
+  }
+
+  /** Changes the button depending on its associated textbox's input */
+  function changeButton() {
+    if (qs(".search-entry").value.trim() !== "") {
+      qs(".search-button").disabled = false;
+    } else {
+      qs(".search-button").disabled = true;
+    }
   }
 
   /** Displays products onto the home page */
@@ -69,7 +72,8 @@
       productCard.appendChild(productName);
       productCard.appendChild(rating);
       productCard.addEventListener("click", function() {
-        location.assign("product-details.html");
+        sessionStorage.setItem("search", productName.textContent);
+        location.assign("products.html");
       });
 
       productsContainer.appendChild(productCard);
