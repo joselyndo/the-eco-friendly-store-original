@@ -10,6 +10,7 @@
 "use strict";
 
 (function() {
+  const LOG_OUT_ENDPOINT = "/log-out";
   const IMG_ADS_DIR = "img/ads/";
   const ADS_ENDING = "-ad.png";
   const NUM_ADS = 5;
@@ -28,6 +29,7 @@
 
   /** Toggles the appearance of the navigation bar depending on if the user is logged in */
   function toggleLogIn() {
+    console.log(1);
     let isLoggedIn = localStorage.getItem("loggedIn");
     if (isLoggedIn === "true") {
       id("log-in-link").classList.add("hidden");
@@ -41,10 +43,31 @@
   }
 
   /** Logs the user out */
-  function logOut() {
-    localStorage.setItem("cart", "");
-    localStorage.setItem("user", "");
-    localStorage.setItem("loggedIn", false);
+  async function logOut() {
+    try {
+      let username = localStorage.getItem("user");
+      let form = new FormData();
+      form.append("username", username);
+      let result = await fetch(LOG_OUT_ENDPOINT, {
+        method: "POST",
+        body: form
+      });
+      await statusCheck(result);
+      localStorage.setItem("cart", "");
+      localStorage.setItem("user", "");
+      localStorage.setItem("loggedIn", false);
+    } catch (error) {
+      addErrorMsg();
+    }
+  }
+
+  /** Adds an error message */
+  function addErrorMsg() {
+    let container = qs("nav");
+    let errorMessage = gen("p");
+    errorMessage.textContent = "Error logging out. Please try again later.";
+    errorMessage.classList.add("error");
+    container.appendChild(errorMessage);
   }
 
   /** Displays ads onto the home page */
