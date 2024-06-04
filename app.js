@@ -159,10 +159,10 @@ app.post("/buy", async function(req, res) {
         bal = bal["balance"].toString();
 
         await db.close();
-        res.send(
-          "Successful transaction: Your new balance is " +
-          bal + "\nConfirmation code: " + transactionCode
-        );
+        res.send({
+          "balance": bal,
+          "code": transactionCode
+        });
       }
     }
   } catch (error) {

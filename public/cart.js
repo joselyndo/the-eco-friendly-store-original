@@ -62,10 +62,10 @@
       try {
         let response = await fetch("/buy", {method: "POST", body: body});
         await statusCheck(response);
-        let result = await response.text();
-        addMsg(result, false);
+        let result = await response.json();
         clearCart();
         showButtons(false);
+        displayConfirmation(result);
       } catch (error) {
         addMsg("An error has occurred. Please try again.", true);
       }
@@ -213,6 +213,24 @@
       id("transactions").classList.remove("hidden");
       qs("#cart-page h2").textContent = "Your Transaction History";
     }
+  }
+
+  /**
+   * Visually displays confirmation and processing of transaction.
+   * @param {Object} result Contains new balance and transaction code
+   */
+  function displayConfirmation(result) {
+    let container = gen("div");
+    let success = gen("h4");
+    let balance = gen("p");
+    let code = gen("p");
+    success.textContent = "Successful purchase!";
+    balance.textContent = "Your new balance is: $" + result["balance"];
+    code.textContent = "Transaction confirmation code #" + result["code"];
+    container.appendChild(success);
+    container.appendChild(balance);
+    container.appendChild(code);
+    id("cart-container").appendChild(container);
   }
 
   /**
