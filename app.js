@@ -578,7 +578,7 @@ async function updateProductRating(itemName) {
  * @param {List} item List of items
  * @param {String} username Username
  */
-function validateParameters(item, username) {
+function validateParameters(items, username) {
   if (!items || items.length === 0) {
     throw new Error("Cart is empty.");
   } else if (typeof username === 'undefined') {
