@@ -103,70 +103,34 @@ app.post("/buy", async function(req, res) {
   if (!items || items.length === 0) {
     res.type("text");
     res.status(INVALID_PARAM_ERROR).send("Cart is empty");
-    return;
-  }
-  if (typeof username === 'undefined') {
+  } else if (typeof username === 'undefined') {
     res.type("text");
     res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
-    return;
-  }
+  } else {
+    try {
+      let db = await getDBConnection();
+      let userId = await db.get("SELECT user_id FROM users WHERE username = ?", [username]);
 
-  try {
-    let db = await getDBConnection();
-    let userId = await db.get("SELECT user_id FROM users WHERE username = ?", [username]);
-    if (!userId) {
-      await db.close();
-      res.type("text");
-      res.status(INVALID_PARAM_ERROR).send("User does not exist. Please try again");
-    } else {
-      userId = userId["user_id"];
-
-      let sum = 0;
-      for (let i = 0; i < items.length; i++) {
-        let stockQuery = "SELECT stock FROM products WHERE item = ?;";
-        let stock = await db.get(stockQuery, items[i]);
-        stock = stock["stock"];
-
-        if (!stock) {
-          res.type("text");
-          res.status(INVALID_PARAM_ERROR).send("Item does not exist. Please try again");
-          return;
-        }
-        if (stock <= 0) {
-          res.type("text");
-          res.status(INVALID_PARAM_ERROR).send("Item is currently out of stock.");
-          return;
-        }
-
-        let priceQuery = "SELECT price FROM products WHERE item = ?;";
-        let price = await db.get(priceQuery, [items[i]]);
-        await db.run("UPDATE products SET stock = ? WHERE item = ?;", [stock - 1, items[i]]);
-        sum += price["price"];
-      }
-
-      let transactionCode = await logTransaction(userId, items, sum);
-      let balance = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
-      balance = balance["balance"];
-      let newBalance = (balance - sum).toFixed(2);
-      if (newBalance < 0) {
+      if (!userId) {
         await db.close();
         res.type("text");
-        res.status(INVALID_PARAM_ERROR).send("Insufficient balance.");
+        res.status(INVALID_PARAM_ERROR).send("User does not exist. Please try again");
       } else {
-        let query = "UPDATE users SET balance = ? WHERE user_id = ?";
-        await db.run(query, [newBalance, userId]);
-        let bal = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
-        bal = bal["balance"].toString();
+        userId = userId["user_id"];
+        let sum = await updateStockGetSum(items);
+        let transactionCode = await logTransaction(userId, items, sum);
+        let balance = await updateBalance(userId, sum);
 
         await db.close();
         res.send({
-          "balance": bal,
+          "balance": balance,
           "code": transactionCode
         });
       }
+    } catch (error) {
+      res.type("text");
+      res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
     }
-  } catch (error) {
-    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
 
@@ -434,6 +398,69 @@ async function logTransaction(userId, items, total) {
   } catch (error) {
     throw new Error("Unable to log transaction. Please try again later.");
   }
+}
+
+/**
+ * Updates the given user's balance and returns the new balance
+ * @param {int} userId Verified existing userId
+ * @param {int} Total Total cost of items
+ * @returns {int} New updated balance
+ */
+async function updateBalance(userId, sum) {
+  try {
+    let db = await getDBConnection();
+    let balance = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
+    balance = balance["balance"];
+    let newBalance = (balance - sum).toFixed(2);
+    if (newBalance < 0) {
+      await db.close();
+      res.type("text");
+      res.status(INVALID_PARAM_ERROR).send("Insufficient balance.");
+    } else {
+      let query = "UPDATE users SET balance = ? WHERE user_id = ?";
+      await db.run(query, [newBalance, userId]);
+      let bal = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
+      bal = bal["balance"].toString();
+
+      await db.close();
+      return bal;
+    }
+  } catch (error) {
+    throw new Error("Unable to update balance. Please try again later");
+  }
+}
+
+async function updateStockGetSum(items) {
+  try {
+    let db = await getDBConnection();
+    let sum = 0;
+
+    for (let i = 0; i < items.length; i++) {
+      let stockQuery = "SELECT stock FROM products WHERE item = ?;";
+      let stock = await db.get(stockQuery, items[i]);
+      stock = stock["stock"];
+
+      if (!stock) {
+        res.type("text");
+        res.status(INVALID_PARAM_ERROR).send("Item does not exist. Please try again");
+      } else if (stock <= 0) {
+        res.type("text");
+        res.status(INVALID_PARAM_ERROR).send("Item is currently out of stock.");
+      } else {
+        let priceQuery = "SELECT price FROM products WHERE item = ?;";
+        let price = await db.get(priceQuery, [items[i]]);
+        await db.run("UPDATE products SET stock = ? WHERE item = ?;", [stock - 1, items[i]]);
+        sum += price["price"];
+      }
+    }
+    await db.close();
+    return sum;
+
+  } catch (error) {
+    throw new Error("Unable to update stock. Please try again later");
+  }
+
+
 }
 
 /**

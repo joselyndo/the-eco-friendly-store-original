@@ -65,6 +65,7 @@
         let result = await response.json();
         clearCart();
         showButtons(false);
+        getHistory();
         displayConfirmation(result);
       } catch (error) {
         addMsg("An error has occurred. Please try again.", true);
