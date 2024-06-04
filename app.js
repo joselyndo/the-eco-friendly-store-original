@@ -100,37 +100,30 @@ app.post("/buy", async function(req, res) {
   let items = req.body.cart;
   items = JSON.parse(items);
 
-  if (!items || items.length === 0) {
-    res.type("text");
-    res.status(INVALID_PARAM_ERROR).send("Cart is empty.");
-  } else if (typeof username === 'undefined') {
-    res.type("text");
-    res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
-  } else {
-    try {
-      let db = await getDBConnection();
-      let userId = await db.get("SELECT user_id FROM users WHERE username = ?", [username]);
+  validateParameters(items, username);
+  try {
+    let db = await getDBConnection();
+    let userId = await db.get("SELECT user_id FROM users WHERE username = ?", [username]);
 
-      if (!userId) {
-        await db.close();
-        res.type("text");
-        res.status(INVALID_PARAM_ERROR).send("User does not exist. Please try again");
-      } else {
-        userId = userId["user_id"];
-        let sum = await updateStockGetSum(items);
-        let transactionCode = await logTransaction(userId, items, sum);
-        let balance = await updateBalance(userId, sum);
-
-        await db.close();
-        res.send({
-          "balance": balance,
-          "code": transactionCode
-        });
-      }
-    } catch (error) {
+    if (!userId) {
+      await db.close();
       res.type("text");
-      res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+      res.status(INVALID_PARAM_ERROR).send("User does not exist. Please try again");
+    } else {
+      userId = userId["user_id"];
+      let sum = await updateStockGetSum(items);
+      let transactionCode = await logTransaction(userId, items, sum);
+      let balance = await updateBalance(userId, sum);
+
+      await db.close();
+      res.send({
+        "balance": balance,
+        "code": transactionCode
+      });
     }
+  } catch (error) {
+    res.type("text");
+    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
 
@@ -268,7 +261,7 @@ app.post("/transactions", async function(req, res) {
       let transactions = await db.all("SELECT * FROM transactions WHERE user_id = ?", [userId]);
 
       await db.close();
-      if (!transaction) {
+      if (!transactions) {
         res.type("text");
         res.status(INVALID_PARAM_ERROR).send("No previous transactions found.");
       } else {
@@ -410,7 +403,7 @@ async function logTransaction(userId, items, total) {
 /**
  * Updates the given user's balance and returns the new balance
  * @param {int} userId Verified existing userId
- * @param {int} Total Total cost of items
+ * @param {int} sum Total cost of items
  * @returns {int} New updated balance
  */
 async function updateBalance(userId, sum) {
@@ -437,6 +430,11 @@ async function updateBalance(userId, sum) {
   }
 }
 
+/**
+ * Updates the stock of each item and returns the sum of their prices
+ * @param {List} items Array of items
+ * @returns Sum of item prices
+ */
 async function updateStockGetSum(items) {
   try {
     let db = await getDBConnection();
@@ -466,8 +464,6 @@ async function updateStockGetSum(items) {
   } catch (error) {
     throw new Error("Unable to update stock. Please try again later");
   }
-
-
 }
 
 /**
@@ -575,6 +571,19 @@ async function updateProductRating(itemName) {
   let updateQuery = "UPDATE products SET rating = ? WHERE item = ?;";
   await db.run(updateQuery, [averageRating.avg_rating, itemName]);
   await db.close();
+}
+
+/**
+ * Validates the given /buy endpoint parameters
+ * @param {List} item List of items
+ * @param {String} username Username
+ */
+function validateParameters(item, username) {
+  if (!items || items.length === 0) {
+    throw new Error("Cart is empty.");
+  } else if (typeof username === 'undefined') {
+    throw new Error(MISSING_PARAM_MSG);
+  }
 }
 
 /**
