@@ -69,6 +69,28 @@ POST request: /log-in
 - 500 Internal Server Error:
     - If an error occurred on the server, returns an error with the response: "An error occurred during account login. Please try again later."
 
+## Log out of account
+**Request Format:** /log-out with POST parameter "username"
+
+**Request Type:** POST
+
+**Returned Data Format**: Plain Text
+
+**Description:** Logs a user of out their account
+
+**Example Request:** /log-out with "username=ilovegardening"
+
+**Example Response:**
+```
+Successfully logged out.
+```
+**Error Handling:**
+- 400 Bad Request Error:
+    - If the user does not exist, returns an error with response: "User does not exist. Please try again."
+
+- 500 Internal Server Error:
+    - If an error occurred on the server, returns an error with the response: "An error occurred on the server. Try again later."
+
 ## Buy item
 **Request Format:** /buy
 
