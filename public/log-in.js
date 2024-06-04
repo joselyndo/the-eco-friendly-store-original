@@ -38,7 +38,7 @@
       await statusCheck(res);
       localStorage.setItem("user", id("username").value);
       localStorage.setItem("loggedIn", "true");
-      location.assign("my-account.html");
+      location.assign("index.html");
     } catch (error) {
       addLogInError();
     }
