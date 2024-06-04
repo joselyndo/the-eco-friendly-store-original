@@ -37,7 +37,8 @@
 
   /**
    * Makes a fetch to update transactions and process the sale
-   * @param {Array} cart Contains a list of items in current cart
+   * @param {String} username - the user's username
+   * @param {Array} cart - Contains a list of items in current cart
    */
   async function checkOut(username, cart) {
     let body = new FormData();
@@ -51,14 +52,29 @@
         let response = await fetch("/buy", {method: "POST", body: body});
         await statusCheck(response);
         let result = await response.text();
+        addMsg(result, false);
         clearCart();
-        console.log(result);
       } catch (error) {
-        console.log(error);
+        addMsg("An error has occurred. Please try again.", true);
       }
     } else {
-      console.log("Bad");
+      addMsg("Error: must be logged in to check out from the cart", true);
     }
+  }
+
+  /**
+   * Adds a message onto the string
+   * @param {String} msg - the message to add onto the screen
+   * @param {Boolean} isError - represents whether the message represents an error or not
+   */
+  function addMsg(msg, isError) {
+    let cartContainer = id("cart");
+    let newMsg = gen("p");
+    newMsg.textContent = msg;
+    if (isError) {
+      newMsg.classList.add("error");
+    }
+    cartContainer.prepend(newMsg);
   }
 
   /**
@@ -183,6 +199,7 @@
     id("cart-container").appendChild(inform);
   }
 
+  /** Notes that the user has confirmed their transaction */
   function confirmationStatus() {
     let value = id("confirm").checked;
     window.localStorage.setItem("confirmPurchase", value);
