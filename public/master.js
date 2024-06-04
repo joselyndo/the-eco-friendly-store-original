@@ -29,7 +29,6 @@
 
   /** Toggles the appearance of the navigation bar depending on if the user is logged in */
   function toggleLogIn() {
-    console.log(1);
     let isLoggedIn = localStorage.getItem("loggedIn");
     if (isLoggedIn === "true") {
       id("log-in-link").classList.add("hidden");
@@ -86,17 +85,6 @@
       qs(".sidebar-left").appendChild(ad1);
       qs(".sidebar-right").appendChild(ad2);
     }
-  }
-
-  /**
-   * Adds a message onto the web page about an error fetching data
-   */
-  function handleQueryError() {
-    let productsContainer = id("best-sellers");
-    let errorMessage = gen("p");
-    errorMessage.textContent = "Error. Please try again later.";
-    errorMessage.classList.add("error");
-    productsContainer.appendChild(errorMessage);
   }
 
   /**
