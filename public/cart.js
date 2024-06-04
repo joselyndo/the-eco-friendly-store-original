@@ -21,6 +21,11 @@
       id("confirm").checked = true;
     }
     getCart();
+    getHistory();
+    id("toggle-layout").addEventListener("change", function() {
+      updateCheckbox();
+      toggleView();
+    });
     id("clear").addEventListener("click", clearCart);
     id("checkout").addEventListener("click", function() {
       let username = window.localStorage.getItem("user");
@@ -28,10 +33,6 @@
       checkOut(username, cart);
     });
     id("confirm").addEventListener("change", confirmationStatus);
-    id("toggle-layout").addEventListener("change", function() {
-      updateCheckbox();
-      toggleView();
-    });
   }
 
   /**
@@ -89,6 +90,28 @@
   }
 
   /**
+   * Makes a POST fetch to retrieve details on user's transaction history.
+   */
+  async function getHistory() {
+    let body = new FormData();
+    let user = window.localStorage.getItem("user");
+    let loggedIn = window.localStorage.getItem("loggedIn");
+
+    if (loggedIn && user) {
+      body.append("username", user);
+
+      try {
+        let response = await fetch("/transactions", {method: "POST", body: body});
+        await statusCheck(response);
+        let result = await response.json();
+        populateHistory(result);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  /**
    * Generates DOM elements representing the user's cart.
    * @param {Object} items Details of each product
    */
@@ -120,6 +143,22 @@
     }
   }
 
+  /**
+   * Generates DOM elements representing the user's transaction history.
+   * @param {Object} transactions Details of transactions
+   */
+  function populateHistory(transactions) {
+    console.log(transactions);
+    for (let i = 0; i < transactions.length; i++) {
+      let items = transactions[i]["cart"];
+      items = JSON.parse(items);
+
+    }
+  }
+
+  /**
+   * Toggles cart and history views
+   */
   function toggleView() {
     if (id("cart").classList.contains("hidden")) {
       id("cart").classList.remove("hidden");

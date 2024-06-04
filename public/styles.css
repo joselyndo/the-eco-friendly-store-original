@@ -178,8 +178,13 @@ section a {
   width: 300px;
 }
 
-#transactions {
+#transactions details {
+  border: 5px solid #e7bc91;
+  background-color: #fadcb6;
+}
 
+#transactions summary {
+  background-color: #fadcb6;
 }
 
 .cart {

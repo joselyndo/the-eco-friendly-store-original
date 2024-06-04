@@ -261,31 +261,51 @@ app.post("/cart", async function(req, res) {
   let items = req.body.cart;
   items = JSON.parse(items);
   if (!items || items.length === 0) {
-    return res.status(INVALID_PARAM_ERROR).send("Cart is empty");
-  }
-
-  try {
-    let db = await getDBConnection();
-    let result = [];
-    for (let i = 0; i < items.length; i++) {
-      let item = await db.get("SELECT id FROM products WHERE item = ?;", [items[i]]);
-
-      if (!item) {
-        await db.close();
-        res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
-      }
-
-      let query = "SELECT item, price, rating, description, image FROM products WHERE id = ?;";
-      let row = await db.get(query, [item["id"]]);
-
-      result.push(row);
-    }
-    await db.close();
-    res.send(result);
-
-  } catch (error) {
     res.type("text");
-    res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+    res.status(INVALID_PARAM_ERROR).send("Cart is empty");
+  } else {
+    try {
+      let db = await getDBConnection();
+      let result = [];
+      for (let i = 0; i < items.length; i++) {
+        let item = await db.get("SELECT id FROM products WHERE item = ?;", [items[i]]);
+
+        if (!item) {
+          await db.close();
+          res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+        }
+
+        let query = "SELECT item, price, rating, description, image FROM products WHERE id = ?;";
+        let row = await db.get(query, [item["id"]]);
+        result.push(row);
+      }
+      await db.close();
+      res.send(result);
+
+    } catch (error) {
+      res.type("text");
+      res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+    }
+  }
+});
+
+app.post("/transactions", async function(req, res) {
+  let username = req.body.username;
+  if (!username) {
+    res.type("text");
+    res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
+  } else {
+    try {
+      let db = await getDBConnection();
+      let userId = await db.get("SELECT user_id FROM users WHERE username = ?;", [username]);
+      userId = userId.user_id;
+
+      let transactions = await db.all("SELECT * FROM transactions WHERE user_id = ?", [userId]);
+      res.send(transactions);
+    } catch (error) {
+      res.type("text");
+      res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
+    }
   }
 });
 
