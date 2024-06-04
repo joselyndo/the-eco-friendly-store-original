@@ -107,7 +107,7 @@
         let result = await response.json();
         populateCart(result);
       } catch (error) {
-        console.error(error);
+        addMsg("Error fetching cart. Please try again later.", true);
       }
     } else {
       clearCart();
@@ -132,7 +132,7 @@
         let result = await response.json();
         populateHistory(result);
       } catch (error) {
-        console.error(error);
+        addMsg("Error fetching history. Please try again later.", true);
       }
     }
   }
