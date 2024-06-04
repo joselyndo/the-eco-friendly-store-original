@@ -65,6 +65,7 @@
         let result = await response.json();
         clearCart();
         showButtons(false);
+        getHistory();
         displayConfirmation(result);
       } catch (error) {
         addMsg("An error has occurred. Please try again.", true);
@@ -99,7 +100,6 @@
 
     if (loggedIn && cart) {
       showButtons(true);
-
       body.append("cart", cart);
       try {
         let response = await fetch("/cart", {method: "POST", body: body});

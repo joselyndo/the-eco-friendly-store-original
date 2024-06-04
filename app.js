@@ -100,72 +100,29 @@ app.post("/buy", async function(req, res) {
   let items = req.body.cart;
   items = JSON.parse(items);
 
-  if (!items || items.length === 0) {
-    res.type("text");
-    res.status(INVALID_PARAM_ERROR).send("Cart is empty");
-    return;
-  }
-  if (typeof username === 'undefined') {
-    res.type("text");
-    res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
-    return;
-  }
-
+  validateParameters(items, username);
   try {
     let db = await getDBConnection();
     let userId = await db.get("SELECT user_id FROM users WHERE username = ?", [username]);
+
     if (!userId) {
       await db.close();
       res.type("text");
       res.status(INVALID_PARAM_ERROR).send("User does not exist. Please try again");
     } else {
       userId = userId["user_id"];
-
-      let sum = 0;
-      for (let i = 0; i < items.length; i++) {
-        let stockQuery = "SELECT stock FROM products WHERE item = ?;";
-        let stock = await db.get(stockQuery, items[i]);
-        stock = stock["stock"];
-
-        if (!stock) {
-          res.type("text");
-          res.status(INVALID_PARAM_ERROR).send("Item does not exist. Please try again");
-          return;
-        }
-        if (stock <= 0) {
-          res.type("text");
-          res.status(INVALID_PARAM_ERROR).send("Item is currently out of stock.");
-          return;
-        }
-
-        let priceQuery = "SELECT price FROM products WHERE item = ?;";
-        let price = await db.get(priceQuery, [items[i]]);
-        await db.run("UPDATE products SET stock = ? WHERE item = ?;", [stock - 1, items[i]]);
-        sum += price["price"];
-      }
-
+      let sum = await updateStockGetSum(items);
       let transactionCode = await logTransaction(userId, items, sum);
-      let balance = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
-      balance = balance["balance"];
-      let newBalance = (balance - sum).toFixed(2);
-      if (newBalance < 0) {
-        await db.close();
-        res.type("text");
-        res.status(INVALID_PARAM_ERROR).send("Insufficient balance.");
-      } else {
-        let query = "UPDATE users SET balance = ? WHERE user_id = ?";
-        await db.run(query, [newBalance, userId]);
-        let bal = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
-        bal = bal["balance"].toString();
+      let balance = await updateBalance(userId, sum);
 
-        await db.close();
-        res.send({
-          "balance": bal,
-          "code": transactionCode
-        });
-      }
+      await db.close();
+      res.send({
+        "balance": balance,
+        "code": transactionCode
+      });
     }
   } catch (error) {
+    res.type("text");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
@@ -302,7 +259,14 @@ app.post("/transactions", async function(req, res) {
       userId = userId.user_id;
 
       let transactions = await db.all("SELECT * FROM transactions WHERE user_id = ?", [userId]);
-      res.send(transactions);
+
+      await db.close();
+      if (!transactions) {
+        res.type("text");
+        res.status(INVALID_PARAM_ERROR).send("No previous transactions found.");
+      } else {
+        res.send(transactions);
+      }
     } catch (error) {
       res.type("text");
       res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
@@ -410,7 +374,9 @@ app.get("/details/rating/:item", async function(req, res) {
  * @returns {String} transaction confirmation code
  */
 async function logTransaction(userId, items, total) {
-  let code = Math.floor(Math.random() * 9000) + 1000;
+  const max = 9999;
+  const min = 1000;
+  let code = Math.floor(Math.random() * (max - min + 1)) + min;
   let unique = false;
 
   try {
@@ -422,7 +388,7 @@ async function logTransaction(userId, items, total) {
       if (!exist) {
         unique = true;
       } else {
-        code = Math.floor(Math.random() * 9000) + 1000;
+        code = Math.floor(Math.random() * (max - min + 1)) + min;
       }
     }
 
@@ -433,6 +399,69 @@ async function logTransaction(userId, items, total) {
     return code;
   } catch (error) {
     throw new Error("Unable to log transaction. Please try again later.");
+  }
+}
+
+/**
+ * Updates the given user's balance and returns the new balance
+ * @param {int} userId Verified existing userId
+ * @param {int} sum Total cost of items
+ * @returns {int} New updated balance
+ */
+async function updateBalance(userId, sum) {
+  try {
+    let db = await getDBConnection();
+    let balance = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
+    balance = balance["balance"];
+    let newBalance = (balance - sum).toFixed(2);
+    if (newBalance < 0) {
+      await db.close();
+      throw new Error("Insufficient balance.");
+    } else {
+      let query = "UPDATE users SET balance = ? WHERE user_id = ?";
+      await db.run(query, [newBalance, userId]);
+      let bal = await db.get("SELECT balance FROM users WHERE user_id = ?", userId);
+      bal = bal["balance"].toString();
+
+      await db.close();
+      return bal;
+    }
+  } catch (error) {
+    throw new Error("Unable to update balance. Please try again later");
+  }
+}
+
+/**
+ * Updates the stock of each item and returns the sum of their prices
+ * @param {List} items Array of items
+ * @returns {int} Sum of item prices
+ */
+async function updateStockGetSum(items) {
+  try {
+    let db = await getDBConnection();
+    let sum = 0;
+
+    for (let i = 0; i < items.length; i++) {
+      let stockQuery = "SELECT stock FROM products WHERE item = ?;";
+      let stock = await db.get(stockQuery, items[i]);
+      stock = stock["stock"];
+
+      if (!stock) {
+        throw new Error("Item does not exist. Please try again");
+      } else if (stock <= 0) {
+        throw new Error("Item is currently out of stock.");
+      } else {
+        let priceQuery = "SELECT price FROM products WHERE item = ?;";
+        let price = await db.get(priceQuery, [items[i]]);
+        await db.run("UPDATE products SET stock = ? WHERE item = ?;", [stock - 1, items[i]]);
+        sum += price["price"];
+      }
+    }
+    await db.close();
+    return sum;
+
+  } catch (error) {
+    throw new Error("Unable to update stock. Please try again later");
   }
 }
 
@@ -541,6 +570,19 @@ async function updateProductRating(itemName) {
   let updateQuery = "UPDATE products SET rating = ? WHERE item = ?;";
   await db.run(updateQuery, [averageRating.avg_rating, itemName]);
   await db.close();
+}
+
+/**
+ * Validates the given /buy endpoint parameters
+ * @param {List} items List of items
+ * @param {String} username Username
+ */
+function validateParameters(items, username) {
+  if (!items || items.length === 0) {
+    throw new Error("Cart is empty.");
+  } else if (typeof username === 'undefined') {
+    throw new Error(MISSING_PARAM_MSG);
+  }
 }
 
 /**
