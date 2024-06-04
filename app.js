@@ -435,16 +435,6 @@ async function logTransaction(userId, items, total) {
 }
 
 /**
- * Generates a unique transaction code that does not exist within the database
- * @returns {String} Unique transaction confirmation code
- */
-function generateUniqueTransactionCode() {
-  let code = 0;
-
-  return code;
-}
-
-/**
  * Returns a string representing a query based on the given information
  * @param {Boolean} useFilter - a Boolean representing whether the optional filters are being used
  * @returns {String} - a string representing a search query
