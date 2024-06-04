@@ -64,6 +64,7 @@
   /**
    * Adds a message onto the string
    * @param {String} msg - the message to add onto the screen
+   * @param {Boolean} isError - represents whether the message represents an error or not
    */
   function addMsg(msg, isError) {
     let cartContainer = id("cart");
