@@ -179,7 +179,7 @@ section a {
 }
 
 #transactions details {
-  border: 5px solid #e7bc91;
+  border: 2px solid #e7bc91;
   background-color: #fadcb6;
 }
 
@@ -240,6 +240,7 @@ section a {
 }
 
 #cart, #transactions {
+  width: 100%;
   margin: auto;
   border: 5px solid #e7bc91;
   background-color: #fadcb6;

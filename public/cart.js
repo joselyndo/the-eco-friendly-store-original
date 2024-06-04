@@ -31,6 +31,7 @@
       let username = window.localStorage.getItem("user");
       let cart = window.localStorage.getItem("cart");
       checkOut(username, cart);
+      window.localStorage.setItem("confirmPurchase", false);
     });
     id("confirm").addEventListener("change", confirmationStatus);
   }
@@ -54,6 +55,7 @@
         let result = await response.text();
         addMsg(result, false);
         clearCart();
+        showButtons(false);
       } catch (error) {
         addMsg("An error has occurred. Please try again.", true);
       }
@@ -86,8 +88,7 @@
     let loggedIn = window.localStorage.getItem("loggedIn");
 
     if (loggedIn && cart) {
-      id("checkout").classList.remove("hidden");
-      id("clear").classList.remove("hidden");
+      showButtons(true);
 
       body.append("cart", cart);
       try {
@@ -100,8 +101,7 @@
       }
     } else {
       clearCart();
-      id("checkout").classList.add("hidden");
-      id("clear").classList.add("hidden");
+      showButtons(false);
     }
   }
 
@@ -164,11 +164,30 @@
    * @param {Object} transactions Details of transactions
    */
   function populateHistory(transactions) {
+    let transactionsContainer = id("transactions");
+    transactionsContainer.innerHTML = "";
     console.log(transactions);
     for (let i = 0; i < transactions.length; i++) {
       let items = transactions[i]["cart"];
       items = JSON.parse(items);
 
+      let container = gen("details");
+      container.classList.add("transaction");
+      let summary = gen("summary");
+      summary.textContent = "Transaction #" + transactions[i]["transaction_code"];
+      let total = gen("h4");
+      total.textContent = "Total: $" + transactions[i]["total"];
+
+      let list = gen("ol");
+      for (let j = 0; j < items.length; j++) {
+        let listItem = gen("li");
+        listItem.textContent = items[j];
+        list.appendChild(listItem);
+      }
+      container.appendChild(summary);
+      container.appendChild(list);
+      container.appendChild(total);
+      transactionsContainer.append(container);
     }
   }
 
@@ -210,6 +229,24 @@
     let toggleImgs = qsa("label img");
     for (let img = 0; img < toggleImgs.length; img++) {
       toggleImgs[img].classList.toggle("hidden");
+    }
+  }
+
+  /**
+   * Toggles button visibility
+   * @param {boolean} flag boolean flag determining show or hide buttons
+   */
+  function showButtons(flag) {
+    if (flag) {
+      id("checkout").classList.remove("hidden");
+      id("clear").classList.remove("hidden");
+      id("confirm").classList.remove("hidden");
+      id("confirm-label").classList.remove("hidden");
+    } else {
+      id("checkout").classList.add("hidden");
+      id("clear").classList.add("hidden");
+      id("confirm").classList.add("hidden");
+      id("confirm-label").classList.add("hidden");
     }
   }
 
