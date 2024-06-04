@@ -374,7 +374,9 @@ app.get("/details/rating/:item", async function(req, res) {
  * @returns {String} transaction confirmation code
  */
 async function logTransaction(userId, items, total) {
-  let code = Math.floor(Math.random() * 9000) + 1000;
+  const max = 9999;
+  const min = 1000;
+  let code = Math.floor(Math.random() * (max-min+1)) + min;
   let unique = false;
 
   try {
@@ -386,7 +388,7 @@ async function logTransaction(userId, items, total) {
       if (!exist) {
         unique = true;
       } else {
-        code = Math.floor(Math.random() * 9000) + 1000;
+        code = Math.floor(Math.random() * (max-min+1)) + min;
       }
     }
 
@@ -414,8 +416,7 @@ async function updateBalance(userId, sum) {
     let newBalance = (balance - sum).toFixed(2);
     if (newBalance < 0) {
       await db.close();
-      res.type("text");
-      res.status(INVALID_PARAM_ERROR).send("Insufficient balance.");
+      throw new Error("Insufficient balance.");
     } else {
       let query = "UPDATE users SET balance = ? WHERE user_id = ?";
       await db.run(query, [newBalance, userId]);
@@ -433,7 +434,7 @@ async function updateBalance(userId, sum) {
 /**
  * Updates the stock of each item and returns the sum of their prices
  * @param {List} items Array of items
- * @returns Sum of item prices
+ * @returns {int} Sum of item prices
  */
 async function updateStockGetSum(items) {
   try {
@@ -446,11 +447,9 @@ async function updateStockGetSum(items) {
       stock = stock["stock"];
 
       if (!stock) {
-        res.type("text");
-        res.status(INVALID_PARAM_ERROR).send("Item does not exist. Please try again");
+        throw new Error("Item does not exist. Please try again");
       } else if (stock <= 0) {
-        res.type("text");
-        res.status(INVALID_PARAM_ERROR).send("Item is currently out of stock.");
+        throw new Error("Item is currently out of stock.");
       } else {
         let priceQuery = "SELECT price FROM products WHERE item = ?;";
         let price = await db.get(priceQuery, [items[i]]);
@@ -575,7 +574,7 @@ async function updateProductRating(itemName) {
 
 /**
  * Validates the given /buy endpoint parameters
- * @param {List} item List of items
+ * @param {List} items List of items
  * @param {String} username Username
  */
 function validateParameters(items, username) {
