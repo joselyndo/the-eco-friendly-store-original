@@ -178,6 +178,7 @@ app.get("/products/all", async function(req, res) {
     await db.close();
     res.json(rows);
   } catch (error) {
+    res.type("text");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
@@ -323,6 +324,7 @@ app.get("/best-sellers", async function(req, res) {
     await db.close();
     res.send(result);
   } catch (error) {
+    res.type("text");
     res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);
   }
 });
