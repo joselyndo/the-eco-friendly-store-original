@@ -28,10 +28,20 @@
     });
     id("clear").addEventListener("click", clearCart);
     id("checkout").addEventListener("click", function() {
-      let username = window.localStorage.getItem("user");
-      let cart = window.localStorage.getItem("cart");
-      checkOut(username, cart);
-      window.localStorage.setItem("confirmPurchase", false);
+      if (window.localStorage.getItem("confirmPurchase") === "true") {
+        let username = window.localStorage.getItem("user");
+        let cart = window.localStorage.getItem("cart");
+        checkOut(username, cart);
+        window.localStorage.setItem("confirmPurchase", false);
+      } else {
+        let prompt = qs(".prompt");
+        if (!prompt) {
+          prompt = gen("p");
+        }
+        prompt.classList.add("prompt");
+        prompt.textContent = "Please your confirm purchase.";
+        id("cart").appendChild(prompt);
+      }
     });
     id("confirm").addEventListener("change", confirmationStatus);
   }
@@ -166,7 +176,6 @@
   function populateHistory(transactions) {
     let transactionsContainer = id("transactions");
     transactionsContainer.innerHTML = "";
-    console.log(transactions);
     for (let i = 0; i < transactions.length; i++) {
       let items = transactions[i]["cart"];
       items = JSON.parse(items);
@@ -247,6 +256,9 @@
       id("clear").classList.add("hidden");
       id("confirm").classList.add("hidden");
       id("confirm-label").classList.add("hidden");
+      if (qs(".prompt")) {
+        qs(".prompt").remove();
+      }
     }
   }
 
