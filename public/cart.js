@@ -18,7 +18,6 @@
    */
   function init() {
     if (window.localStorage.getItem("confirmPurchase") === "true") {
-      console.log("?");
       id("confirm").checked = true;
     }
     getCart();
@@ -29,8 +28,9 @@
       checkOut(username, cart);
     });
     id("confirm").addEventListener("change", confirmationStatus);
-    id("view-history").addEventListener("click", function() {
-      toggleHistory();
+    id("toggle-layout").addEventListener("change", function() {
+      updateCheckbox();
+      toggleView();
     });
   }
 
@@ -120,6 +120,18 @@
     }
   }
 
+  function toggleView() {
+    if (id("cart").classList.contains("hidden")) {
+      id("cart").classList.remove("hidden");
+      id("transactions").classList.add("hidden");
+      qs("#cart-page h2").textContent = "Your Shopping Cart";
+    } else {
+      id("cart").classList.add("hidden");
+      id("transactions").classList.remove("hidden");
+      qs("#cart-page h2").textContent = "Your Transaction History";
+    }
+  }
+
   /**
    * Clears the user's stored cart
    */
@@ -135,6 +147,14 @@
   function confirmationStatus() {
     let value = id("confirm").checked;
     window.localStorage.setItem("confirmPurchase", value);
+  }
+
+  /** Changes the appearance of the checkbox */
+  function updateCheckbox() {
+    let toggleImgs = qsa("label img");
+    for (let img = 0; img < toggleImgs.length; img++) {
+      toggleImgs[img].classList.toggle("hidden");
+    }
   }
 
   /**

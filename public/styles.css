@@ -154,6 +154,20 @@ section a {
   margin-bottom: 5px;
 }
 
+#cart-page {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+#cart-page h2 {
+  margin-bottom: 0px;
+}
+
+#cart-page #toggle-layout-container {
+  margin-bottom: 20px;
+}
+
 #cart section > section {
   display: flex;
   flex-direction: row;
@@ -164,18 +178,12 @@ section a {
   width: 300px;
 }
 
+#transactions {
+
+}
+
 .cart {
   width: 7%;
-}
-
-#cart h2 {
-  margin-bottom: 10px;
-}
-
-#view-history {
-  color: black;
-  border: 2px solid black;
-  background-color: #e7bc91;
 }
 
 #checkout, #clear {
@@ -226,7 +234,7 @@ section a {
   width: 150px;
 }
 
-#cart {
+#cart, #transactions {
   margin: auto;
   border: 5px solid #e7bc91;
   background-color: #fadcb6;

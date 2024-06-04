@@ -41,7 +41,7 @@
   </header>
   <main>
     <!-- <div class="sidebar-left"></div> -->
-    <article id="cart">
+    <article id="cart-page">
       <h2>Your Shopping Cart</h2>
       <div id="toggle-layout-container">
         <img src="img/shopping-cart.png" alt="cart">
@@ -52,15 +52,21 @@
         </label>
         <img src="img/history.png" alt="history">
       </div>
-      <!-- <button id="view-history">View History</button> -->
-      <section id="cart-container">
+      <section id="cart">
+        <section id="cart-container">
+        </section>
+        <div>
+          <button id="checkout">Check out</button>
+          <button id="clear">Clear cart</button>
+        </div>
+        <input type="checkbox" id="confirm" name="confirm" value="yes">
+        <label for="confirm">Confirm purchase?</label>
       </section>
-      <div>
-        <button id="checkout">Check out</button>
-        <button id="clear">Clear cart</button>
-      </div>
-      <input type="checkbox" id="confirm" name="confirm" value="yes">
-      <label for="confirm">Confirm purchase?</label>
+      <section id="transactions" class="hidden">
+        <details id="template">
+          <summary>Transaction #1000</summary>
+        </details>
+      </section>
     </article>
     <!-- <div class="sidebar-right"></div> -->
   </main>
