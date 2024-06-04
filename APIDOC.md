@@ -95,9 +95,9 @@ Successfully logged out.
 **Request Format:** /buy
 
 **Request Type:** POST
-**Parameters:** "item" (String), "quantity" (int)
+**Parameters:** "items" (String)
 
-**Returned Data Format**: Plain Text
+**Returned Data Format**: JSON
 
 **Description:** Processes a buy order from the user
 
@@ -105,24 +105,41 @@ Successfully logged out.
 
 POST request: /buy
 {
-    "item": "paper straw",
-    "quantity": 5
+  "cart": "[\"Stainless Steel Water Bottle\",\"Stainless Steel Water Bottle\"]"
 }
 
 **Example Response:**
 
 ```
-"5 paper straws were successfully purchased."
+[
+  {
+    "item": "Stainless Steel Water Bottle",
+    "price": 19.99,
+    "rating": 4.9,
+    "description": "Insulated water bottle to keep drinks cold or hot for hours.",
+    "image": "stainless-steel-water-bottle"
+  },
+  {
+    "item": "Stainless Steel Water Bottle",
+    "price": 19.99,
+    "rating": 4.9,
+    "description": "Insulated water bottle to keep drinks cold or hot for hours.",
+    "image": "stainless-steel-water-bottle"
+  }
+]
 ```
 
 **Error Handling:**
 - 400 Bad Request Error:
-    - If the product does not exist within the database, returns an error with response: "Product does not exist. Please try again."
-    - If the quantity exceeds stock, returns an error with response: "Not enough items in stock. Please try again."
+    - If the given cart is empty, returns an error with response: "Cart is empty."
+    - If the username is not given, returns an error with response: "Invalid or missing parameters. Please try again."
+    - If the product does not exist within the database, returns an error with response: "item does not exist. Please try again."
+    - If the stock is 0, returns an error with response: "Item is currently out of stock."
 
 - 500 Internal Server Error:
     - If an error occured on the server, returns an error with the response: "An error occured during the buy process. Please try again
     later."
+    - Errors are logged during failure to update balance or stock.
 
 ## Retrieve all products
 **Request Format:** /products/all
@@ -326,25 +343,27 @@ POST request: /buy
 **Example Request:**
 
 POST request: /cart
-"{cart: ["item1", "item2"]}"
+{
+  "cart": "[\"Bamboo Toothbrush\",\"Bamboo Toothbrush\"]"
+}
 
 **Example Response:**
 
 ```
 [
   {
-    "item": "item1",
-    "rating": 4.5,
-    "price": 1.00,
-    "description": "Description 1",
-    "image": "image1.png"
+    "item": "Bamboo Toothbrush",
+    "price": 4.99,
+    "rating": 4.8,
+    "description": "Eco-friendly toothbrush made from sustainably sourced bamboo.",
+    "image": "bamboo-toothbrush"
   },
   {
-    "item": "item2",
-    "rating": 4.0,
-    "price": 9.99,
-    "description": "Description 2",
-    "image": "image2.png"
+    "item": "Bamboo Toothbrush",
+    "price": 4.99,
+    "rating": 4.8,
+    "description": "Eco-friendly toothbrush made from sustainably sourced bamboo.",
+    "image": "bamboo-toothbrush"
   }
 ]
 
@@ -352,7 +371,8 @@ POST request: /cart
 
 **Error Handling:**
 - 400 Bad Request Error:
-    - If the product does not exist within the database, returns an error with the response: "Invalid parameters. Please try again."
+    - If the username or product does not exist within the database, returns an error with the response: "Invalid parameters. Please try again."
+    - If the cart is empty, returns an error with the response: "Cart is empty."
 - 500 Internal Server Error:
     - If an error occured on the server, returns an error with the response: "An error occured when attempting to retrieve the cart. Please try again later."
 
@@ -371,12 +391,36 @@ POST request: /cart
 
 ```
 [
-    {"item": "Compostable trash bags", "rating": 5.0},
-    {"item": "Reusable metal straws", "rating": 4.9},
-    {"item": "Paper straws", "rating": 4.8},
-    {"item": "Recycled notebook", "rating": 4.6},
-    {"item": "Reusable shopping bag", "rating": 4.6},
-
+  {
+    "item": "Solar Powered Charger",
+    "image": "solar-powered-charger",
+    "price": 29.99,
+    "rating": 5
+  },
+  {
+    "item": "Stainless Steel Water Bottle",
+    "image": "stainless-steel-water-bottle",
+    "price": 19.99,
+    "rating": 4.9
+  },
+  {
+    "item": "Organic Cotton Bed Sheets",
+    "image": "organic-cotton-bed-sheets",
+    "price": 39.99,
+    "rating": 4.9
+  },
+  {
+    "item": "Bamboo Toothbrush",
+    "image": "bamboo-toothbrush",
+    "price": 4.99,
+    "rating": 4.8
+  },
+  {
+    "item": "Recycled Glass Water Bottle",
+    "image": "recycled-glass-water-bottle",
+    "price": 16.99,
+    "rating": 4.8
+  }
 ]
 ```
 
@@ -431,9 +475,8 @@ POST request: /feedback
 **Example Request:** /reviews/Bamboo Toothbrush
 
 **Example Response:**
-*Fill in example response in the {}*
 
-```json
+```
 [
   {
     "username": "keith123",
@@ -463,8 +506,8 @@ POST request: /feedback
 - 500 Internal Server Error (plain text):
     - If an error occured on the server, returns an error with the response: “An error occurred during retrieval. Please try again later.”
 
-## Account Information - Transactions
-**Request Format:** /account/my-transactions
+## Transactions
+**Request Format:** /transactions
 
 **Request Type:** POST
 **Parameters:** "username" (String)
@@ -473,68 +516,60 @@ POST request: /feedback
 
 **Description:** Returns the user's past transactions
 
-**Example Request:** /account/my-transactions
+**Example Request:**
+
+POST request: /transactions
+{
+  "username": "keith123"
+}
 
 **Example Response:**
 
 ```
-{
-    "Transaction1": {
-        “date: “08-21-2024”
-        “confirmation-num”: “XXXXX-XXXXX”,
-        “items”: [
-            {
-            “name”: “product1”,
-            “price”: “$X.XX”,
-            “quantity”: 5
-            },
-            {
-            “name”: “product2”,
-            “price”: “$X.XX”,
-            “quantity”: 5
-            },
-            {
-            “name”: “product1”,
-            “price”: “$X.XX”,
-            “quantity”: 5
-            }
-        ],
-        “subtotal”: “$A.AA”,
-        “discount”: “B.BB”,
-        “tax”: “C.CC”,
-        “total”: “D.DD”
-    },
-    "Transaction2": {
-        “date: “08-20-2024”
-        “confirmation-num”: “XXXXX-XXXXX”,
-        “items”: [
-            {
-            “name”: “product1”,
-            “price”: “$X.XX”,
-            “quantity”: 5
-            },
-            {
-            “name”: “product2”,
-            “price”: “$X.XX”,
-            “quantity”: 5
-            },
-            {
-            “name”: “product1”,
-            “price”: “$X.XX”,
-            “quantity”: 5
-            }
-        ],
-        “subtotal”: “$A.AA”,
-        “discount”: “B.BB”,
-        “tax”: “C.CC”,
-        “total”: “D.DD”
-    },
-}
+[
+  {
+    "transaction_code": 1577,
+    "user_id": 1,
+    "cart": "[\"Stainless Steel Water Bottle\",\"Stainless Steel Water Bottle\"]",
+    "total": 39.98
+  },
+  {
+    "transaction_code": 1591,
+    "user_id": 1,
+    "cart": "[\"Bamboo Toothbrush\",\"Bamboo Toothbrush\"]",
+    "total": 9.98
+  },
+  {
+    "transaction_code": 1952,
+    "user_id": 1,
+    "cart": "[\"Bamboo Toothbrush\",\"Reusable Shopping Bag\"]",
+    "total": 14.98
+  },
+  {
+    "transaction_code": 2187,
+    "user_id": 1,
+    "cart": "[\"Organic Cotton T-Shirt\"]",
+    "total": 15.99
+  },
+  {
+    "transaction_code": 2525,
+    "user_id": 1,
+    "cart": "[\"Bamboo Toothbrush\"]",
+    "total": 4.99
+  },
+  {
+    "transaction_code": 3353,
+    "user_id": 1,
+    "cart": "[\"Organic Cotton T-Shirt\",\"Organic Cotton T-Shirt\",\"Organic Cotton T-Shirt\"]",
+    "total": 47.97
+  }
+]
 ```
 
 **Error Handling:**
 - 404 Not Found Error (plain text):
     - If user has no recorded transactions available, returns an error with response: "No previous transactions found."
+    - If user does not exist or not provided, returns an error with response: "Invalid or missing parameters. Please try again."
 - 500 Internal Server Error (plain text):
     - If an error occurred on the server, returns an error with the response: "An error occured during retrieval. Please try again later"
 

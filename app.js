@@ -102,7 +102,7 @@ app.post("/buy", async function(req, res) {
 
   if (!items || items.length === 0) {
     res.type("text");
-    res.status(INVALID_PARAM_ERROR).send("Cart is empty");
+    res.status(INVALID_PARAM_ERROR).send("Cart is empty.");
   } else if (typeof username === 'undefined') {
     res.type("text");
     res.status(INVALID_PARAM_ERROR).send(MISSING_PARAM_MSG);
@@ -266,7 +266,14 @@ app.post("/transactions", async function(req, res) {
       userId = userId.user_id;
 
       let transactions = await db.all("SELECT * FROM transactions WHERE user_id = ?", [userId]);
-      res.send(transactions);
+
+      await db.close();
+      if (!transaction) {
+        res.type("text");
+        res.status(INVALID_PARAM_ERROR).send("No previous transactions found.");
+      } else {
+        res.send(transactions);
+      }
     } catch (error) {
       res.type("text");
       res.status(SERVER_ERROR).send(SERVER_ERROR_MSG);

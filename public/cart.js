@@ -97,10 +97,10 @@
     let body = new FormData();
     let cart = window.localStorage.getItem("cart");
     let loggedIn = window.localStorage.getItem("loggedIn");
+    console.log(typeof cart);
 
     if (loggedIn && cart) {
       showButtons(true);
-
       body.append("cart", cart);
       try {
         let response = await fetch("/cart", {method: "POST", body: body});
