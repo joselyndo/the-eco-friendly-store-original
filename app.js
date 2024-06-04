@@ -140,7 +140,7 @@ app.post("/buy", async function(req, res) {
 
         let priceQuery = "SELECT price FROM products WHERE item = ?;";
         let price = await db.get(priceQuery, [items[i]]);
-        await db.run("UPDATE products SET stock = ? WHERE item = ?;", [stock-1, items[i]]);
+        await db.run("UPDATE products SET stock = ? WHERE item = ?;", [stock - 1, items[i]]);
         sum += price["price"];
       }
 
@@ -159,7 +159,10 @@ app.post("/buy", async function(req, res) {
         bal = bal["balance"].toString();
 
         await db.close();
-        res.send("Successful transaction: Your new balance is " + bal + " Confirmation code: " + transactionCode);
+        res.send(
+          "Successful transaction: Your new balance is " +
+          bal + " Confirmation code: " + transactionCode
+        );
       }
     }
   } catch (error) {
@@ -392,7 +395,8 @@ async function logTransaction(userId, items, total) {
     let db = await getDBConnection();
 
     while (!unique) {
-      let exist = await db.get("SELECT transaction_code FROM transactions WHERE transaction_code = ?;", [code]);
+      let checkQuery = "SELECT transaction_code FROM transactions WHERE transaction_code = ?;";
+      let exist = await db.get(checkQuery, [code]);
       if (!exist) {
         unique = true;
       } else {
@@ -400,11 +404,11 @@ async function logTransaction(userId, items, total) {
       }
     }
 
-    let query = "INSERT INTO transactions (user_id, transaction_code, cart, total) VALUES (?, ?, ?, ?);";
+    let query = "INSERT INTO transactions (user_id, transaction_code, cart, total)" +
+      " VALUES (?, ?, ?, ?);";
     await db.run(query, [userId, code, JSON.stringify(items), total]);
     await db.close();
     return code;
-
   } catch (error) {
     throw new Error("Unable to log transaction. Please try again later.");
   }
