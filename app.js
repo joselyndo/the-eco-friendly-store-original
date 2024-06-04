@@ -376,7 +376,7 @@ app.get("/details/rating/:item", async function(req, res) {
 async function logTransaction(userId, items, total) {
   const max = 9999;
   const min = 1000;
-  let code = Math.floor(Math.random() * (max-min+1)) + min;
+  let code = Math.floor(Math.random() * (max - min + 1)) + min;
   let unique = false;
 
   try {
@@ -388,7 +388,7 @@ async function logTransaction(userId, items, total) {
       if (!exist) {
         unique = true;
       } else {
-        code = Math.floor(Math.random() * (max-min+1)) + min;
+        code = Math.floor(Math.random() * (max - min + 1)) + min;
       }
     }
 
