@@ -436,7 +436,7 @@
     productSection.appendChild(addToCartBtn);
 
     let hasTransactionPending = localStorage.getItem("confirmPurchase");
-    if (hasTransactionPending) {
+    if ((hasTransactionPending) && (hasTransactionPending === "true")) {
       handleBtnForCart();
     } else {
       disablePurchaseButtons();

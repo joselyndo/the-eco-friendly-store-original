@@ -411,12 +411,6 @@ article {
   padding-left: 150px;
 }
 
-#about {
-  background-image: url("/img/leaf-background.png");
-  background-size: 120%;
-  background-position: center;
-}
-
 #home p {
   width: 600px;
 }
